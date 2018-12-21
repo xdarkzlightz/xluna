@@ -131,7 +131,9 @@ class Registry {
     }
 
     // Creates a command config if one is not provided
-    if (!cmd.hasOwnProperty('config')) cmd.config = { args: [], devOnly: false }
+    if (!cmd.hasOwnProperty('config')) {
+      cmd.config = { args: [], devOnly: false, rating: 0 }
+    }
 
     // Sets the command name and group in the command config
     cmd.config.name = cmdName
