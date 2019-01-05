@@ -202,7 +202,6 @@ class Registry {
     Object.keys(commands).forEach(prop => {
       if (prop === cmd.name) {
         const command = commands[prop]
-        console.log(command)
         this.loadCommand(prop, group, command)
       }
     })
@@ -279,7 +278,6 @@ class Registry {
             return
           }
           const groupSchema = group.createSchema(_db.config.rating)
-          console.log(groupSchema)
           role.groups.push(groupSchema)
         })
         _db.channels.forEach(channel => {
