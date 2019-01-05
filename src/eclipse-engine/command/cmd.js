@@ -27,7 +27,9 @@ class Command {
   }
 
   registerFlag (flagName, flag) {
-    if (!flag.arg.name) flag.arg.name = flag.arg.type
+    if (flag.arg) {
+      if (!flag.arg.name) flag.arg.name = flag.arg.type
+    }
     this.flags.set(flagName, flag)
   }
 
@@ -101,25 +103,31 @@ class Command {
         default: ctx => {
           return ctx.guild.roles.get(ctx.guild.id)
         }
+      },
+      {
+        name: `reload`,
+        run: this.reload
+      },
+      {
+        name: `unload`,
+        run: this.unload
       }
     ])
   }
 
-  // reload (ctx) {
-  //   if (this.client.devs.indexOf(ctx.author.id) >= 0) return
+  reload (ctx) {
+    if (ctx.client.devs.indexOf(ctx.author.id) === -1) return
 
-  //   const reloaded = this.client.registry.reloadCommand(this)
-  //   ctx.say(success(reloaded))
-  //   return true
-  // }
+    const reloaded = ctx.client.registry.reloadCommand(ctx.cmd)
+    ctx.success(reloaded)
+  }
 
-  // unload (ctx) {
-  //   if (this.client.devs.indexOf(ctx.author.id) >= 0) return
+  unload (ctx) {
+    if (ctx.client.devs.indexOf(ctx.author.id) === -1) return
 
-  //   const unloaded = this.client.registry.unloadCommand(this)
-  //   ctx.say(success(unloaded))
-  //   return true
-  // }
+    const unloaded = ctx.client.registry.unloadCommand(ctx.cmd)
+    ctx.success(unloaded)
+  }
 
   createSchema (guildRating) {
     return {
