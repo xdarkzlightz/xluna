@@ -47,9 +47,11 @@ class dispatcher {
 
       // If there was a found group then parse any command flags else the group variable gets set to the command group
       if (group) {
+        ctx.group = group
         return this.argumentParser.parseFlags(group, args, ctx)
       } else {
         group = cmd.group
+        ctx.group = group
       }
 
       if (
