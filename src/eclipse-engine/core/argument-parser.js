@@ -129,7 +129,8 @@ class ArgumentParser {
     this.logger.debug(`[Argument-Parser]: Parsing flag: ${args[0]}`)
 
     if (!args[0] || !args[0].startsWith('--')) return
-    const flag = cmd.flags.get(args[0].substring(2, args[0].length))
+    let flag = cmd.flags.get(args[0].substring(2, args[0].length))
+    if (!flag) flag = cmd.flagAliases.get(args[0].substring(2, args[0].length))
     if (!flag) return true
 
     this.logger.debug(`[Argument-Parser]: Found flag: ${args[0]}`)
