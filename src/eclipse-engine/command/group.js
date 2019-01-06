@@ -1,7 +1,6 @@
 import { Collection, RichEmbed } from 'discord.js'
 
-import { success, colours, images, error } from '@eclipse/util/embed'
-import { findID, findName } from '@eclipse/util/array'
+import { success, generateGroupHelp } from '@eclipse/util/embed'
 
 class Group {
   constructor (client, path, groupObject) {
@@ -14,69 +13,49 @@ class Group {
     this.name = this.group.GroupConfig.name
     this.devOnly = this.group.GroupConfig.devOnly
     this.beforeEach = this.group.GroupConfig.beforeEach
+    this.description = this.group.GroupConfig.description
 
     // Collection of the commands that belong to this group
     this.commands = new Collection()
+
+    this.flags = new Collection()
+    this.flagAliases = new Collection()
+    this.registerDefaultFlags()
   }
 
-  /**
-   * Updates the command inside of the guild database
-   * @param  {String}      target Which part of the database you're targeting
-   * @param  {EclipseType} val    What you want to update inside of the database
-   * @param  {Boolean}     enable If the command should be enabled or disabled
-   * @return {Promise}            The save function
-   */
-  async updateDB (target, val, enable) {
-    let db = await val.getDB()
-    let targetDB = findID(db[`${target}s`], val.id)
-    if (!targetDB) {
-      await val.newEntry()
-      db = await val.getDB()
-      targetDB = findID(db[`${target}s`], val.id)
-    }
-    const group = findName(targetDB.groups, this.name)
-    group.commands.forEach(command => {
-      command.enabled = enable
-    })
-
-    await db.save()
-  }
-
-  async enable (val, ctx, target) {
-    const name = val.user ? val.user.name : val.name
-    await this.updateDB(target, val, true)
-    ctx.say(success(`Group: ${this.name} enabled for ${name}!`))
-
-    return true
-  }
-
-  async disable (val, ctx, target) {
-    const name = val.member ? val.member.user.tag : val.name
-    await this.updateDB(target, val, false)
-    ctx.say(success(`Group: ${this.name} disabled for ${name}!`))
-    return true
-  }
-
-  async status (val, ctx, target) {
-    const name = val.user ? val.user.name : val.name
-    const richEmbed = new RichEmbed()
-      .setColor(colours.success)
-      .setAuthor(`Here is the current config for ${name}`, images.checkmark)
-
-    let db = await val.getFromDB()
-    if (!db) {
-      return ctx.say(error({ message: `Config not found for ${name}!` }))
+  registerFlag (flag) {
+    if (flag.arg) {
+      if (!flag.arg.name) flag.arg.name = flag.arg.type
     }
 
-    const group = findName(db.groups, this.name)
+    this.flags.set(flag.name, flag)
 
-    let enabledString = ''
-    group.commands.forEach(cmd => {
-      const msg = cmd.enabled ? 'enabled' : 'disabled'
-      enabledString += `${cmd.name}: ${msg}\n`
+    if (flag.aliases) {
+      flag.aliases.forEach(alias => {
+        if (this.flagAliases.has(alias)) {
+          this.client.logger.info(
+            `Could not add flag alias ${alias}, a flag with the name of ${alias} already exists`
+          )
+        }
+        this.flagAliases.set(alias, flag)
+      })
+    }
+  }
+
+  registerFlags (flags) {
+    flags.forEach(flag => {
+      this.registerFlag(flag)
     })
-    richEmbed.addField(`${this.name} commands`, enabledString)
-    ctx.say(richEmbed)
+  }
+
+  registerDefaultFlags () {
+    this.registerFlags([
+      {
+        name: `help`,
+        aliases: ['h'],
+        run: this.sendHelpMessage
+      }
+    ])
   }
 
   reload (ctx) {
@@ -91,6 +70,12 @@ class Group {
 
     const unloaded = this.client.registry.unloadGroup(this)
     ctx.say(success(unloaded))
+  }
+
+  sendHelpMessage (ctx) {
+    const embed = new RichEmbed().setColor(0x4286f4)
+    generateGroupHelp(ctx, embed)
+    ctx.say(embed)
   }
 
   createSchema (rating) {
