@@ -199,7 +199,6 @@ class Registry {
     Object.keys(commands).forEach(prop => {
       if (prop === cmd.name) {
         const command = commands[prop]
-        console.log(command)
         this.loadCommand(prop, group, command)
       }
     })
@@ -266,11 +265,9 @@ class Registry {
       const rating = _db.config.rating
       this.groups.forEach(group => {
         _db.roles.forEach(role => this.updateCommands(role, group, rating))
-
         _db.channels.forEach(channel =>
           this.updateCommands(channel, group, rating)
         )
-
         _db.members.forEach(member =>
           this.updateCommands(member, group, rating)
         )
