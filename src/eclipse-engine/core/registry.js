@@ -264,50 +264,6 @@ class Registry {
       const _db = await Guild.findOne({ id: db.id })
       const rating = _db.config.rating
       this.groups.forEach(group => {
-<<<<<<< HEAD
-        _db.roles.forEach(role => {
-          const groupDB = findName(role.groups, group.name)
-          if (groupDB) {
-            group.commands.forEach(cmd => {
-              const hasCommand = findName(groupDB.commands, cmd.name)
-              if (hasCommand) return
-              const commandSchema = cmd.createSchema(_db.config.rating)
-              groupDB.commands.push(commandSchema)
-            })
-            return
-          }
-          const groupSchema = group.createSchema(_db.config.rating)
-          role.groups.push(groupSchema)
-        })
-        _db.channels.forEach(channel => {
-          const groupDB = findName(channel.groups, group.name)
-          if (groupDB) {
-            group.commands.forEach(cmd => {
-              const hasCommand = findName(groupDB.commands, cmd.name)
-              if (hasCommand) return
-              const commandSchema = cmd.createSchema(_db.config.rating)
-              groupDB.commands.push(commandSchema)
-            })
-            return
-          }
-          const groupSchema = group.createSchema(_db.config.rating)
-          channel.groups.push(groupSchema)
-        })
-        _db.members.forEach(member => {
-          const groupDB = findName(member.groups, group.name)
-          if (groupDB) {
-            group.commands.forEach(cmd => {
-              const hasCommand = findName(groupDB.commands, cmd.name)
-              if (hasCommand) return
-              const commandSchema = cmd.createSchema(_db.config.rating)
-              groupDB.commands.push(commandSchema)
-            })
-            return
-          }
-          const groupSchema = group.createSchema(_db.config.rating)
-          member.groups.push(groupSchema)
-        })
-=======
         _db.roles.forEach(role => this.updateCommands(role, group, rating))
         _db.channels.forEach(channel =>
           this.updateCommands(channel, group, rating)
@@ -315,7 +271,6 @@ class Registry {
         _db.members.forEach(member =>
           this.updateCommands(member, group, rating)
         )
->>>>>>> eclipse-engine/registryRefactor
       })
 
       _db.roles.forEach(role => this.removeCommands(role))
