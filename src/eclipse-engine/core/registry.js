@@ -309,11 +309,9 @@ class Registry {
         })
 =======
         _db.roles.forEach(role => this.updateCommands(role, group, rating))
-
         _db.channels.forEach(channel =>
           this.updateCommands(channel, group, rating)
         )
-
         _db.members.forEach(member =>
           this.updateCommands(member, group, rating)
         )
