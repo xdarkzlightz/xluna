@@ -22,5 +22,5 @@ export async function addGuild (ctx, rating) {
 }
 
 export function setPrefix (prefix, db) {
-  db.config.prefix = prefix
+  db.config.prefix = prefix.replace(/\s+/g, '')
 }

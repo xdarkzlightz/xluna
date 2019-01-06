@@ -32,7 +32,7 @@ export const config = {
           setPrefix(arg, ctx.db)
           await ctx.db.save()
 
-          ctx.success(`Prefix set to ${arg}`)
+          ctx.success(`Prefix set to ${arg.replace(/\s+/g, '')}`)
         },
         arg: { name: 'prefix', type: 'string' }
       },
