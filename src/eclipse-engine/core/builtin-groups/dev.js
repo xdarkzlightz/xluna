@@ -16,13 +16,25 @@ export const test = {
     rating: 0,
     flags: [
       {
-        name: `help`,
+        name: 'test',
         run: async ctx => {
           ctx.say('Ran successfully')
         },
-        aliases: ['h']
+        aliases: ['t'],
+        description: 'This is just flag',
+        usage: 'test --test'
       }
-    ]
+    ],
+    args: [
+      {
+        name: 'testArg',
+        type: 'string',
+        options: ['test'],
+        description: 'Just a test argument'
+      }
+    ],
+    description: 'This is just a test command',
+    usage: 'test'
   },
   run (ctx) {
     ctx.say(ctx.beforeEachVal)
