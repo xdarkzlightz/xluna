@@ -17,6 +17,8 @@ class Command {
     this.rating = this.command.config.rating
 
     this.flags = new Collection()
+    this.flagAliases = new Collection()
+
     this.registerDefaultFlags()
   }
 
@@ -26,16 +28,28 @@ class Command {
     this.command.run(ctx, args)
   }
 
-  registerFlag (flagName, flag) {
+  registerFlag (flag) {
     if (flag.arg) {
       if (!flag.arg.name) flag.arg.name = flag.arg.type
     }
-    this.flags.set(flagName, flag)
+
+    this.flags.set(flag.name, flag)
+
+    if (flag.aliases) {
+      flag.aliases.forEach(alias => {
+        if (this.flagAliases.has(alias)) {
+          this.client.logger.info(
+            `Could not add flag alias ${alias}, a flag with the name of ${alias} already exists`
+          )
+        }
+        this.flagAliases.set(alias, flag)
+      })
+    }
   }
 
   registerFlags (flags) {
     flags.forEach(flag => {
-      this.registerFlag(flag.name, flag)
+      this.registerFlag(flag)
     })
   }
 
