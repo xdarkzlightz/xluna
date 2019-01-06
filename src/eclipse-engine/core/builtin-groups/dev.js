@@ -18,3 +18,13 @@ export const load = {
 export const reload = {
   async run () {}
 }
+
+export const test = {
+  config: {
+    aliases: ['t'],
+    rating: 0
+  },
+  run (ctx) {
+    ctx.say('test completed')
+  }
+}
