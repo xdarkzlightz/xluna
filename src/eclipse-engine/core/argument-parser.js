@@ -134,6 +134,7 @@ class ArgumentParser {
     if (!flag) return true
 
     this.logger.debug(`[Argument-Parser]: Found flag: ${args[0]}`)
+    if (flag.devOnly && ctx.client.devs.indexOf(ctx.author.id) === -1) return
 
     const member = ctx.member
     if (!member.hasPermission('ADMINISTRATOR')) return true
