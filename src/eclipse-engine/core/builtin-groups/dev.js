@@ -3,11 +3,9 @@ export const GroupConfig = {
   devOnly: true,
   beforeEach (ctx) {
     return ctx.author.username
-  }
-}
-
-export const reload = {
-  async run () {}
+  },
+  description:
+    'Developer group, all developer commands essential to the bot goes here'
 }
 
 export const test = {
