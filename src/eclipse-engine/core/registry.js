@@ -25,8 +25,6 @@ class Registry {
     this.groupPath = client.path
 
     this.commands = new Collection()
-    this.aliases = new Collection()
-
     this.groups = new Collection()
 
     this.logger.debug('[Eclipse-Engine]: Created registry')
@@ -138,7 +136,7 @@ class Registry {
       )
     } else if (this.commands.has(cmdName)) {
       throw new Error(
-        `Could not register ${cmdName}, a command with the name ${cmdName} already exists`
+        `could not register ${cmdName}, a command with the name ${cmdName} already exists`
       )
     }
 
@@ -155,21 +153,7 @@ class Registry {
 
     group.commands.set(cmdName, command)
     this.commands.set(cmdName, command)
-    if (cmd.config.aliases) {
-      this.logger.debug(
-        `[Registry Group: ${group.name}]: Found command aliases ${
-          cmd.config.aliases
-        }`
-      )
-      cmd.config.aliases.forEach(alias => {
-        if (this.aliases.has(alias)) {
-          return this.logger.info(
-            `Could not set alias: ${alias}, an alias with this name exists!`
-          )
-        }
-        this.aliases.set(alias, command)
-      })
-    }
+
     this.logger.debug(
       `[Registry Group: ${group.name}]: Command ${cmdName} registered`
     )
