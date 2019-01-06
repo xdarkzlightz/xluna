@@ -48,3 +48,50 @@ export function error (msg, settings = {}) {
 
   return embed
 }
+
+export function generateCommandHelp (ctx, embed) {
+  const cmd = ctx.cmd
+  let aliases = ''
+  if (cmd.aliases) {
+    aliases = `(${cmd.aliases.join(', ')})`
+  }
+  embed.setAuthor(`${cmd.name} ${aliases}`)
+  embed.setDescription(
+    `Group: *${cmd.group.name}*\nDescription: *${cmd.description}*\nUsage: *${
+      ctx.prefix
+    }${cmd.usage}*\nExample: *${ctx.prefix}${
+      cmd.example ? cmd.example : cmd.usage
+    }*`
+  )
+
+  if (cmd.command.config.flags) {
+    let flags = ''
+    cmd.command.config.flags.forEach(flag => {
+      if (flag.devonly) return
+      let flagAliases = ''
+      if (flag.aliases) {
+        flagAliases = `(--${flag.aliases.join(', --')})`
+      }
+      flags += `--${flag.name} ${flagAliases}\nDescription: *${
+        flag.description
+      }*\nUsage: *${ctx.prefix}${flag.usage}*\nExample: *${ctx.prefix}${
+        flag.example ? flag.example : flag.usage
+      }*\n\n`
+    })
+    embed.addField('flags', flags)
+  }
+
+  if (cmd.args) {
+    let args = ''
+    cmd.args.forEach(arg => {
+      let options = '\n\n'
+      if (arg.options) {
+        options = `\nOptions: *${arg.options.join(', --')}*`
+      }
+      args += `${arg.name}\nType: *${arg.type}*\nDescription: *${
+        arg.description
+      }*${options}`
+    })
+    embed.addField('Arguments', args)
+  }
+}
