@@ -1,5 +1,6 @@
 export const GroupConfig = {
-  name: 'dev'
+  name: 'dev',
+  devOnly: true
 }
 
 export const reload = {
