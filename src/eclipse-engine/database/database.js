@@ -34,6 +34,7 @@ const updateCommandFor = (type, id, cmd, enabled, db) => {
 }
 
 export async function setEnabledTo (ctx, arg) {
+  if (ctx.cmd.devOnly) return
   const [action] = this.name.split('-')
   const enabling = action === 'enable'
 
@@ -53,6 +54,7 @@ export async function setEnabledTo (ctx, arg) {
 }
 
 export async function clear (ctx, arg) {
+  if (ctx.cmd.devOnly) return
   if (arg.id === ctx.guild.id) return
   const name = arg.user ? arg.user.username : arg.name
 
@@ -66,6 +68,7 @@ export async function clear (ctx, arg) {
 }
 
 export function status (ctx, arg) {
+  if (ctx.cmd.devOnly) return
   const name = arg.user ? arg.user.username : arg.name
 
   let config = findID(ctx.db[`${this.arg.type}s`], arg.id)
