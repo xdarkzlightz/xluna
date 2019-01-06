@@ -10,8 +10,10 @@ class Group {
     this.path = path
     // Copy of the original group object
     this.group = Object.assign({}, groupObject)
+
     this.name = this.group.GroupConfig.name
     this.devOnly = this.group.GroupConfig.devOnly
+    this.beforeEach = this.group.GroupConfig.beforeEach
 
     // Collection of the commands that belong to this group
     this.commands = new Collection()
