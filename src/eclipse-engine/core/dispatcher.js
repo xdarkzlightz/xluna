@@ -61,9 +61,12 @@ class dispatcher {
       if (!this.handleDB(cmd, ctx)) return
 
       // Parses any arguments, if there's an error then say the error and return
-      const parsedArgs = await this.argumentParser.parseArgs(cmd, args, ctx)
+      let parsedArgs
+      if (cmd.args) {
+        parsedArgs = await this.argumentParser.parseArgs(cmd, args, ctx)
+      }
 
-      await cmd.run(ctx, parsedArgs.values)
+      await cmd.run(ctx, parsedArgs)
     } catch (e) {
       if (e.type === 'friendly') {
         ctx.error(e.message, e)
