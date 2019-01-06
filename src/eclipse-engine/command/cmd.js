@@ -9,10 +9,12 @@ class Command {
     this.command = Object.assign({}, commandObject)
 
     this.name = this.command.config.name
-    this.group = this.command.config.group
+    this.group = Client.registry.groups.get(this.command.config.group)
+
     this.args = this.command.config.args
     this.devOnly = this.command.config.devOnly
     this.rating = this.command.config.rating
+
     this.flags = new Collection()
     this.flagAliases = new Collection()
 
@@ -20,6 +22,10 @@ class Command {
   }
 
   run (ctx, args) {
+    if (this.group.beforeEach) {
+      ctx.beforeEachVal = this.group.beforeEach(ctx)
+    }
+
     // Currently not needed, however if needed in the future simply uncomment line below
     // this.command.run.call(this, ctx, args)
     this.command.run(ctx, args)
