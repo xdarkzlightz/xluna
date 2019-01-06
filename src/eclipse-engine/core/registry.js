@@ -298,9 +298,12 @@ class Registry {
   }
 
   updateCommands (type, group, rating) {
+    if (group.devOnly) return
+
     const groupDB = findName(type.groups, group.name)
     if (groupDB) {
       group.commands.forEach(cmd => {
+        if (cmd.devOnly) return
         const hasCommand = findName(groupDB.commands, cmd.name)
         if (hasCommand) return
         const commandSchema = cmd.createSchema(rating)
