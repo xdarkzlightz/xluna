@@ -48,7 +48,10 @@ class dispatcher {
         group = this.registry.groups.get(cmd.group)
       }
 
-      if ((group.devOnly || cmd.devOnly) && findID(this.devs, ctx.author.id)) {
+      if (
+        (group.devOnly || cmd.devOnly) &&
+        this.devs.indexOf(ctx.author.id) === -1
+      ) {
         return
       }
 
@@ -111,6 +114,7 @@ class dispatcher {
 
   handleDB (cmd, ctx) {
     if (!ctx.db) return true
+    if (cmd.devOnly) return true
 
     let enabled = commandEnabledFor('member', ctx.author.id, cmd, ctx.db)
 
