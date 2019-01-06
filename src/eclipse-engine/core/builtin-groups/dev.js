@@ -1,6 +1,9 @@
 export const GroupConfig = {
   name: 'dev',
-  devOnly: true
+  devOnly: true,
+  beforeEach (ctx) {
+    return ctx.author.username
+  }
 }
 
 export const reload = {
@@ -22,6 +25,6 @@ export const test = {
     ]
   },
   run (ctx) {
-    ctx.say('test completed')
+    ctx.say(ctx.beforeEachVal)
   }
 }
