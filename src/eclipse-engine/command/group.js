@@ -94,6 +94,7 @@ class Group {
   createSchema (rating) {
     let commands = []
     this.commands.array().forEach(cmd => {
+      if (cmd.devOnly) return
       commands.push(cmd.createSchema(rating))
     })
     return {
