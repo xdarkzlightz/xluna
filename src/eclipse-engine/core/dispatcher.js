@@ -100,6 +100,7 @@ class dispatcher {
 
     const name = response.args.shift().toLowerCase()
     response.cmd = this.registry.commands.get(name)
+    if (!response.cmd) response.cmd = this.registry.aliases.get(name)
 
     // Get the group from the name constant
     response.group = this.registry.groups.get(name)
@@ -118,6 +119,7 @@ class dispatcher {
       let roleEnabled
 
       roles.forEach(roleDB => {
+        if (roleEnabled) return
         const memberRole = ctx.msg.member.roles.get(roleDB.id)
         if (!memberRole) return
 
