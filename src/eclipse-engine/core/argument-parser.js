@@ -27,7 +27,7 @@ class ArgumentParser {
     }
 
     const args = this.getArgs(argsArray.join(' '))
-    let parsedArgs = { values: {} }
+    let parsedArgs = {}
     let x = 0
     await asyncForEach(cmd.args, async arg => {
       if (parsedArgs.error) return
@@ -42,22 +42,17 @@ class ArgumentParser {
         ? this.parsePrimitives(arg.type, args[x])
         : await this.parseDiscordTypes(arg.type, args[x], ctx)
 
-      if (obj.error) {
-        parsedArgs.error = obj.error
-        return x++
-      } else {
-        if (arg.values) {
-          const foundValue = arg.values.find(val => obj.toLowerCase() === val)
-          if (!foundValue) {
-            throw new EclipseError(
-              { type: 'friendly', defaults: arg.value },
-              `Invalid argument: ${obj.value}`
-            )
-          }
+      if (arg.values) {
+        const foundValue = arg.values.find(val => obj.toLowerCase() === val)
+        if (!foundValue) {
+          throw new EclipseError(
+            { type: 'friendly', defaults: arg.values },
+            `Invalid argument: ${obj}`
+          )
         }
-        parsedArgs.values[arg.name] = obj
-        return x++
       }
+      parsedArgs[arg.name] = obj
+      return x++
     })
 
     return parsedArgs
