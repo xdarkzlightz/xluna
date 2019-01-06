@@ -117,10 +117,12 @@ class Command {
       },
       {
         name: `reload`,
+        devOnly: true,
         run: this.reload
       },
       {
         name: `unload`,
+        devOnly: true,
         run: this.unload
       }
     ])
