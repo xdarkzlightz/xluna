@@ -45,7 +45,6 @@ class Registry {
 
       this.logger.info('[Registry]: Updating database documents')
       await this.updateDatabase()
-      await this.removeUnused()
       this.logger.info('[Registry]: Done updating database documents')
     } catch (e) {
       this.logger.error(`[Registry]: ${e}\n Stack Trace: ${e.stack}`)
@@ -77,9 +76,9 @@ class Registry {
     this.logger.debug(`[Registry]: Registering group ${groupName}`)
     const groupObject = require(join(groupPath, '/', groupName))
 
-    if (!groupObject.hasOwnProperty('GroupConfig')) {
+    if (!groupObject.GroupConfig) {
       throw new Error(`Could not register group ${groupName}, missing config`)
-    } else if (!groupObject.GroupConfig.hasOwnProperty('name')) {
+    } else if (!groupObject.GroupConfig.name) {
       throw new Error(
         `Could not register group ${groupName}, missing config name property`
       )
@@ -131,7 +130,7 @@ class Registry {
       `[Registry Group: ${group.name}]: Registering command ${cmdName}`
     )
     // Checks if the command has the run property
-    if (!cmd.hasOwnProperty('run')) {
+    if (!cmd.run) {
       throw new Error(
         `Command ${cmdName} not registered: Missing the run property`
       )
@@ -142,9 +141,7 @@ class Registry {
     }
 
     // Creates a command config if one is not provided
-    if (!cmd.hasOwnProperty('config')) {
-      cmd.config = { args: [], devOnly: false, rating: 0 }
-    }
+    if (!cmd.config) cmd.config = { rating: 0 }
 
     // Sets the command name and group in the command config
     cmd.config.name = cmdName
@@ -266,111 +263,55 @@ class Registry {
     const dbs = await Guild.find({})
     await asyncForEach(dbs, async db => {
       const _db = await Guild.findOne({ id: db.id })
+      const rating = _db.config.rating
       this.groups.forEach(group => {
-        _db.roles.forEach(role => {
-          const groupDB = findName(role.groups, group.name)
-          if (groupDB) {
-            group.commands.forEach(cmd => {
-              const hasCommand = findName(groupDB.commands, cmd.name)
-              if (hasCommand) return
-              const commandSchema = cmd.createSchema(_db.config.rating)
-              groupDB.commands.push(commandSchema)
-            })
-            return
-          }
-          const groupSchema = group.createSchema(_db.config.rating)
-          console.log(groupSchema)
-          role.groups.push(groupSchema)
-        })
-        _db.channels.forEach(channel => {
-          const groupDB = findName(channel.groups, group.name)
-          if (groupDB) {
-            group.commands.forEach(cmd => {
-              const hasCommand = findName(groupDB.commands, cmd.name)
-              if (hasCommand) return
-              const commandSchema = cmd.createSchema(_db.config.rating)
-              groupDB.commands.push(commandSchema)
-            })
-            return
-          }
-          const groupSchema = group.createSchema(_db.config.rating)
-          channel.groups.push(groupSchema)
-        })
-        _db.members.forEach(member => {
-          const groupDB = findName(member.groups, group.name)
-          if (groupDB) {
-            group.commands.forEach(cmd => {
-              const hasCommand = findName(groupDB.commands, cmd.name)
-              if (hasCommand) return
-              const commandSchema = cmd.createSchema(_db.config.rating)
-              groupDB.commands.push(commandSchema)
-            })
-            return
-          }
-          const groupSchema = group.createSchema(_db.config.rating)
-          member.groups.push(groupSchema)
-        })
+        _db.roles.forEach(role => this.updateCommands(role, group, rating))
+
+        _db.channels.forEach(channel =>
+          this.updateCommands(channel, group, rating)
+        )
+
+        _db.members.forEach(member =>
+          this.updateCommands(member, group, rating)
+        )
       })
+
+      _db.roles.forEach(role => this.removeCommands(role))
+      _db.channels.forEach(channel => this.removeCommands(channel))
+      _db.members.forEach(member => this.removeCommands(member))
+
       await _db.save()
     })
   }
 
-  /**
-   * Removes any groups/commands that aren't registered
-   * @return {Promise} Promise wrapper
-   */
-  async removeUnused () {
-    const dbs = await Guild.find({})
-    await asyncForEach(dbs, async db => {
-      const _db = await Guild.findOne({ id: db.id })
-      _db.roles.forEach(role => {
-        role.groups.forEach(groupDB => {
-          const group = this.groups.has(groupDB.name)
-          if (group) {
-            groupDB.commands.forEach(cmd => {
-              const hasCommand = this.commands.get(cmd.name)
-              if (hasCommand) return
-
-              removeFromArray(groupDB.commands, cmd)
-            })
-            return
-          }
-          removeFromArray(role.groups, groupDB)
-        })
+  updateCommands (type, group, rating) {
+    const groupDB = findName(type.groups, group.name)
+    if (groupDB) {
+      group.commands.forEach(cmd => {
+        const hasCommand = findName(groupDB.commands, cmd.name)
+        if (hasCommand) return
+        const commandSchema = cmd.createSchema(rating)
+        groupDB.commands.push(commandSchema)
       })
+      return
+    }
+    const groupSchema = group.createSchema(rating)
+    type.groups.push(groupSchema)
+  }
 
-      _db.channels.forEach(channel => {
-        channel.groups.forEach(groupDB => {
-          const group = this.groups.has(groupDB.name)
-          if (group) {
-            groupDB.commands.forEach(cmd => {
-              const hasCommand = this.commands.get(cmd.name)
-              if (hasCommand) return
+  removeCommands (type) {
+    type.groups.forEach(groupDB => {
+      const group = this.groups.has(groupDB.name)
+      if (group) {
+        groupDB.commands.forEach(cmd => {
+          const hasCommand = this.commands.get(cmd.name)
+          if (hasCommand) return
 
-              removeFromArray(groupDB.commands, cmd)
-            })
-            return
-          }
-          removeFromArray(channel.groups, groupDB)
+          removeFromArray(groupDB.commands, cmd)
         })
-      })
-
-      _db.members.forEach(member => {
-        member.groups.forEach(groupDB => {
-          const group = this.groups.has(groupDB.name)
-          if (group) {
-            groupDB.commands.forEach(cmd => {
-              const hasCommand = this.commands.get(cmd.name)
-              if (hasCommand) return
-
-              removeFromArray(groupDB.commands, cmd)
-            })
-            return
-          }
-          removeFromArray(member.groups, groupDB)
-        })
-      })
-      await _db.save()
+        return
+      }
+      removeFromArray(type.groups, groupDB)
     })
   }
 }
