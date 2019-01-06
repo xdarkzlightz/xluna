@@ -45,7 +45,7 @@ class dispatcher {
       if (group) {
         return this.argumentParser.parseFlags(group, args, ctx)
       } else {
-        group = this.registry.groups.get(cmd.group)
+        group = cmd.group
       }
 
       if (
@@ -114,7 +114,7 @@ class dispatcher {
 
   handleDB (cmd, ctx) {
     if (!ctx.db) return true
-    if (cmd.devOnly) return true
+    if (cmd.devOnly || cmd.group.devOnly) return true
 
     let enabled = commandEnabledFor('member', ctx.author.id, cmd, ctx.db)
 
