@@ -1,6 +1,7 @@
-import { Collection } from 'discord.js'
+import { Collection, RichEmbed } from 'discord.js'
 
 import { setEnabledTo, status } from '@eclipse/database'
+import { generateCommandHelp } from '@eclipse/util/embed'
 
 class Command {
   constructor (Client, commandObject) {
@@ -14,6 +15,10 @@ class Command {
     this.args = this.command.config.args
     this.devOnly = this.command.config.devOnly
     this.rating = this.command.config.rating
+    this.aliases = this.command.config.aliases
+    this.description = this.command.config.description
+    this.usage = this.command.config.usage
+    this.example = this.command.config.example
 
     this.flags = new Collection()
     this.flagAliases = new Collection()
@@ -130,6 +135,11 @@ class Command {
         name: `unload`,
         devOnly: true,
         run: this.unload
+      },
+      {
+        name: `help`,
+        aliases: ['h'],
+        run: this.sendHelpMessage
       }
     ])
   }
@@ -146,6 +156,12 @@ class Command {
 
     const unloaded = ctx.client.registry.unloadCommand(ctx.cmd)
     ctx.success(unloaded)
+  }
+
+  sendHelpMessage (ctx) {
+    const embed = new RichEmbed().setColor(0x4286f4)
+    generateCommandHelp(ctx, embed)
+    ctx.say(embed)
   }
 
   createSchema (guildRating) {
