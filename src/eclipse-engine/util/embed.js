@@ -95,3 +95,20 @@ export function generateCommandHelp (ctx, embed) {
     embed.addField('Arguments', args)
   }
 }
+
+export function generateGroupHelp (ctx, embed) {
+  const group = ctx.group
+
+  embed.setAuthor(`${group.name}`)
+  embed.setDescription(`\nDescription: *${group.description}*\n`)
+
+  let commands = ''
+  group.commands.forEach(cmd => {
+    let aliases = ''
+    if (cmd.aliases) {
+      aliases = `(${cmd.aliases.join(', ')})`
+    }
+    commands += `${cmd.name} ${aliases}\nDescription: ${cmd.description}\n\n`
+  })
+  embed.addField('commands', commands)
+}
