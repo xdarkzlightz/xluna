@@ -11,11 +11,8 @@ class Command {
     this.name = this.command.config.name
     this.group = this.command.config.group
     this.args = this.command.config.args
-
     this.devOnly = this.command.config.devOnly
-
     this.rating = this.command.config.rating
-
     this.flags = new Collection()
     this.flagAliases = new Collection()
 
