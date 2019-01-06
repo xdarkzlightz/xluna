@@ -4,6 +4,7 @@ import { findName } from '@eclipse/util/array'
 export function createGroups (collection, rating) {
   let groups = []
   collection.array().forEach(group => {
+    if (group.devOnly) return
     groups.push(group.createSchema(rating))
   })
 
