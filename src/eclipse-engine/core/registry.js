@@ -25,6 +25,8 @@ class Registry {
     this.groupPath = client.path
 
     this.commands = new Collection()
+    this.aliases = new Collection()
+
     this.groups = new Collection()
 
     this.logger.debug('[Eclipse-Engine]: Created registry')
@@ -154,6 +156,19 @@ class Registry {
     group.commands.set(cmdName, command)
     this.commands.set(cmdName, command)
 
+    if (cmd.config.aliases) {
+      cmd.config.aliases.forEach(alias => {
+        if (this.aliases.has(alias)) {
+          return this.logger.debug(
+            `[Registry Group: ${
+              group.name
+            }]: Could not add alias ${alias} for Command ${cmdName}`
+          )
+        }
+
+        this.aliases.set(alias, command)
+      })
+    }
     this.logger.debug(
       `[Registry Group: ${group.name}]: Command ${cmdName} registered`
     )
