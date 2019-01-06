@@ -30,7 +30,11 @@ class dispatcher {
 
       await ctx.init()
 
-      let { canRun, cmd, group, args } = this.parseMessage(ctx)
+      let { canRun, cmd, group, args, mentionsBot } = this.parseMessage(ctx)
+      if (mentionsBot) {
+        return ctx.success(`Current bot prefix is: ${ctx.prefix}`)
+      }
+
       if (!canRun) return
 
       ctx.cmd = cmd
@@ -90,10 +94,17 @@ class dispatcher {
     const response = { canRun: true }
     const prefix = ctx.prefix
     const content = ctx.msg.content
+    const mentionsBot = ctx.msg.mentions.members.get(ctx.client.user.id)
+    if (mentionsBot) {
+      response.mentionsBot = true
+      response.canRun = true
+    }
 
     if (ctx.msg.channel.type === 'dm') response.canRun = false
     if (!content.startsWith(prefix)) response.canRun = false
-    if (content.startsWith(prefix + ' ')) response.canRun = false
+    if (content.startsWith(prefix + ' ')) {
+      response.canRun = false
+    }
     if (!response.canRun) return response
 
     response.args = content
