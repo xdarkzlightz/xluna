@@ -144,6 +144,7 @@ class Registry {
 
     // Creates a command config if one is not provided
     if (!cmd.config) cmd.config = { rating: 0 }
+    if (!cmd.config.rating) cmd.config.rating = 0
 
     // Sets the command name and group in the command config
     cmd.config.name = cmdName
