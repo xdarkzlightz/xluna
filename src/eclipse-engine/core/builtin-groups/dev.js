@@ -3,7 +3,16 @@ export const GroupConfig = {
 }
 
 export const load = {
-  async run (ctx) {}
+  config: {
+    args: [
+      {
+        type: 'string',
+        name: 'file'
+      }
+    ],
+    rating: 0
+  },
+  async run (ctx, { file }) {}
 }
 
 export const reload = {
