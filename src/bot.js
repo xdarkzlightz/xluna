@@ -1,5 +1,5 @@
 import { join } from 'path'
-import { token, devs, dbString } from '../config'
+import { token, devs, dbString, prefix } from '../config'
 
 import { Client } from '@eclipse/core'
 
@@ -7,11 +7,11 @@ import GameEngine from './game-engine/game-engine'
 import uno from './modules/uno/uno.js'
 
 const client = new Client({
-  token: token,
-  path: join(__dirname, '/command-groups/'),
-  prefix: '/',
-  devs: devs,
-  dbString: dbString
+  token,
+  prefix,
+  devs,
+  dbString,
+  path: join(__dirname, '/command-groups/')
 })
 
 // Use an asynchronus IIFE to initialize the bot
