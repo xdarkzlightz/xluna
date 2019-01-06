@@ -12,7 +12,7 @@ export function createGroups (collection, rating) {
 }
 
 export function findCommand (groups, cmd) {
-  const group = findName(groups, cmd.group)
+  const group = findName(groups, cmd.group.name)
   const command = findName(group.commands, cmd.name)
   return command
 }
