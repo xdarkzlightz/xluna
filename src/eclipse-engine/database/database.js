@@ -4,6 +4,7 @@ import { updateCommandInRole, commandEnabledInRole } from './role'
 
 import { updateCommandInMember, commandEnabledInMember } from './member'
 import { findID, removeFromArray } from '@eclipse/util/array'
+import { RichEmbed } from 'discord.js'
 
 export { default as Guild } from './models/guild'
 
@@ -33,7 +34,7 @@ const updateCommandFor = (type, id, cmd, enabled, db) => {
   }
 }
 
-export async function setEnabledTo (ctx, arg) {
+export async function setCommandEnabledTo (ctx, arg) {
   if (ctx.cmd.devOnly) return
   const [action] = this.name.split('-')
   const enabling = action === 'enable'
@@ -49,8 +50,61 @@ export async function setEnabledTo (ctx, arg) {
 
   const name = arg.user ? arg.user.username : arg.name
   ctx.success(`Command: ${ctx.cmd.name} ${action}d for ${name}!`)
+}
 
-  return true
+export function commandStatus (ctx, arg) {
+  if (ctx.cmd.devOnly) return
+  const name = arg.user ? arg.user.username : arg.name
+
+  let config = findID(ctx.db[`${this.arg.type}s`], arg.id)
+  if (!config) {
+    return ctx.error(`Config not found for ${name}!`)
+  }
+
+  const enabled = commandEnabledFor(this.arg.type, arg.id, ctx.cmd, ctx.db)
+
+  const msg = enabled ? 'enabled' : 'disabled'
+  ctx.success(`Command: ${ctx.cmd.name} is ${msg} for ${name}!`)
+}
+
+export async function setGroupEnabledTo (ctx, arg) {
+  if (ctx.group.devOnly) return
+  const [action] = this.name.split('-')
+  const enabling = action === 'enable'
+
+  ctx.client.logger.info(
+    `[Database]: ${action.substring(0, action.length - 1)}ing group: ${
+      ctx.group.name
+    } for ${ctx.guild.id}`
+  )
+
+  ctx.group.commands.forEach(cmd => {
+    updateCommandFor(this.arg.type, arg.id, cmd, enabling, ctx.db)
+  })
+
+  await ctx.db.save()
+
+  const name = arg.user ? arg.user.username : arg.name
+  ctx.success(`Group: ${ctx.group.name} ${action}d for ${name}!`)
+}
+
+export function groupStatus (ctx, arg) {
+  if (ctx.group.devOnly) return
+  const name = arg.user ? arg.user.username : arg.name
+
+  let config = findID(ctx.db[`${this.arg.type}s`], arg.id)
+  if (!config) {
+    return ctx.error(`Config not found for ${name}!`)
+  }
+  const embed = new RichEmbed().setAuthor(ctx.group.name).setColor(0x57e69)
+  let commands = ''
+  ctx.group.commands.forEach(cmd => {
+    const enabled = commandEnabledFor(this.arg.type, arg.id, cmd, ctx.db)
+    const msg = enabled ? 'enabled' : 'disabled'
+    commands += `**${cmd.name}**: *${msg}*\n`
+  })
+  embed.addField('commands', commands)
+  ctx.say(embed)
 }
 
 export async function clear (ctx, arg) {
@@ -65,19 +119,4 @@ export async function clear (ctx, arg) {
   await ctx.db.save()
 
   ctx.success(`Config has been cleared for ${name}!`)
-}
-
-export function status (ctx, arg) {
-  if (ctx.cmd.devOnly) return
-  const name = arg.user ? arg.user.username : arg.name
-
-  let config = findID(ctx.db[`${this.arg.type}s`], arg.id)
-  if (!config) {
-    return ctx.error(`Config not found for ${name}!`)
-  }
-
-  const enabled = commandEnabledFor(this.arg.type, arg.id, ctx.cmd, ctx.db)
-
-  const msg = enabled ? 'enabled' : 'disabled'
-  ctx.success(`Command: ${ctx.cmd.name} is ${msg} for ${name}!`)
 }
