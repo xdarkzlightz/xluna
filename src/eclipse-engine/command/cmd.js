@@ -1,6 +1,6 @@
 import { Collection, RichEmbed } from 'discord.js'
 
-import { setEnabledTo, status } from '@eclipse/database'
+import { setCommandEnabledTo, commandStatus } from '@eclipse/database'
 import { generateCommandHelp } from '@eclipse/util/embed'
 
 class Command {
@@ -65,7 +65,7 @@ class Command {
     this.registerFlags([
       {
         name: `enable-channel`,
-        run: setEnabledTo,
+        run: setCommandEnabledTo,
         arg: { type: 'channel' },
         default: ctx => {
           return ctx.channel
@@ -73,7 +73,7 @@ class Command {
       },
       {
         name: `disable-channel`,
-        run: setEnabledTo,
+        run: setCommandEnabledTo,
         arg: { type: 'channel' },
         default: ctx => {
           return ctx.channel
@@ -81,17 +81,17 @@ class Command {
       },
       {
         name: `enable-member`,
-        run: setEnabledTo,
+        run: setCommandEnabledTo,
         arg: { type: 'member' }
       },
       {
         name: `disable-member`,
-        run: setEnabledTo,
+        run: setCommandEnabledTo,
         arg: { type: 'member' }
       },
       {
         name: `enable-role`,
-        run: setEnabledTo,
+        run: setCommandEnabledTo,
         arg: { type: 'role' },
         default: ctx => {
           return ctx.guild.roles.get(ctx.guild.id)
@@ -99,28 +99,28 @@ class Command {
       },
       {
         name: `disable-role`,
-        run: setEnabledTo,
+        run: setCommandEnabledTo,
         arg: { type: 'role' },
         default: ctx => {
           return ctx.guild.roles.get(ctx.guild.id)
         }
       },
       {
-        name: `status-channel`,
-        run: status,
+        name: `commandStatus-channel`,
+        run: commandStatus,
         arg: { type: 'channel' },
         default: ctx => {
           return ctx.channel
         }
       },
       {
-        name: `status-member`,
-        run: status,
+        name: `commandStatus-member`,
+        run: commandStatus,
         arg: { type: 'member' }
       },
       {
-        name: `status-role`,
-        run: status,
+        name: `commandStatus-role`,
+        run: commandStatus,
         arg: { type: 'role' },
         default: ctx => {
           return ctx.guild.roles.get(ctx.guild.id)
