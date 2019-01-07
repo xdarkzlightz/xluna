@@ -2,7 +2,7 @@ import {
   createGame,
   startGame,
   endGame,
-  exitGame,
+  removeGame,
   joinGame,
   leaveGame,
   kickFromGame,
@@ -46,7 +46,7 @@ export const exit = {
     description: 'Removes the game',
     usage: 'exit'
   },
-  run: exitGame
+  run: removeGame
 }
 
 export const join = {
