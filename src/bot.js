@@ -10,9 +10,11 @@ import {
 } from '../config'
 
 import { Client } from '@eclipse/core'
+import { createJoinEmbed } from '@eclipse/util/embed'
 
 import GameEngine from './game-engine/game-engine'
 import uno from './modules/uno/uno.js'
+import { RichEmbed } from 'discord.js'
 
 const client = new Client({
   token,
@@ -41,3 +43,15 @@ const client = new Client({
 })()
 
 client.on('ready', () => client.logger.info('[Eclipse-Engine]: Bot ready!'))
+
+client.on('guildCreate', async guild => {
+  client.logger.info(`Joined guild: ${guild.name} (${guild.id})`)
+
+  const embed = new RichEmbed().setColor(0x5742f7)
+  await createJoinEmbed(client, embed)
+  guild.systemChannel.send(embed)
+})
+
+client.on('guildDelete', guild => {
+  client.logger.info(`Left guild: ${guild.name} (${guild.id})`)
+})
