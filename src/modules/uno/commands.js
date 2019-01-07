@@ -1,9 +1,4 @@
-import {
-  hand,
-  gameStatus,
-  actionDraw,
-  draw as embedDraw
-} from '../modules/uno/embed'
+import { hand, gameStatus, actionDraw, draw as embedDraw } from '@uno/embed'
 
 import { asyncForEach } from '@eclipse/util/array'
 
@@ -103,7 +98,7 @@ export function removeGame (ctx) {
   const game = ctx.client.gameEngine.getGame(ctx.channel.id)
   if (game) {
     if (ctx.member.id !== game.settings.owner) {
-      return ctx.say("Could not exit game, you're not the game owner!")
+      return ctx.say("Could not remove game, you're not the game owner!")
     }
     const gameRemoved = ctx.client.gameEngine.removeGame(ctx.channel.id)
     if (gameRemoved) {
@@ -113,10 +108,11 @@ export function removeGame (ctx) {
     }
   } else {
     ctx.say(
-      "Could not exit game, a game probably doesn't exist in the channel!"
+      "Could not remove game, a game probably doesn't exist in the channel!"
     )
   }
 }
+
 
 export function joinGame (ctx) {
   const game = ctx.client.gameEngine.getGame(ctx.channel.id)
