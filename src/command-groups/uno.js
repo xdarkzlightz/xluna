@@ -70,7 +70,8 @@ export const kick = {
     args: [
       {
         type: 'member',
-        name: 'player'
+        name: 'player',
+        description: 'The player you want to kick'
       }
     ],
     description: 'Lets you kick a player from the game',
@@ -86,7 +87,8 @@ export const play = {
       {
         type: 'string',
         name: 'colour',
-        values: ['red', 'green', 'blue', 'yellow', 'wild', 'wild+4']
+        values: ['red', 'green', 'blue', 'yellow', 'wild', 'wild+4'],
+        description: 'The colour of the card you want to play or wild/wild+4'
       },
       {
         type: 'string',
@@ -109,7 +111,8 @@ export const play = {
           'green',
           'blue',
           'yellow'
-        ]
+        ],
+        description: 'The type of card you want to play'
       }
     ],
     description: 'Lets you play a card from your hand',
