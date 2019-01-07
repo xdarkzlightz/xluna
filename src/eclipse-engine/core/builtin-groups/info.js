@@ -19,3 +19,26 @@ export const help = {
     ctx.say(embed)
   }
 }
+
+export const invite = {
+  config: {
+    rating: 0,
+    description: 'Get a bot invite link & a invite to the bots support server!',
+    usage: 'invite'
+  },
+  async run (ctx) {
+    const app = await ctx.client.fetchApplication()
+
+    const embed = new RichEmbed()
+      .setColor(0x4286f4)
+      .setAuthor('Here are your invites!', ctx.client.user.avatarURL)
+      .addField(
+        'Invites',
+        `[Support Server](${ctx.client.supportServer})\n[Bot Invite](${
+          ctx.client.botInvite
+        })`
+      )
+      .setFooter(`Bot created by: ${app.owner.tag}`, app.owner.avatarURL)
+    ctx.say(embed)
+  }
+}
