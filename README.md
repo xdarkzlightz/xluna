@@ -1,3 +1,3 @@
-# luna-bot
+# xluna
 
-Luna bot is a multi-purpose, friendly, and space themed discord bot
+xluna is a multi-purpose, friendly, and space themed discord bot
