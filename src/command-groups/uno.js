@@ -8,10 +8,27 @@ import {
 import { asyncForEach } from '@eclipse/util/array'
 
 export const GroupConfig = {
-  name: 'uno'
+  name: 'uno',
+  description: "Uno commands! Who doesn't love playing uno?",
+  beforeEach (ctx) {
+    const game = ctx.client.gameEngine.getGame(ctx.channel.id)
+    if (game) {
+      return game
+    } else {
+      ctx.say(
+        "Could not start game, a game probably doesn't exist in the channel!"
+      )
+      return false
+    }
+  }
 }
 
 export const create = {
+  config: {
+    rating: 0,
+    description: 'Creates a game',
+    usage: 'create'
+  },
   run (ctx) {
     const gameCreated = ctx.client.gameEngine.newGame('uno', {
       maxPlayers: 10,
@@ -31,61 +48,63 @@ export const create = {
 }
 
 export const start = {
+  config: {
+    rating: 0,
+    description: 'Starts a game',
+    usage: 'start'
+  },
   async run (ctx) {
-    const game = ctx.client.gameEngine.getGame(ctx.channel.id)
-    if (game) {
-      if (ctx.member.id !== game.settings.owner) {
-        return ctx.say("Could not start game, you're not the game owner!")
-      } else if (game.state.started === true) {
-        return ctx.say('Could not start game, the game is already started!')
-      }
-      const started = game.start()
-      if (!started) {
-        return ctx.say("Could not start game, you're alone!")
-      } else {
-        let noDM = []
-        await asyncForEach(
-          game.players.array(),
-          async player => {
-            const member = await ctx.guild.fetchMember(player.id)
-            const dm = await member.createDM()
-            await dm
-              .send(hand(player, ctx.guild, true, game.state.currentCard))
-              .catch(() => {
-                noDM.push(member.user.username)
-              })
-          }
-        )
+    const game = ctx.beforeEachVal
+    if (ctx.member.id !== game.settings.owner) {
+      return ctx.say("Could not start game, you're not the game owner!")
+    } else if (game.state.started === true) {
+      return ctx.say('Could not start game, the game is already started!')
+    }
 
-        if (noDM.length > 0) {
-          game.end()
-          return ctx.say(
-            `Could not start game. The following people have their dm's disabled: ${noDM.join(
-              ', '
-            )}`
-          )
-        }
-
-        ctx.say(
-          await gameStatus(
-            game.state.currentCard.name,
-            game.state.currentCard.type,
-            'Game started!',
-            game,
-            ctx.guild,
-            ctx.client.util
-          )
-        )
-      }
+    const started = game.start()
+    if (!started) {
+      return ctx.say("Could not start game, you're alone!")
     } else {
+      let noDM = []
+      await asyncForEach(game.players.array(), async player => {
+        const member = await ctx.guild.fetchMember(player.id)
+        const dm = await member.createDM()
+        await dm
+          .send(hand(player, ctx.guild, true, game.state.currentCard))
+          .catch(() => {
+            noDM.push(member.user.username)
+          })
+      })
+
+      if (noDM.length > 0) {
+        game.end()
+        return ctx.say(
+          `Could not start game. The following people have their dm's disabled: ${noDM.join(
+            ', '
+          )}`
+        )
+      }
+
       ctx.say(
-        "Could not start game, a game probably doesn't exist in the channel!"
+        await gameStatus(
+          game.state.currentCard.name,
+          game.state.currentCard.type,
+          'Game started!',
+          game,
+          ctx.guild,
+          ctx.client.util
+        )
       )
     }
   }
 }
 
 export const end = {
+  config: {
+    rating: 0,
+    description: 'Ends a game',
+    usage: 'end'
+  },
   run (ctx) {
     const game = ctx.client.gameEngine.getGame(ctx.channel.id)
     if (game) {
@@ -111,6 +130,11 @@ export const end = {
 }
 
 export const exit = {
+  config: {
+    rating: 0,
+    description: 'Removes the game',
+    usage: 'exit'
+  },
   run (ctx) {
     const game = ctx.client.gameEngine.getGame(ctx.channel.id)
     if (game) {
@@ -132,6 +156,11 @@ export const exit = {
 }
 
 export const join = {
+  config: {
+    rating: 0,
+    description: 'Lets you join a game',
+    usage: 'join'
+  },
   run (ctx) {
     const game = ctx.client.gameEngine.getGame(ctx.channel.id)
     if (game) {
@@ -153,6 +182,11 @@ export const join = {
 }
 
 export const leave = {
+  config: {
+    rating: 0,
+    description: 'Lets you leave a game',
+    usage: 'leave'
+  },
   run (ctx) {
     const game = ctx.client.gameEngine.getGame(ctx.channel.id)
     if (game) {
@@ -183,7 +217,10 @@ export const kick = {
         name: 'player'
       }
     ],
-    rating: 0
+    rating: 0,
+    description: 'Lets you kick a player from the game',
+    usage: 'kick (player)',
+    example: 'kick xdarkzlightz'
   },
   run (ctx, { player }) {
     const game = ctx.client.gameEngine.getGame(ctx.channel.id)
@@ -239,7 +276,10 @@ export const play = {
         ]
       }
     ],
-    rating: 0
+    rating: 0,
+    description: 'Lets you play a card from your hand',
+    usage: 'play (colour) (type)',
+    example: 'play wild+4 red'
   },
   async run (ctx, { colour, type }) {
     const game = ctx.client.gameEngine.getGame(ctx.channel.id)
@@ -328,6 +368,11 @@ export const play = {
 }
 
 export const draw = {
+  config: {
+    rating: 0,
+    description: 'Lets you draw a card from the draw pile',
+    usage: 'draw'
+  },
   async run (ctx) {
     const game = ctx.client.gameEngine.getGame(ctx.channel.id)
     if (game) {
@@ -377,6 +422,11 @@ export const draw = {
 }
 
 export const yell = {
+  config: {
+    rating: 0,
+    description: 'Lets you yell uno when you have one card left',
+    usage: 'yell'
+  },
   async run (ctx) {
     const game = ctx.client.gameEngine.getGame(ctx.channel.id)
     if (game) {
@@ -397,6 +447,11 @@ export const yell = {
 }
 
 export const callout = {
+  config: {
+    rating: 0,
+    description: 'Lets you call someone out',
+    usage: 'callout'
+  },
   async run (ctx) {
     const game = ctx.client.gameEngine.getGame(ctx.channel.id)
     if (game) {
