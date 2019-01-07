@@ -54,6 +54,8 @@ class EclipseClient extends Client {
 
     /** mongoDB connection string */
     this.dbString = options.dbString
+    this.supportServer = options.supportServer
+    this.botInvite = options.botInvite
 
     /** Eclipse Registry */
     this.registry = new Registry(this)
