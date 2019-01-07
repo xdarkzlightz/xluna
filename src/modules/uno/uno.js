@@ -16,7 +16,7 @@ class Uno extends CardGame {
   }
 
   start () {
-    if (!this.players.length) return
+    if (!this.players.array().length) return
     const deck = this.createUnoDeck()
     const started = super.start(deck)
     const currentCard = this.state.currentCard
