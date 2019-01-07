@@ -1,3 +1,4 @@
+import { asyncForEach } from '@eclipse/util/array'
 const { RichEmbed } = require('discord.js')
 
 const colours = {
@@ -97,7 +98,7 @@ module.exports.gameStatus = async (colour, type, action, game, guild, util) => {
 
   let totalCards = ''
 
-  await util.asyncForEach(game.players.array(), async player => {
+  await asyncForEach(game.players.array(), async player => {
     const member = await guild.fetchMember(player.id)
     const username = member.user.username
     let theString = `${
@@ -150,9 +151,14 @@ module.exports.draw = (card, guild) => {
     .setDescription(
       `You drew a ${colour !== undefined ? colour : ''} ${card[0].type}`
     )
-    .setColor(colours[colour])
-    .setThumbnail(images.cards[colour][card[0].type])
     .setFooter(`Server: ${guild.name}`)
+
+  if (card.type === 'wild' || card.type === 'wild+4') {
+    embed.setThumbnail(images.cards[0][card[0].type])
+  } else {
+    embed.setColor(colours[colour])
+    embed.setThumbnail(images.cards[colour][card[0].type])
+  }
 
   return embed
 }

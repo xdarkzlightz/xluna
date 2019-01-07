@@ -9,18 +9,7 @@ import { asyncForEach } from '@eclipse/util/array'
 
 export const GroupConfig = {
   name: 'uno',
-  description: "Uno commands! Who doesn't love playing uno?",
-  beforeEach (ctx) {
-    const game = ctx.client.gameEngine.getGame(ctx.channel.id)
-    if (game) {
-      return game
-    } else {
-      ctx.say(
-        "Could not start game, a game probably doesn't exist in the channel!"
-      )
-      return false
-    }
-  }
+  description: "Uno commands! Who doesn't love playing uno?"
 }
 
 export const create = {
@@ -54,46 +43,53 @@ export const start = {
     usage: 'start'
   },
   async run (ctx) {
-    const game = ctx.beforeEachVal
-    if (ctx.member.id !== game.settings.owner) {
-      return ctx.say("Could not start game, you're not the game owner!")
-    } else if (game.state.started === true) {
-      return ctx.say('Could not start game, the game is already started!')
-    }
+    const game = ctx.client.gameEngine.getGame(ctx.channel.id)
 
-    const started = game.start()
-    if (!started) {
-      return ctx.say("Could not start game, you're alone!")
-    } else {
-      let noDM = []
-      await asyncForEach(game.players.array(), async player => {
-        const member = await ctx.guild.fetchMember(player.id)
-        const dm = await member.createDM()
-        await dm
-          .send(hand(player, ctx.guild, true, game.state.currentCard))
-          .catch(() => {
-            noDM.push(member.user.username)
-          })
-      })
-
-      if (noDM.length > 0) {
-        game.end()
-        return ctx.say(
-          `Could not start game. The following people have their dm's disabled: ${noDM.join(
-            ', '
-          )}`
-        )
+    if (game) {
+      if (ctx.member.id !== game.settings.owner) {
+        return ctx.say("Could not start game, you're not the game owner!")
+      } else if (game.state.started === true) {
+        return ctx.say('Could not start game, the game is already started!')
       }
 
-      ctx.say(
-        await gameStatus(
-          game.state.currentCard.name,
-          game.state.currentCard.type,
-          'Game started!',
-          game,
-          ctx.guild,
-          ctx.client.util
+      const started = game.start()
+      if (!started) {
+        return ctx.say("Could not start game, you're alone!")
+      } else {
+        let noDM = []
+        await asyncForEach(game.players.array(), async player => {
+          const member = await ctx.guild.fetchMember(player.id)
+          const dm = await member.createDM()
+          await dm
+            .send(hand(player, ctx.guild, true, game.state.currentCard))
+            .catch(() => {
+              noDM.push(member.user.username)
+            })
+        })
+
+        if (noDM.length > 0) {
+          game.end()
+          return ctx.say(
+            `Could not start game. The following people have their dm's disabled: ${noDM.join(
+              ', '
+            )}`
+          )
+        }
+
+        ctx.say(
+          await gameStatus(
+            game.state.currentCard.name,
+            game.state.currentCard.type,
+            'Game started!',
+            game,
+            ctx.guild,
+            ctx.client.util
+          )
         )
+      }
+    } else {
+      ctx.say(
+        "Could not start game, a game probably doesn't exist in the channel!"
       )
     }
   }
@@ -313,6 +309,16 @@ export const play = {
             )
             game.end()
           })
+        ctx.say(
+          await gameStatus(
+            game.state.currentCard.name,
+            game.state.currentCard.type,
+            `${ctx.author.username} made ${member.user.username} draw cards`,
+            game,
+            ctx.guild,
+            ctx.client.util
+          )
+        )
       } else if (played.action === 'skip') {
         const member = await ctx.guild.fetchMember(played.target.player)
         ctx.say(
