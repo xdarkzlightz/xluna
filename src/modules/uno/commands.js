@@ -16,7 +16,7 @@ export function createGame (ctx) {
   })
 
   if (gameCreated) {
-    ctx.say('Game created!, other people can join it with /join')
+    ctx.say(`Game created!, other people can join it with ${ctx.prefix}join`)
   } else {
     ctx.say(
       'Could not create game, one probably already exists in this channel!'
@@ -83,7 +83,9 @@ export function endGame (ctx) {
       return ctx.say("Could not end game, you're not the game owner!")
     } else if (!game.state.started) {
       return ctx.say(
-        "Could not end game, game hasn't started yet, if you'd like to remove the game use /exit!"
+        `Could not end game, game hasn't started yet, if you'd like to remove the game use ${
+          ctx.prefix
+        }exit!`
       )
     }
     const gameEnded = game.end()
@@ -140,7 +142,9 @@ export function leaveGame (ctx) {
   if (game) {
     if (ctx.author.id === game.settings.owner) {
       return ctx.say(
-        "Could not leave game, you're the game owner. If you want to leave you have to do /exit"
+        `Could not leave game, you're the game owner. If you want to leave you have to do ${
+          ctx.prefix
+        }exit`
       )
     }
     const left = game.removePlayer(ctx.author.id)
@@ -182,7 +186,9 @@ export async function playCard (ctx, { colour, type }) {
   if (game) {
     if (!game.state.started) {
       return ctx.say(
-        "Could not play card, game hasn't started yet, if you'd like to remove the game use /exit!"
+        `Could not play card, game hasn't started yet, if you'd like to remove the game use ${
+          ctx.prefix
+        }exit!`
       )
     }
 
