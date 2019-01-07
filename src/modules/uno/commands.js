@@ -113,7 +113,6 @@ export function removeGame (ctx) {
   }
 }
 
-
 export function joinGame (ctx) {
   const game = ctx.client.gameEngine.getGame(ctx.channel.id)
   if (game) {
