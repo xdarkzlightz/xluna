@@ -18,7 +18,8 @@ require('@babel/register')({
           '@eclipse/core': './src/eclipse-engine/core/core.js',
           '@eclipse/command': './src/eclipse-engine/command/command.js',
           '@eclipse/database': './src/eclipse-engine/database/database.js',
-          '@eclipse': './src/eclipse-engine/'
+          '@eclipse': './src/eclipse-engine/',
+          '@uno': './src/modules/uno/'
         }
       }
     ]
