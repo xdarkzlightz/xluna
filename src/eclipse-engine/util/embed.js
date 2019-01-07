@@ -157,3 +157,27 @@ export async function createHelpMessage (ctx, embed) {
     app.owner.avatarURL
   )
 }
+
+export async function createJoinEmbed (client, embed) {
+  const app = await client.fetchApplication()
+
+  embed.setAuthor('Thanks for inviting me!', client.user.avatarURL)
+  embed.setDescription(
+    `I'm a multi-purpose discord bot created by ${
+      app.owner.tag
+    } that can currently only play uno in the ` +
+      `future I'll have more commands though!\nTo get started please create a server config with ${
+        client.prefix
+      }config, from there you can set a custom prefix with ${
+        client.prefix
+      }config --set-prefix (prefix)\n` +
+      `If you need additional help run the help command ${client.prefix}help`
+  )
+
+  embed.addField(
+    'Invites',
+    `[Support Server](${client.supportServer})\n[Bot Invite](${
+      client.botInvite
+    })`
+  )
+}
