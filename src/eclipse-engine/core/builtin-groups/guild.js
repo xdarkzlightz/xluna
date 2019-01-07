@@ -73,6 +73,8 @@ export const config = {
     example: 'config pg'
   },
   async run (ctx, { rating }) {
+    if (!ctx.member.hasPermission('ADMINISTRATOR')) return
+
     const guildExists = ctx.db
     if (guildExists) {
       return ctx.error('Cannot create server config, one already exists')
