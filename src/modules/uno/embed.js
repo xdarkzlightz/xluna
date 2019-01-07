@@ -153,8 +153,8 @@ module.exports.draw = (card, guild) => {
     )
     .setFooter(`Server: ${guild.name}`)
 
-  if (card.type === 'wild' || card.type === 'wild+4') {
-    embed.setThumbnail(images.cards[0][card[0].type])
+  if (card[0].type === 'wild' || card[0].type === 'wild+4') {
+    embed.setThumbnail(images.cards.red[card[0].type])
   } else {
     embed.setColor(colours[colour])
     embed.setThumbnail(images.cards[colour][card[0].type])
