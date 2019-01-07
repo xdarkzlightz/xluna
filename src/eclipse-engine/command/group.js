@@ -1,6 +1,7 @@
 import { Collection, RichEmbed } from 'discord.js'
 
 import { success, generateGroupHelp } from '@eclipse/util/embed'
+import { setGroupEnabledTo, groupStatus } from '@eclipse/database'
 
 class Group {
   constructor (client, path, groupObject) {
@@ -50,6 +51,69 @@ class Group {
 
   registerDefaultFlags () {
     this.registerFlags([
+      {
+        name: `enable-channel`,
+        run: setGroupEnabledTo,
+        arg: { type: 'channel' },
+        default: ctx => {
+          return ctx.channel
+        }
+      },
+      {
+        name: `disable-channel`,
+        run: setGroupEnabledTo,
+        arg: { type: 'channel' },
+        default: ctx => {
+          return ctx.channel
+        }
+      },
+      {
+        name: `enable-member`,
+        run: setGroupEnabledTo,
+        arg: { type: 'member' }
+      },
+      {
+        name: `disable-member`,
+        run: setGroupEnabledTo,
+        arg: { type: 'member' }
+      },
+      {
+        name: `enable-role`,
+        run: setGroupEnabledTo,
+        arg: { type: 'role' },
+        default: ctx => {
+          return ctx.guild.roles.get(ctx.guild.id)
+        }
+      },
+      {
+        name: `disable-role`,
+        run: setGroupEnabledTo,
+        arg: { type: 'role' },
+        default: ctx => {
+          return ctx.guild.roles.get(ctx.guild.id)
+        }
+      },
+      {
+        name: `status-channel`,
+        run: groupStatus,
+        arg: { type: 'channel' },
+        default: ctx => {
+          return ctx.channel
+        }
+      },
+      {
+        name: `status-member`,
+        run: groupStatus,
+        arg: { type: 'member' }
+      },
+      {
+        name: `status-role`,
+        run: groupStatus,
+        arg: { type: 'role' },
+        default: ctx => {
+          return ctx.guild.roles.get(ctx.guild.id)
+        }
+      },
       {
         name: `help`,
         aliases: ['h'],
