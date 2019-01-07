@@ -49,7 +49,7 @@ client.on('guildCreate', async guild => {
 
   const embed = new RichEmbed().setColor(0x5742f7)
   await createJoinEmbed(client, embed)
-  guild.systemChannel.send(embed)
+  guild.systemChannel.send(embed).catch()
 })
 
 client.on('guildDelete', guild => {
