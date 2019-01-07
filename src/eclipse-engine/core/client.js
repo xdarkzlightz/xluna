@@ -66,9 +66,7 @@ class EclipseClient extends Client {
     // Whenever a message event occurs handle the message
     this.on('message', async msg => {
       this.logger.debug(
-        `Handling message: ${msg.id} in channel: ${msg.channel.id}, guild: ${
-          msg.guild.id
-        }`
+        `Handling message: ${msg.id} in channel: ${msg.channel.id}`
       )
       await this.dispatcher.handleMessage(msg)
     })
