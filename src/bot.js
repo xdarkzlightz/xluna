@@ -1,5 +1,5 @@
 import { join } from 'path'
-import { token, devs, dbString, prefix } from '../config'
+import { token, devs, dbString, prefix, logLevel } from '../config'
 
 import { Client } from '@eclipse/core'
 
@@ -11,6 +11,7 @@ const client = new Client({
   prefix,
   devs,
   dbString,
+  logLevel,
   path: join(__dirname, '/command-groups/')
 })
 

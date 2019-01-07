@@ -27,7 +27,7 @@ class EclipseClient extends Client {
     super(options)
 
     this.logger = createLogger({
-      level: 'debug',
+      level: options.logLevel,
       format: format.combine(
         format.colorize(),
         format.timestamp({
