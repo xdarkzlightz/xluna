@@ -19,6 +19,7 @@ export const config = {
     flags: [
       {
         name: `set-prefix`,
+        aliases: ['prefix'],
         description: 'Sets the server prefix',
         usage: 'config --set-prefix (prefix)',
         example: 'config --set-prefix /',
