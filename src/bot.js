@@ -42,7 +42,17 @@ const client = new Client({
   client.login()
 })()
 
-client.on('ready', () => client.logger.info('[Eclipse-Engine]: Bot ready!'))
+client.on('ready', () => {
+  client.logger.info(
+    `[xluna]: Bot ready on ${client.guilds.size} guilds, ${
+      client.users.size
+    } total members`
+  )
+
+  client.user.setActivity(
+    `${client.prefix}help | In ${client.guilds.size} servers!`
+  )
+})
 
 client.on('guildCreate', async guild => {
   client.logger.info(`Joined guild: ${guild.name} (${guild.id})`)
