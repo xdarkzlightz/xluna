@@ -68,7 +68,10 @@ class EclipseClient extends Client {
       this.logger.debug(
         `Handling message: ${msg.id} in channel: ${msg.channel.id}`
       )
-      await this.dispatcher.handleMessage(msg)
+
+      if (msg.guild && msg.guild.available) {
+        await this.dispatcher.handleMessage(msg)
+      }
     })
 
     this.logger.debug('[Eclipse-Engine]: Created client')
