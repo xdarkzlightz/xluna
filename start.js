@@ -19,7 +19,8 @@ require('@babel/register')({
           '@eclipse/command': './src/eclipse-engine/command/command.js',
           '@eclipse/database': './src/eclipse-engine/database/database.js',
           '@eclipse': './src/eclipse-engine/',
-          '@uno': './src/modules/uno/'
+          '@uno': './src/modules/uno/',
+          '@info': './src/modules/info/'
         }
       }
     ]
