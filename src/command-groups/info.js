@@ -52,7 +52,14 @@ export const memberinfo = {
     description:
       "Get info on a member (If you don't specify a member it will target you)",
     usage: 'memberinfo (member)',
-    example: 'memberinfo xdarkzlightz'
+    example: 'memberinfo xdarkzlightz',
+    args: [
+      {
+        type: 'member',
+        name: 'member',
+        description: 'The member you want to get info on'
+      }
+    ]
   },
   run: sendMemberInfo
 }
@@ -62,7 +69,14 @@ export const channelinfo = {
     description:
       "Get info on a channel (If you don't specify a channel it will target the channel you're in",
     usage: 'channelinfo (channel)',
-    example: 'channelinfo general'
+    example: 'channelinfo general',
+    args: [
+      {
+        type: 'channel',
+        name: 'channel',
+        description: 'The channel you want to get info on'
+      }
+    ]
   },
   run: sendChannelInfo
 }
@@ -72,7 +86,14 @@ export const roleinfo = {
     description:
       "Get info on a role (If you don't specify a role then it will target the everyone role)",
     usage: 'roleinfo (role)',
-    example: "roleinfo 'cool people'"
+    example: "roleinfo 'cool people'",
+    args: [
+      {
+        type: 'role',
+        name: 'role',
+        description: 'The role you want to get info on'
+      }
+    ]
   },
   run: sendRoleInfo
 }
