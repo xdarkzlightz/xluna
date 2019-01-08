@@ -16,6 +16,8 @@ import GameEngine from './game-engine/game-engine'
 import uno from './modules/uno/uno.js'
 import { RichEmbed } from 'discord.js'
 
+const { version } = require('../package.json')
+
 const client = new Client({
   token,
   prefix,
@@ -24,6 +26,7 @@ const client = new Client({
   logLevel,
   botInvite,
   supportServer,
+  version,
   path: join(__dirname, '/command-groups/')
 })
 
