@@ -20,10 +20,10 @@
     "scope": "javascript",
     "prefix": "cmd",
     "body": [
-      "export const ${1: cmd} = {",
+      "export const ${1:cmd} = {",
       "\tconfig: {",
       "\t\tdescription: '${2:description}',",
-      "\t\tusage: '${3:usage}',",
+      "\t\tusage: '${3:usage}'",
       "\t},",
       "\trun: ${4:run}",
       "}"
