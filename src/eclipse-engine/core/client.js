@@ -56,6 +56,7 @@ class EclipseClient extends Client {
     this.dbString = options.dbString
     this.supportServer = options.supportServer
     this.botInvite = options.botInvite
+    this.version = options.version
 
     /** Eclipse Registry */
     this.registry = new Registry(this)
