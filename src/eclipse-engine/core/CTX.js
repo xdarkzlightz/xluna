@@ -29,7 +29,7 @@ class CTX {
   }
 
   say (msg) {
-    this.channel.send(msg)
+    this.channel.send(msg).catch()
   }
 
   error (msg, settings) {
