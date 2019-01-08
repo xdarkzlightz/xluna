@@ -29,5 +29,11 @@
       "}"
     ],
     "description": "Creates a command"
+  },
+  "Create a run function": {
+    "scope": "javascript",
+    "prefix": "rnfn",
+    "body": ["export function ${1:run} (ctx) {", "\t${2}", "}"],
+    "description": "Create a run function"
   }
 }
