@@ -9,7 +9,9 @@ import {
   playCard,
   drawCard,
   yellUno,
-  calloutUno
+  calloutUno,
+  promotePlayer,
+  dmHand
 } from '@uno/commands'
 
 export const GroupConfig = {
@@ -146,4 +148,27 @@ export const callout = {
     usage: 'callout'
   },
   run: calloutUno
+}
+
+export const promote = {
+  config: {
+    description: 'Promote a player to game owner!',
+    usage: 'promote (member)',
+    args: [
+      {
+        type: 'member',
+        name: 'player',
+        description: 'The player you want to promote'
+      }
+    ]
+  },
+  run: promotePlayer
+}
+
+export const hand = {
+  config: {
+    description: "DM's you your hand",
+    usage: 'dm'
+  },
+  run: dmHand
 }
