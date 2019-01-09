@@ -1,4 +1,11 @@
-import { getPost, getMeme } from '@reddit/commands'
+import {
+  getPost,
+  getMeme,
+  getTIL,
+  getST,
+  getHentai,
+  getFood
+} from '@reddit/commands'
 
 export const GroupConfig = {
   name: 'reddit',
@@ -28,4 +35,41 @@ export const meme = {
     usage: 'meme'
   },
   run: getMeme
+}
+
+export const til = {
+  config: {
+    rating: 1,
+    description: 'Get a random fact from r/todayilearned!',
+    usage: 'til'
+  },
+  run: getTIL
+}
+
+export const showerthought = {
+  config: {
+    aliases: ['st'],
+    rating: 1,
+    description: 'Get a random shower thought from r/ShowerThoughts!',
+    usage: 'showerthought'
+  },
+  run: getST
+}
+
+export const hentai = {
+  config: {
+    rating: 2,
+    description: 'Get a random hentai post from reddit!',
+    usage: 'hentai'
+  },
+  run: getHentai
+}
+
+export const food = {
+  config: {
+    rating: 0,
+    description: 'Get pictures of some good looking food from reddit!',
+    usage: 'food'
+  },
+  run: getFood
 }
