@@ -156,7 +156,7 @@ class Registry {
     if (cmd.config.flags) command.registerFlags(cmd.config.flags)
 
     group.commands.set(cmdName, command)
-    this.commands.set(cmdName, command)
+    if (!group.parent) this.commands.set(cmdName, command)
 
     if (cmd.config.aliases) {
       cmd.config.aliases.forEach(alias => {
@@ -168,7 +168,8 @@ class Registry {
           )
         }
 
-        this.aliases.set(alias, command)
+        if (!group.parent) this.aliases.set(alias, command)
+        group.commandAliases.set(alias, command)
       })
     }
     this.logger.debug(
@@ -318,10 +319,10 @@ class Registry {
 
   removeCommands (type) {
     type.groups.forEach(groupDB => {
-      const group = this.groups.has(groupDB.name)
+      const group = this.groups.get(groupDB.name)
       if (group) {
         groupDB.commands.forEach(cmd => {
-          const hasCommand = this.commands.get(cmd.name)
+          const hasCommand = group.commands.get(cmd.name)
           if (hasCommand) return
 
           removeFromArray(groupDB.commands, cmd)
