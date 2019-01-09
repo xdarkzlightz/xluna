@@ -35,7 +35,7 @@ class dispatcher {
 
       let { canRun, cmd, group, args, mentionsBot } = this.parseMessage(ctx)
 
-      if (!canRun) return
+      if (!canRun && !mentionsBot) return
 
       ctx.cmd = cmd
       if (this.userCooldowns.has(ctx.author.id)) {
@@ -146,8 +146,7 @@ class dispatcher {
       if (!response.cmd) response.cmd = response.group.commandAliases.get(name)
     }
 
-    if (!response.group && !response.cmd) response.canRun = false
-
+    if (!response.group && !response.cmd & !mentionsBot) response.canRun = false
     return response
   }
 
