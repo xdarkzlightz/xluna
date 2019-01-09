@@ -10,6 +10,7 @@ import {
 
 export const GroupConfig = {
   name: 'info',
+  aliases: ['i'],
   description: 'Info group, contains commands that give you info stuff',
   flags: [
     {
