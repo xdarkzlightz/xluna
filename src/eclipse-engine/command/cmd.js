@@ -19,6 +19,7 @@ class Command {
     this.description = this.command.config.description
     this.usage = this.command.config.usage
     this.example = this.command.config.example
+    this.nsfw = this.command.config.nsfw
 
     this.flags = new Collection()
     this.flagAliases = new Collection()

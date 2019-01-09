@@ -71,6 +71,10 @@ class dispatcher {
       // If the command/group was disabled return, if there is no DB handleDB() will return true
       if (!this.handleDB(cmd, ctx)) return
 
+      if (cmd.nsfw && !ctx.channel.nsfw) {
+        return ctx.error('Cannot run nsfw commands in non nsfw channels')
+      }
+
       // Parses any arguments, if there's an error then say the error and return
       let parsedArgs
       if (cmd.args) {
