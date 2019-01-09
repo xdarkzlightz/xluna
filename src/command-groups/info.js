@@ -10,7 +10,56 @@ import {
 
 export const GroupConfig = {
   name: 'info',
-  description: 'Info group, contains commands that give you info stuff'
+  description: 'Info group, contains commands that give you info stuff',
+  flags: [
+    {
+      name: 'bot',
+      aliases: ['b'],
+      description: 'Get info on the bot',
+      usage: 'info --b',
+      run: sendBotInfo
+    },
+    {
+      name: 'server',
+      aliases: ['s'],
+      description: 'Get info on the server',
+      usage: 'info --s',
+      run: sendServerInfo
+    },
+    {
+      name: 'member',
+      aliases: ['m', 'whois'],
+      description: 'Get info on a member',
+      usage: 'info --m',
+      arg: { type: 'member' },
+      default: ctx => {
+        return ctx.member
+      },
+      run: sendMemberInfo
+    },
+    {
+      name: 'channel',
+      aliases: ['c'],
+      description: 'Get info on a channel',
+      usage: 'info --c',
+      arg: { type: 'channel' },
+      default: ctx => {
+        return ctx.channel
+      },
+      run: sendChannelInfo
+    },
+    {
+      name: 'role',
+      aliases: ['r'],
+      description: 'Get info on a role',
+      usage: 'info --r',
+      arg: { type: 'role' },
+      default: ctx => {
+        return ctx.guild.defaultRole
+      },
+      run: sendRoleInfo
+    }
+  ]
 }
 
 export const help = {
@@ -28,72 +77,4 @@ export const invite = {
     usage: 'invite'
   },
   run: sendInvite
-}
-
-export const botinfo = {
-  config: {
-    description: 'Get info on the bot!',
-    usage: 'botinfo'
-  },
-  run: sendBotInfo
-}
-
-export const serverinfo = {
-  config: {
-    description: 'Get info on the server',
-    usage: 'serverinfo'
-  },
-  run: sendServerInfo
-}
-
-export const memberinfo = {
-  config: {
-    aliases: ['whois'],
-    description:
-      "Get info on a member (If you don't specify a member it will target you)",
-    usage: 'memberinfo (member)',
-    example: 'memberinfo xdarkzlightz',
-    args: [
-      {
-        type: 'member',
-        name: 'member',
-        description: 'The member you want to get info on'
-      }
-    ]
-  },
-  run: sendMemberInfo
-}
-
-export const channelinfo = {
-  config: {
-    description:
-      "Get info on a channel (If you don't specify a channel it will target the channel you're in",
-    usage: 'channelinfo (channel)',
-    example: 'channelinfo general',
-    args: [
-      {
-        type: 'channel',
-        name: 'channel',
-        description: 'The channel you want to get info on'
-      }
-    ]
-  },
-  run: sendChannelInfo
-}
-
-export const roleinfo = {
-  config: {
-    description:
-      "Get info on a role (If you don't specify a role then it will target the everyone role)",
-    usage: 'roleinfo (role)',
-    example: "roleinfo 'cool people'",
-    args: [
-      {
-        type: 'role',
-        name: 'role',
-        description: 'The role you want to get info on'
-      }
-    ]
-  },
-  run: sendRoleInfo
 }
