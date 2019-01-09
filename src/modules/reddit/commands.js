@@ -61,7 +61,6 @@ export async function getHentai (ctx) {
     'yuri',
     'ahego',
     'hentaibondage',
-    'GodPussy',
     'sex_comics',
     'animemidriff',
     'OppaiLove',
