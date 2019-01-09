@@ -46,13 +46,15 @@ class dispatcher {
       }
 
       // If there was a found group then parse any command flags else the group variable gets set to the command group
+      let flag
       if (group) {
         ctx.group = group
-        return this.argumentParser.parseFlags(group, args, ctx)
+        flag = await this.argumentParser.parseFlags(group, args, ctx)
       } else {
         group = cmd.group
         ctx.group = group
       }
+      if (flag) return
 
       if (
         (group.devOnly || cmd.devOnly) &&
@@ -62,7 +64,7 @@ class dispatcher {
       }
 
       this.logger.debug(`[Dispatcher]: Parsing flag`)
-      const flag = await this.argumentParser.parseFlags(cmd, args, ctx)
+      flag = await this.argumentParser.parseFlags(cmd, args, ctx)
       // Parses any command flags, if a command flag was found it runs it and then returns
       if (flag) return
 
@@ -120,6 +122,11 @@ class dispatcher {
 
     // Get the group from the name constant
     response.group = this.registry.groups.get(name)
+    if (!response.cmd && response.group) {
+      response.cmd = response.group.commands.get(response.args[0])
+      if (!response.cmd) response.cmd = response.group.commandAliases.get(name)
+    }
+
     if (!response.group && !response.cmd) response.canRun = false
 
     return response
