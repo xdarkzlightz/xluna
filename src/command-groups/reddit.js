@@ -59,6 +59,7 @@ export const showerthought = {
 export const hentai = {
   config: {
     rating: 2,
+    nsfw: true,
     description: 'Get a random hentai post from reddit!',
     usage: 'hentai'
   },
