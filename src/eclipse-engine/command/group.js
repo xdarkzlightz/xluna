@@ -16,9 +16,11 @@ class Group {
     this.devOnly = this.group.GroupConfig.devOnly
     this.beforeEach = this.group.GroupConfig.beforeEach
     this.description = this.group.GroupConfig.description
+    this.parent = this.group.GroupConfig.parent
 
     // Collection of the commands that belong to this group
     this.commands = new Collection()
+    this.commandAliases = new Collection()
 
     this.flags = new Collection()
     this.flagAliases = new Collection()
