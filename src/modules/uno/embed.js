@@ -120,13 +120,13 @@ module.exports.gameStatus = async (colour, type, action, game, guild, util) => {
   return embed
 }
 
-module.exports.hand = (player, guild, starting, currentCard) => {
+module.exports.hand = (player, guild, msg, currentCard) => {
   let colour = currentCard.name
   const embed = new RichEmbed()
     .setDescription(
-      starting
-        ? `Game started! Here are your cards`
-        : `It's your turn! The current card is a ${colour} ${currentCard.type}`
+      msg === true
+        ? `It's your turn! The current card is a ${colour} ${currentCard.type}`
+        : msg
     )
     .setColor(colours[colour])
     .setThumbnail(images.cards[colour][currentCard.type])
@@ -139,7 +139,7 @@ module.exports.hand = (player, guild, starting, currentCard) => {
 
     cards.push(_card.join(' '))
   })
-  embed.addField('Cards', cards.join(', '))
+  embed.addField('Cards', cards.sort().join(', '))
   embed.setFooter(`Total cards: ${player.hand.length} | Server: ${guild.name}`)
 
   return embed
