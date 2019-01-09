@@ -14,7 +14,9 @@ import {
 
 export const GroupConfig = {
   name: 'uno',
-  description: "Uno commands! Who doesn't love playing uno?"
+  aliases: ['u'],
+  description: "Uno commands! Who doesn't love playing uno?",
+  parent: true
 }
 
 export const create = {
