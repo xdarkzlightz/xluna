@@ -20,7 +20,8 @@ require('@babel/register')({
           '@eclipse/database': './src/eclipse-engine/database/database.js',
           '@eclipse': './src/eclipse-engine/',
           '@uno': './src/modules/uno/',
-          '@info': './src/modules/info/'
+          '@info': './src/modules/info/',
+          '@reddit': './src/modules/reddit/'
         }
       }
     ]
