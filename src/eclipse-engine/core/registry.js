@@ -92,6 +92,7 @@ class Registry {
         `Could not register group ${group.name}, a group already exists`
       )
     }
+    if (group.config.flags) group.registerFlags(group.config.flags)
 
     this.groups.set(group.name, group)
 
