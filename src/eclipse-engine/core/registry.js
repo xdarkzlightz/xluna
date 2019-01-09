@@ -28,6 +28,7 @@ class Registry {
     this.aliases = new Collection()
 
     this.groups = new Collection()
+    this.groupAliases = new Collection()
 
     this.logger.debug('[Eclipse-Engine]: Created registry')
   }
@@ -93,6 +94,20 @@ class Registry {
       )
     }
     if (group.config.flags) group.registerFlags(group.config.flags)
+
+    if (group.config.aliases) {
+      groupObject.GroupConfig.aliases.forEach(alias => {
+        if (this.aliases.has(alias)) {
+          return this.logger.debug(
+            `[Registry Group: ${
+              group.name
+            }]: Could not add alias ${alias} for group ${groupName}`
+          )
+        }
+
+        this.groupAliases.set(alias, group)
+      })
+    }
 
     this.groups.set(group.name, group)
 

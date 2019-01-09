@@ -9,6 +9,8 @@ import {
 
 export const GroupConfig = {
   name: 'reddit',
+  aliases: ['r'],
+  parent: true,
   description: 'Get content off of reddit!'
 }
 
