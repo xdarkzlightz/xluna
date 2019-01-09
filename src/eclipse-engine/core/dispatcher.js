@@ -43,7 +43,6 @@ class dispatcher {
       } else {
         this.userCooldowns.set(ctx.author.id, ctx.author)
         setTimeout(() => {
-          // Removes the user from the set after a minute
           this.userCooldowns.delete(ctx.author.id)
         }, 2000)
       }
