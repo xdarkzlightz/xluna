@@ -10,6 +10,7 @@ class Group {
     this.path = path
     // Copy of the original group object
     this.group = Object.assign({}, groupObject)
+    this.config = this.group.GroupConfig
 
     this.name = this.group.GroupConfig.name
     this.devOnly = this.group.GroupConfig.devOnly
@@ -21,6 +22,7 @@ class Group {
 
     this.flags = new Collection()
     this.flagAliases = new Collection()
+
     this.registerDefaultFlags()
   }
 
