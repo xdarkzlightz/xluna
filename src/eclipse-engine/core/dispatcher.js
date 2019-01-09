@@ -1,6 +1,7 @@
 import { ArgumentParser, CTX } from '@eclipse/core'
 import { findID } from '@eclipse/util/array'
 import { commandEnabledFor } from '@eclipse/database'
+import { Collection } from 'discord.js'
 
 /**
  * This class controls how messages get handled
@@ -16,6 +17,8 @@ class dispatcher {
 
     // Argument parser handles arguments and command flags
     this.argumentParser = new ArgumentParser(client)
+
+    this.userCooldowns = new Collection()
   }
 
   /**
@@ -31,13 +34,23 @@ class dispatcher {
       await ctx.init()
 
       let { canRun, cmd, group, args, mentionsBot } = this.parseMessage(ctx)
-      if (mentionsBot) {
-        return ctx.success(`Current bot prefix is: ${ctx.prefix}`)
-      }
 
       if (!canRun) return
 
       ctx.cmd = cmd
+      if (this.userCooldowns.has(ctx.author.id)) {
+        return
+      } else {
+        this.userCooldowns.set(ctx.author.id, ctx.author)
+        setTimeout(() => {
+          // Removes the user from the set after a minute
+          this.userCooldowns.delete(ctx.author.id)
+        }, 2000)
+      }
+
+      if (mentionsBot) {
+        return ctx.success(`Current bot prefix is: ${ctx.prefix}`)
+      }
 
       if (!ctx.db && cmd.name !== 'config') {
         return ctx.error(
@@ -55,6 +68,7 @@ class dispatcher {
         ctx.group = group
       }
       if (flag) return
+      if (!cmd) return
 
       if (
         (group.devOnly || cmd.devOnly) &&
@@ -126,6 +140,8 @@ class dispatcher {
 
     // Get the group from the name constant
     response.group = this.registry.groups.get(name)
+    if (!response.group) response.group = this.registry.groupAliases.get(name)
+
     if (!response.cmd && response.group) {
       response.cmd = response.group.commands.get(response.args[0])
       if (!response.cmd) response.cmd = response.group.commandAliases.get(name)
