@@ -143,6 +143,7 @@ class dispatcher {
 
     if (!response.cmd && response.group) {
       response.cmd = response.group.commands.get(response.args[0])
+      response.args.shift()
       if (!response.cmd) response.cmd = response.group.commandAliases.get(name)
     }
 
