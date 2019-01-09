@@ -6,7 +6,8 @@ import {
   prefix,
   logLevel,
   botInvite,
-  supportServer
+  supportServer,
+  r
 } from '../config'
 
 import { Client } from '@eclipse/core'
@@ -15,6 +16,8 @@ import { createJoinEmbed } from '@eclipse/util/embed'
 import GameEngine from './game-engine/game-engine'
 import uno from './modules/uno/uno.js'
 import { RichEmbed } from 'discord.js'
+
+import { connect } from '@reddit/reddit'
 
 const { version } = require('../package.json')
 
@@ -42,6 +45,7 @@ const client = new Client({
   })
   client.gameEngine.registerGame('uno', uno)
 
+  client.r = await connect(r)
   client.login()
 })()
 
