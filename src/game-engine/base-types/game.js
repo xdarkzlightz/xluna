@@ -61,6 +61,8 @@ class Game {
       this.players.array()[pos + 1] === undefined
         ? this.players.array()[0]
         : this.players.array()[pos + 1]
+
+    if (this.state.currentTurnTimout) clearTimeout(this.state.currentTurnTimout)
   }
 
   getNextTurn () {
