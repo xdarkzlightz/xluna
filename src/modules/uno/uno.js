@@ -1,3 +1,5 @@
+import { Collection } from 'discord.js'
+
 const CardGame = require('../../game-engine/game-types/card/game')
 const Player = require('../../game-engine/game-types/card/player')
 
@@ -12,6 +14,7 @@ class Uno extends CardGame {
     super(settings)
 
     this.state.uno = []
+    this.state.gracePeriod = new Collection()
     this.state.drawStack = 0
   }
 
@@ -58,6 +61,14 @@ class Uno extends CardGame {
       }
       super.play(id, card)
       const winner = this.checkForWinner()
+      if (
+        !this.state.gracePeriod.has(player.id) &&
+        player.hand.array().length === 2
+      ) {
+        this.state.gracePeriod.set(player.id, player)
+        setTimeout(() => this.state.gracePeriod.delete(player.id), 8000)
+      }
+
       if (winner) {
         return {
           winner: player.id
@@ -85,6 +96,15 @@ class Uno extends CardGame {
       }
       super.play(id, card)
       const winner = this.checkForWinner()
+
+      if (
+        !this.state.gracePeriod.has(player.id) &&
+        player.hand.array().length === 2
+      ) {
+        this.state.gracePeriod.set(player.id, player)
+        setTimeout(() => this.state.gracePeriod.delete(player.id), 8000)
+      }
+
       if (winner) {
         return {
           winner: player.id
@@ -129,6 +149,7 @@ class Uno extends CardGame {
     if (!player) {
       return false
     } else {
+      if (this.state.gracePeriod.has(player.id)) return false
       this.addCardsToPlayer(player.id, 2)
       return {
         player: player.id
@@ -215,6 +236,7 @@ class Uno extends CardGame {
 
     return uno
   }
+
   // Borrowed from: https://github.com/danguilherme/uno/blob/master/src/deck.ts
   createUnoDeck () {
     /*

@@ -61,6 +61,8 @@ class Game {
       this.players.array()[pos + 1] === undefined
         ? this.players.array()[0]
         : this.players.array()[pos + 1]
+
+    if (this.state.currentTurnTimout) clearTimeout(this.state.currentTurnTimout)
   }
 
   getNextTurn () {
@@ -143,6 +145,23 @@ class Game {
     )
 
     return player
+  }
+  setGameOwner (id) {
+    if (!this.players.has(id)) {
+      this.gameEngine.emit(
+        'GameEngine-debug',
+        `Could not get Player: ${id} from Game Session: ${this.id}`
+      )
+
+      return false
+    }
+    this.settings.owner = id
+    this.gameEngine.emit(
+      'GameEngine-debug',
+      `Changed game owner to: ${id} in Game Session: ${this.id}`
+    )
+
+    return true
   }
 
   // Randomizes the order of the players collection

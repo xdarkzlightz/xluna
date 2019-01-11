@@ -1,6 +1,7 @@
 import { hand, gameStatus, actionDraw, draw as embedDraw } from '@uno/embed'
 
 import { asyncForEach } from '@eclipse/util/array'
+import { startCountdown } from '@uno/util'
 
 export function createGame (ctx) {
   const gameCreated = ctx.client.gameEngine.newGame('uno', {
@@ -38,7 +39,14 @@ export async function startGame (ctx) {
         const member = await ctx.guild.fetchMember(player.id)
         const dm = await member.createDM()
         await dm
-          .send(hand(player, ctx.guild, true, game.state.currentCard))
+          .send(
+            hand(
+              player,
+              ctx.guild,
+              `Game started! Here are your cards`,
+              game.state.currentCard
+            )
+          )
           .catch(() => {
             noDM.push(member.user.username)
           })
@@ -62,6 +70,12 @@ export async function startGame (ctx) {
           ctx.guild,
           ctx.client.util
         )
+      )
+
+      game.state.currentTurnTimeout = startCountdown(
+        game.state.currentPlayer,
+        game,
+        ctx
       )
     }
   } else {
@@ -118,6 +132,8 @@ export function joinGame (ctx) {
   if (game) {
     if (game.state.started) {
       return ctx.say("Can't join game! It's already started!")
+    } else if (game.players.array().length + 1 > game.maxPlayers) {
+      return ctx.say("Can't join game! The game has reached it's player limit!")
     }
     const added = game.addPlayer(ctx.member.id)
     if (!added) {
@@ -259,13 +275,18 @@ export async function playCard (ctx, { colour, type }) {
     const member = await ctx.guild.fetchMember(nextPlayer.id)
     const dm = await member.createDM()
     await dm
-      .send(hand(nextPlayer, ctx.guild, false, game.state.currentCard))
+      .send(hand(nextPlayer, ctx.guild, true, game.state.currentCard))
       .catch(() => {
         ctx.say(
           'Could not dm the next player! They probably turned their dms off. Ending game. How sad.'
         )
         game.end()
       })
+    game.state.currentTurnTimeout = startCountdown(
+      game.state.currentPlayer,
+      game,
+      ctx
+    )
   } else {
     ctx.say(
       "Could not play a card, a game probably doesn't exist in the channel!"
@@ -306,13 +327,18 @@ export async function drawCard (ctx) {
     const dm = await member.createDM()
 
     await dm
-      .send(hand(nextPlayer, ctx.guild, false, game.state.currentCard))
+      .send(hand(nextPlayer, ctx.guild, true, game.state.currentCard))
       .catch(() => {
         ctx.say(
           'Could not dm the next player! They probably turned their dms off. Ending game. How sad.'
         )
         game.end()
       })
+    game.state.currentTurnTimeout = startCountdown(
+      game.state.currentPlayer,
+      game,
+      ctx
+    )
   } else {
     ctx.say(
       "Could not draw a card, a game probably doesn't exist in the channel!"
@@ -354,5 +380,50 @@ export async function calloutUno (ctx) {
     }
   } else {
     ctx.say("Can't yell uno, a game probably doesn't exist in the channel!")
+  }
+}
+
+export function promotePlayer (ctx, { player }) {
+  const game = ctx.client.gameEngine.getGame(ctx.channel.id)
+  if (game) {
+    if (ctx.member.id !== game.settings.owner) {
+      return ctx.say("Could not promote player, you're not the game owner!")
+    }
+    const set = game.newOwner(player.id)
+
+    if (!set) {
+      ctx.say(
+        "Could not promote player to game owner, they're not even in a game"
+      )
+    } else {
+      ctx.say(`${player.name} has been promoted to game owner!`)
+    }
+  } else {
+    ctx.say(
+      "Could not promote player, a game probably doesn't exist in the channel!"
+    )
+  }
+}
+
+export async function dmHand (ctx) {
+  const game = ctx.client.gameEngine.getGame(ctx.channel.id)
+  if (game) {
+    const player = game.getPlayer(ctx.author.id)
+    if (!player) return ctx.say("Could not dm your hand, you're not in a game!")
+
+    const member = await ctx.guild.fetchMember(ctx.author.id)
+    const dm = await member.createDM()
+
+    await dm
+      .send(
+        hand(player, ctx.guild, 'Here is your hand!', game.state.currentCard)
+      )
+      .catch(() => {
+        ctx.say('Could not dm you!')
+      })
+  } else {
+    ctx.say(
+      "Could not your dm hand, a game probably doesn't exist in the channel!"
+    )
   }
 }
