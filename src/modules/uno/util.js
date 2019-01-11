@@ -31,8 +31,14 @@ export function startCountdown (oldPlayer, game, ctx) {
   return setTimeout(async () => {
     oldPlayer.strikes += 1
     let removed
-    if (oldPlayer.strikes === 3) removed = this.removePlayer(oldPlayer.id)
-    const card = this.addCardsToPlayer(oldPlayer.id, 1)
+    if (oldPlayer.strikes === 3) {
+      removed = game.removePlayer(oldPlayer.id)
+      if (game.players.size === 1) {
+        game.end()
+        return ctx.say('Game ended, not enough players are remaining')
+      }
+    }
+    const card = game.addCardsToPlayer(oldPlayer.id, 1)
     const oldPlayerMember = await ctx.guild.fetchMember(oldPlayer.id)
     const oldPlayerDM = await oldPlayerMember.createDM()
 
@@ -43,6 +49,9 @@ export function startCountdown (oldPlayer, game, ctx) {
       game.end()
     })
     game.nextTurn()
+
+    startCountdown(game.state.currentPlayer, game, ctx)
+
     ctx.say(
       await gameStatus(
         game.state.currentCard.name,
@@ -70,5 +79,5 @@ export function startCountdown (oldPlayer, game, ctx) {
         )
         game.end()
       })
-  }, 10 * 1000)
+  }, 60 * 1000)
 }
