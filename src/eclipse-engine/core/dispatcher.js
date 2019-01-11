@@ -143,8 +143,8 @@ class dispatcher {
 
     if (!response.cmd && response.group) {
       response.cmd = response.group.commands.get(response.args[0])
+      if (!response.cmd) { response.cmd = response.group.commandAliases.get(response.args[0]) }
       if (response.cmd) response.args.shift()
-      if (!response.cmd) response.cmd = response.group.commandAliases.get(name)
     }
 
     if (!response.group && !response.cmd & !mentionsBot) response.canRun = false
