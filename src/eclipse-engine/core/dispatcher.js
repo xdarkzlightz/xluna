@@ -59,7 +59,7 @@ class dispatcher {
 
       // If there was a found group then parse any command flags else the group variable gets set to the command group
       let flag
-      if (group) {
+      if (group && !cmd) {
         ctx.group = group
         flag = await this.argumentParser.parseFlags(group, args, ctx)
       } else {
@@ -143,7 +143,7 @@ class dispatcher {
 
     if (!response.cmd && response.group) {
       response.cmd = response.group.commands.get(response.args[0])
-      response.args.shift()
+      if (response.cmd) response.args.shift()
       if (!response.cmd) response.cmd = response.group.commandAliases.get(name)
     }
 
