@@ -1,3 +1,6 @@
+import { findID } from '@eclipse/util/array'
+import { commandEnabledFor } from '@eclipse/database'
+
 export async function createHelpMessage (ctx, embed) {
   const app = await ctx.client.fetchApplication()
   embed.setAuthor(`Bot Help`, app.iconURL)
@@ -25,12 +28,32 @@ export async function createHelpMessage (ctx, embed) {
 
     let commands = ''
     group.commands.forEach(cmd => {
+      let enabled = commandEnabledFor('member', ctx.author.id, cmd, ctx.db)
+
+      if (enabled === undefined) {
+        const roles = ctx.db.roles
+        let roleEnabled
+
+        roles.forEach(roleDB => {
+          if (roleEnabled) return
+          const memberRole = ctx.msg.member.roles.get(roleDB.id)
+          if (!memberRole) return
+
+          const foundRole = findID(roles, memberRole.id)
+          roleEnabled = commandEnabledFor('role', foundRole.id, cmd, ctx.db)
+        })
+        enabled = roleEnabled
+      }
+
+      if (!enabled) return
+
       let aliases = ''
       if (cmd.aliases) {
         aliases = `(${cmd.aliases.join(', ')})`
       }
       commands += `  ${cmd.name} ${aliases} - *${cmd.description}*\n`
     })
+    if (commands === '') return
     let groupAliases = ''
     if (group.aliases) groupAliases = `(${group.aliases.join(', ')})`
     groupOBJ.name = `${group.name} ${groupAliases} - ${group.description}`
