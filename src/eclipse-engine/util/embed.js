@@ -51,17 +51,19 @@ export function error (msg, settings = {}) {
 
 export function generateCommandHelp (ctx, embed) {
   const cmd = ctx.cmd
+
+  let prefix = ctx.prefix
+  if (cmd.group.parent) prefix += cmd.group.name + ' '
+
   let aliases = ''
   if (cmd.aliases) {
     aliases = `(${cmd.aliases.join(', ')})`
   }
-  embed.setAuthor(`${cmd.name} ${aliases}`)
+  embed.setAuthor(`${cmd.name} ${aliases} - ${cmd.description}`)
   embed.setDescription(
-    `Group: *${cmd.group.name}*\nDescription: *${cmd.description}*\nUsage: *${
-      ctx.prefix
-    }${cmd.usage}*\nExample: *${ctx.prefix}${
-      cmd.example ? cmd.example : cmd.usage
-    }*`
+    `Group: *${cmd.group.name}*\nUsage: *${prefix}${
+      cmd.usage
+    }*\nExample: *${prefix}${cmd.example ? cmd.example : cmd.usage}*`
   )
 
   if (cmd.args) {
@@ -99,8 +101,12 @@ export function generateCommandHelp (ctx, embed) {
 export function generateGroupHelp (ctx, embed) {
   const group = ctx.group
 
-  embed.setAuthor(`${group.name}`)
-  embed.setDescription(`\nDescription: *${group.description}*\n`)
+  let aliases = ''
+  if (group.aliases) {
+    aliases = `(${group.aliases.join(', ')})`
+  }
+
+  embed.setAuthor(`${group.name} ${aliases} - ${group.description}`)
 
   let commands = ''
   group.commands.forEach(cmd => {
@@ -108,9 +114,27 @@ export function generateGroupHelp (ctx, embed) {
     if (cmd.aliases) {
       aliases = `(${cmd.aliases.join(', ')})`
     }
-    commands += `${cmd.name} ${aliases}\nDescription: ${cmd.description}\n\n`
+    commands += `${cmd.name} ${aliases} - ${cmd.description}\n\n`
   })
+
   embed.addField('commands', commands)
+
+  if (group.config.flags) {
+    let flags = ''
+    group.config.flags.forEach(flag => {
+      if (flag.devonly) return
+      let flagAliases = ''
+      if (flag.aliases) {
+        flagAliases = `(--${flag.aliases.join(', --')})`
+      }
+      flags += `--${flag.name} ${flagAliases} - ${flag.description}\nUsage: *${
+        ctx.prefix
+      }${flag.usage}*\nExample: *${ctx.prefix}${
+        flag.example ? flag.example : flag.usage
+      }*\n\n`
+    })
+    embed.addField('flags', flags)
+  }
 }
 
 export async function createJoinEmbed (client, embed) {
@@ -120,7 +144,7 @@ export async function createJoinEmbed (client, embed) {
   embed.setDescription(
     `I'm a multi-purpose discord bot created by ${
       app.owner.tag
-    } that can currently only play uno in the ` +
+    }. Right now I can play uno and get stuff from reddit! in the ` +
       `future I'll have more commands though!\nTo get started please create a server config with ${
         client.prefix
       }config, from there you can set a custom prefix with ${
