@@ -5,7 +5,8 @@ import {
   sendMemberInfo,
   sendChannelInfo,
   sendServerInfo,
-  sendRoleInfo
+  sendRoleInfo,
+  sendMemberCount
 } from '@info/commands'
 
 export const GroupConfig = {
@@ -78,4 +79,13 @@ export const invite = {
     usage: 'invite'
   },
   run: sendInvite
+}
+
+export const membercount = {
+  config: {
+    aliases: ['c'],
+    description: 'Get how many members are currently in your server',
+    usage: 'memberCount'
+  },
+  run: sendMemberCount
 }

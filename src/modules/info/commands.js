@@ -132,3 +132,21 @@ export function sendRoleInfo (ctx, role) {
     .addField('Created on', role.createdAt.toUTCString())
   ctx.say(embed)
 }
+
+export function sendMemberCount (ctx) {
+  const humans = ctx.guild.members.filter(member => !member.user.bot)
+  const bots = ctx.guild.members.filter(member => member.user.bot)
+  const online = ctx.guild.members.filter(
+    member => member.presence.status === 'online'
+  )
+
+  const embed = new RichEmbed()
+    .setAuthor(`Member count!`, ctx.guild.iconURL)
+    .setColor(0x6542f4)
+    .setDescription(
+      `**Total:** ${ctx.guild.members.size}\n\n**Humans:** ${
+        humans.size
+      }\n\n**Bots:** ${bots.size}\n\n**Online:** ${online.size}`
+    )
+  ctx.say(embed)
+}
