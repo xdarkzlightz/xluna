@@ -17,6 +17,7 @@ class Group {
     this.beforeEach = this.group.GroupConfig.beforeEach
     this.description = this.group.GroupConfig.description
     this.parent = this.group.GroupConfig.parent
+    this.aliases = this.group.GroupConfig.aliases
 
     // Collection of the commands that belong to this group
     this.commands = new Collection()

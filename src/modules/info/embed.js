@@ -18,9 +18,10 @@ export async function createHelpMessage (ctx, embed) {
       'Note: If you need to use spaces you have to put the argument in single quotes\n' +
       `Example: ${ctx.prefix}config --clear-channel 'Test Channel'`
   )
-  let groups = ''
+  let groups = []
   ctx.client.registry.groups.forEach(group => {
     if (group.devOnly) return
+    const groupOBJ = {}
 
     let commands = ''
     group.commands.forEach(cmd => {
@@ -30,10 +31,16 @@ export async function createHelpMessage (ctx, embed) {
       }
       commands += `  ${cmd.name} ${aliases} - *${cmd.description}*\n`
     })
-    groups += `**${group.name}** - ${group.description}:\n${commands}\n`
+    let groupAliases = ''
+    if (group.aliases) groupAliases = `(${group.aliases.join(', ')})`
+    groupOBJ.name = `${group.name} ${groupAliases} - ${group.description}`
+    groupOBJ.commands = commands
+    groups.push(groupOBJ)
   })
 
-  embed.addField('Groups', groups)
+  groups.forEach(group => {
+    embed.addField(group.name, group.commands)
+  })
 
   embed.setFooter(
     `Created by: ${app.owner.tag} | Do ${ctx.prefix}group --h or ${
