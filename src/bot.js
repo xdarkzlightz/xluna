@@ -57,7 +57,7 @@ client.on('ready', () => {
   )
 
   client.user.setActivity(
-    `${client.prefix}help | In ${client.guilds.size} servers!`
+    `${client.prefix}i help | In ${client.guilds.size} servers!`
   )
 })
 
