@@ -59,7 +59,6 @@ export async function getHentai (ctx) {
     'MonsterGirl',
     'hentai',
     'yuri',
-    'ahego',
     'hentaibondage',
     'sex_comics',
     'animemidriff',
