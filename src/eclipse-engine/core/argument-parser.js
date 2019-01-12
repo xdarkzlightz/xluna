@@ -136,8 +136,19 @@ class ArgumentParser {
     this.logger.debug(`[Argument-Parser]: Found flag: ${args[0]}`)
     if (flag.devOnly && ctx.client.devs.indexOf(ctx.author.id) === -1) return
 
-    const member = ctx.member
-    if (!member.hasPermission('ADMINISTRATOR')) return true
+    if (flag.memberPermissions) {
+      let err
+      flag.memberPermissions.forEach(perm => {
+        if (err) return
+        if (!ctx.member.hasPermission(perm)) {
+          err = true
+          return ctx.error(
+            `Could not run flag! You're missing permission: ${perm.toLowerCase()}`
+          )
+        }
+      })
+      if (err) return true
+    }
 
     return this.runFlag(flag, ctx, args)
   }
