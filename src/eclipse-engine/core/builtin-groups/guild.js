@@ -8,7 +8,7 @@ export const GroupConfig = {
 
 export const config = {
   config: {
-    rating: 0,
+    memberPermissions: ['ADMINISTRATOR'],
     args: [
       {
         name: 'rating',
@@ -43,6 +43,7 @@ export const config = {
         usage: 'config --clear-channel (channel)',
         example: 'config --clear-channel general',
         run: clear,
+        memberPermissions: ['ADMINISTRATOR'],
         arg: { type: 'channel' },
         default: ctx => {
           return ctx.channel
@@ -73,8 +74,6 @@ export const config = {
     example: 'config pg'
   },
   async run (ctx, { rating }) {
-    if (!ctx.member.hasPermission('ADMINISTRATOR')) return
-
     const guildExists = ctx.db
     if (guildExists) {
       return ctx.error('Cannot create server config, one already exists')
