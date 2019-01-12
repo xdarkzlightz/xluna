@@ -38,13 +38,32 @@ class dispatcher {
       if (!canRun && !mentionsBot) return
 
       ctx.cmd = cmd
-      if (this.userCooldowns.has(ctx.author.id)) {
+
+      const strikes = cmd.strikes.get(ctx.author.id)
+      if (cmd.userCooldowns.has(ctx.author.id)) {
+        if (cmd.messageCooldowns.has(ctx.author.id)) {
+          return
+        } else {
+          cmd.messageCooldowns.set(ctx.author.id, ctx.author)
+          setTimeout(() => {
+            cmd.messageCooldowns.delete(ctx.author.id)
+          }, 1000)
+          ctx.error(`This command is on cooldown!`)
+        }
         return
-      } else {
-        this.userCooldowns.set(ctx.author.id, ctx.author)
+      } else if (strikes === cmd.cooldown.amount) {
+        cmd.userCooldowns.set(ctx.author.id, ctx.author)
         setTimeout(() => {
-          this.userCooldowns.delete(ctx.author.id)
-        }, 2000)
+          cmd.userCooldowns.delete(ctx.author.id)
+        }, cmd.cooldown.timer * 1000)
+        cmd.strikes.delete(ctx.author.id)
+      } else {
+        if (!strikes) return cmd.strikes.set(ctx.author.id, 1)
+        cmd.strikes.set(ctx.author.id, strikes + 1)
+        setTimeout(
+          () => cmd.strikes.delete(ctx.author.id),
+          cmd.cooldown.timer * 1000
+        )
       }
 
       if (mentionsBot) {
@@ -86,6 +105,34 @@ class dispatcher {
 
       if (cmd.nsfw && !ctx.channel.nsfw) {
         return ctx.error('Cannot run nsfw commands in non nsfw channels')
+      }
+
+      if (cmd.clientPermissions) {
+        let err
+        cmd.clientPermissions.forEach(perm => {
+          if (err) return
+          if (!ctx.guild.me.hasPermission(perm)) {
+            err = true
+            return ctx.error(
+              `Could not run command! I'm missing permission: ${perm.toLowerCase()}`
+            )
+          }
+        })
+        if (err) return
+      }
+
+      if (cmd.memberPermissions) {
+        let err
+        cmd.memberPermissions.forEach(perm => {
+          if (err) return
+          if (!ctx.member.hasPermission(perm)) {
+            err = true
+            return ctx.error(
+              `Could not run command! You're missing permission: ${perm.toLowerCase()}`
+            )
+          }
+        })
+        if (err) return
       }
 
       // Parses any arguments, if there's an error then say the error and return
@@ -143,7 +190,9 @@ class dispatcher {
 
     if (!response.cmd && response.group) {
       response.cmd = response.group.commands.get(response.args[0])
-      if (!response.cmd) { response.cmd = response.group.commandAliases.get(response.args[0]) }
+      if (!response.cmd) {
+        response.cmd = response.group.commandAliases.get(response.args[0])
+      }
       if (response.cmd) response.args.shift()
     }
 
