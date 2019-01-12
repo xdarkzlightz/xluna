@@ -63,7 +63,7 @@ class Uno extends CardGame {
       const winner = this.checkForWinner()
       if (
         !this.state.gracePeriod.has(player.id) &&
-        player.hand.array().length === 2
+        player.hand.array.length === 2
       ) {
         this.state.gracePeriod.set(player.id, player)
         setTimeout(() => this.state.gracePeriod.delete(player.id), 8000)
@@ -97,10 +97,7 @@ class Uno extends CardGame {
       super.play(id, card)
       const winner = this.checkForWinner()
 
-      if (
-        !this.state.gracePeriod.has(player.id) &&
-        player.hand.array().length === 2
-      ) {
+      if (!this.state.gracePeriod.has(player.id) && player.hand.length === 2) {
         this.state.gracePeriod.set(player.id, player)
         setTimeout(() => this.state.gracePeriod.delete(player.id), 8000)
       }
