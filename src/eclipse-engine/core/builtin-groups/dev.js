@@ -11,6 +11,8 @@ export const GroupConfig = {
 export const test = {
   config: {
     aliases: ['t'],
+    clientPermissions: ['ADMINISTRATOR'],
+    memberPermissions: ['ADMINISTRATOR'],
     rating: 0,
     flags: [
       {
