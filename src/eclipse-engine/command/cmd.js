@@ -20,11 +20,18 @@ class Command {
     this.usage = this.command.config.usage
     this.example = this.command.config.example
     this.nsfw = this.command.config.nsfw
+    this.clientPermissions = this.command.config.clientPermissions
+    this.memberPermissions = this.command.config.memberPermissions
+    this.cooldown = this.command.config.cooldown
+    this.cannotDisable = this.command.config.cannotDisable
 
     this.flags = new Collection()
     this.flagAliases = new Collection()
-
     this.registerDefaultFlags()
+
+    this.userCooldowns = new Collection()
+    this.messageCooldowns = new Collection()
+    this.strikes = new Collection()
   }
 
   run (ctx, args) {
