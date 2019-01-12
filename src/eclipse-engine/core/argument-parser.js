@@ -175,7 +175,7 @@ class ArgumentParser {
         ctx.error(`Missing ${flag.arg.name} argument`)
         return true
       }
-    } else {
+    } else if (!flag.args) {
       this.logger.debug(
         `[Argument-Parser]: Parsing discord type for ${flag.arg.type}`
       )
@@ -188,6 +188,9 @@ class ArgumentParser {
       } else {
         return this.parsePrimitives(flag.arg.type, arg)
       }
+    } else {
+      const parsed = await this.parseArgs(flag, args, ctx)
+      return parsed
     }
   }
 

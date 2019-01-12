@@ -20,7 +20,6 @@ export const test = {
         run: async ctx => {
           ctx.say('Ran successfully')
         },
-        aliases: ['t'],
         description: 'This is just flag',
         usage: 'test --test'
       }

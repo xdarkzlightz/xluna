@@ -15,7 +15,7 @@ import { createJoinEmbed } from '@eclipse/util/embed'
 
 import GameEngine from './game-engine/game-engine'
 import uno from './modules/uno/uno.js'
-import { RichEmbed } from 'discord.js'
+import { RichEmbed, Collection } from 'discord.js'
 
 import { connect } from '@reddit/reddit'
 
@@ -46,6 +46,10 @@ const client = new Client({
   client.gameEngine.registerGame('uno', uno)
 
   client.r = await connect(r)
+
+  // TEMP
+  client.tags = new Collection()
+
   client.login()
 })()
 

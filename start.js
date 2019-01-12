@@ -21,7 +21,8 @@ require('@babel/register')({
           '@eclipse': './src/eclipse-engine/',
           '@uno': './src/modules/uno/',
           '@info': './src/modules/info/',
-          '@reddit': './src/modules/reddit/'
+          '@reddit': './src/modules/reddit/',
+          '@tag': './src/modules/tags/'
         }
       }
     ]
