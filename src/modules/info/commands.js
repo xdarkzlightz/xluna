@@ -40,10 +40,12 @@ export async function sendBotInfo (ctx) {
   ctx.say(embed)
 }
 
-export function sendServerInfo (ctx) {
-  const humans = ctx.guild.members.filter(member => !member.user.bot)
-  const bots = ctx.guild.members.filter(member => member.user.bot)
-  const online = ctx.guild.members.filter(
+export async function sendServerInfo (ctx) {
+  const guild = await ctx.guild.fetchMembers()
+
+  const humans = guild.members.filter(member => !member.user.bot)
+  const bots = guild.members.filter(member => member.user.bot)
+  const online = guild.members.filter(
     member => member.presence.status === 'online'
   )
   const textChannels = ctx.guild.channels.filter(
@@ -64,7 +66,7 @@ export function sendServerInfo (ctx) {
     .addField('Owner ID', ctx.guild.owner.id, true)
     .addField(
       'Members',
-      `Total: ${ctx.guild.members.size}\nHumans: ${humans.size}\nBots: ${
+      `Total: ${guild.members.size}\nHumans: ${humans.size}\nBots: ${
         bots.size
       }\nOnline ${online.size}`,
       true
@@ -133,10 +135,12 @@ export function sendRoleInfo (ctx, role) {
   ctx.say(embed)
 }
 
-export function sendMemberCount (ctx) {
-  const humans = ctx.guild.members.filter(member => !member.user.bot)
-  const bots = ctx.guild.members.filter(member => member.user.bot)
-  const online = ctx.guild.members.filter(
+export async function sendMemberCount (ctx) {
+  const guild = await ctx.guild.fetchMembers()
+
+  const humans = guild.members.filter(member => !member.user.bot)
+  const bots = guild.members.filter(member => member.user.bot)
+  const online = guild.members.filter(
     member => member.presence.status === 'online'
   )
 
@@ -144,7 +148,7 @@ export function sendMemberCount (ctx) {
     .setAuthor(`Member count!`, ctx.guild.iconURL)
     .setColor(0x6542f4)
     .setDescription(
-      `**Total:** ${ctx.guild.members.size}\n\n**Humans:** ${
+      `**Total:** ${guild.members.size}\n\n**Humans:** ${
         humans.size
       }\n\n**Bots:** ${bots.size}\n\n**Online:** ${online.size}`
     )
