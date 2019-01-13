@@ -157,6 +157,10 @@ class ArgumentParser {
   async runFlag (flag, ctx, args) {
     let obj = {}
     if (flag.arg) obj = await this.parseFlagArgs(flag, ctx, args)
+    if (flag.args) {
+      args.shift()
+      obj = await this.parseArgs(flag, args, ctx)
+    }
     if (obj === true) return obj
 
     await flag.run(ctx, obj)
@@ -188,9 +192,6 @@ class ArgumentParser {
       } else {
         return this.parsePrimitives(flag.arg.type, arg)
       }
-    } else {
-      const parsed = await this.parseArgs(flag, args, ctx)
-      return parsed
     }
   }
 
