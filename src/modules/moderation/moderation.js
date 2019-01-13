@@ -44,3 +44,19 @@ export async function addLog (member, db, log) {
 
   await db.save()
 }
+
+export async function setNick (member, nickname, db) {
+  const dbMember = getMember(member.id, db)
+
+  dbMember.nickname = nickname
+
+  await db.save()
+}
+
+export async function removeNick (member, db) {
+  const dbMember = getMember(member.id, db)
+
+  dbMember.nickname = ''
+
+  await db.save()
+}
