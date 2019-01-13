@@ -36,3 +36,11 @@ export async function removeAllWarnings (member, db) {
 
   return true
 }
+
+export async function addLog (member, db, log) {
+  const dbMember = getMember(member.id, db)
+
+  dbMember.modLogs.push(log)
+
+  await db.save()
+}
