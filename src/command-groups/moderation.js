@@ -5,7 +5,8 @@ import {
   warnMember,
   getWarnings,
   deleteWarning,
-  clearWarnings
+  clearWarnings,
+  sendLogs
 } from '@moderation/commands'
 
 export const GroupConfig = {
@@ -140,14 +141,24 @@ export const warn = {
   run: warnMember
 }
 
-// export const logs = {
-//   config: {
-//     description: 'Get the moderation logs for a member',
-//     usage: 'logs (member)',
-//     example: 'logs xdarkzlightz'
-//   },
-//   run: run
-// }
+export const logs = {
+  config: {
+    description: 'Get the moderation logs for a member',
+    usage: 'logs (member)',
+    example: 'logs xdarkzlightz',
+    args: [
+      {
+        type: 'member',
+        name: 'member'
+      }
+    ],
+    cooldown: {
+      amount: 2,
+      timer: 1
+    }
+  },
+  run: sendLogs
+}
 
 // export const nick = {
 //   config: {
