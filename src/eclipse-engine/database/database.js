@@ -10,6 +10,8 @@ export { default as Guild } from './models/guild'
 
 export { setPrefix, addGuild } from './guild.js'
 
+export { getMember } from './member'
+
 export function commandEnabledFor (type, id, cmd, db) {
   const args = [id, cmd, db]
   switch (type) {
