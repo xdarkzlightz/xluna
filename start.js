@@ -22,7 +22,7 @@ require('@babel/register')({
           '@uno': './src/modules/uno/',
           '@info': './src/modules/info/',
           '@reddit': './src/modules/reddit/',
-          '@tag': './src/modules/tags/'
+          '@tags': './src/modules/tags/'
         }
       }
     ]
