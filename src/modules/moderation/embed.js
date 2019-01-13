@@ -30,6 +30,8 @@ export async function embedLogs (embed, member, ctx) {
     return embed.setDescription(`${member.user.tag} has no logs!`)
   }
 
+  if (member.nickname) { embed.setDescription(`Current nickname: ${member.nickname}`) }
+
   await asyncForEach(dbMember.modLogs, async log => {
     const mod = await ctx.client.fetchUser(log.modID)
     const pos = dbMember.modLogs.indexOf(log)
