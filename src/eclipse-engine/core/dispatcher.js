@@ -39,32 +39,40 @@ class dispatcher {
 
       ctx.cmd = cmd
 
-      // const strikes = cmd.strikes.get(ctx.author.id)
-      // if (cmd.userCooldowns.has(ctx.author.id)) {
-      //   if (cmd.messageCooldowns.has(ctx.author.id)) {
-      //     return
-      //   } else {
-      //     cmd.messageCooldowns.set(ctx.author.id, ctx.author)
-      //     setTimeout(() => {
-      //       cmd.messageCooldowns.delete(ctx.author.id)
-      //     }, 1000)
-      //     ctx.error(`This command is on cooldown!`)
-      //   }
-      //   return
-      // } else if (strikes === cmd.cooldown.amount) {
-      //   cmd.userCooldowns.set(ctx.author.id, ctx.author)
-      //   setTimeout(() => {
-      //     cmd.userCooldowns.delete(ctx.author.id)
-      //   }, cmd.cooldown.timer * 1000)
-      //   cmd.strikes.delete(ctx.author.id)
-      // } else {
-      //   if (!strikes) return cmd.strikes.set(ctx.author.id, 1)
-      //   cmd.strikes.set(ctx.author.id, strikes + 1)
-      //   setTimeout(
-      //     () => cmd.strikes.delete(ctx.author.id),
-      //     cmd.cooldown.timer * 1000
-      //   )
-      // }
+      let strikes = cmd.strikes.get(ctx.author.id)
+      if (cmd.userCooldowns.has(ctx.author.id)) {
+        if (cmd.messageCooldowns.has(ctx.author.id)) {
+          return
+        } else {
+          cmd.messageCooldowns.set(ctx.author.id, ctx.author)
+          setTimeout(() => {
+            cmd.messageCooldowns.delete(ctx.author.id)
+          }, 1000)
+          ctx.error(`This command is on cooldown!`)
+        }
+        return
+      } else if (strikes >= cmd.cooldown.amount) {
+        cmd.userCooldowns.set(ctx.author.id, ctx.author)
+        setTimeout(() => {
+          cmd.userCooldowns.delete(ctx.author.id)
+          cmd.strikes.delete(ctx.author.id)
+        }, cmd.cooldown.timer * 1000)
+        cmd.messageCooldowns.set(ctx.author.id, ctx.author)
+        setTimeout(() => {
+          cmd.messageCooldowns.delete(ctx.author.id)
+        }, 1000)
+        return ctx.error('This command is on cooldown!')
+      } else {
+        if (!strikes) {
+          cmd.strikes.set(ctx.author.id, 0)
+          strikes = cmd.strikes.get(ctx.author.id)
+        }
+        cmd.strikes.set(ctx.author.id, strikes + 1)
+        setTimeout(
+          () => cmd.strikes.delete(ctx.author.id),
+          cmd.cooldown.timer * 1000
+        )
+      }
 
       if (mentionsBot) {
         return ctx.success(`Current bot prefix is: ${ctx.prefix}`)
