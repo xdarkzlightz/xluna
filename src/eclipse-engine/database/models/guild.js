@@ -11,8 +11,8 @@ const GuildSchema = new Schema({
   id: String,
   config: ConfigSchema,
   channels: [ChannelSchema],
-  roles: [MemberSchema],
-  members: [RoleSchema]
+  roles: [RoleSchema],
+  members: [MemberSchema]
 })
 
 const Guild = model('guild', GuildSchema)
