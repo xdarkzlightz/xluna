@@ -152,7 +152,7 @@ class Registry {
       throw new Error(
         `Command ${cmdName} not registered: Missing the run property`
       )
-    } else if (this.commands.has(cmdName)) {
+    } else if (this.commands.has(cmdName) && !group.parent) {
       throw new Error(
         `could not register ${cmdName}, a command with the name ${cmdName} already exists`
       )
