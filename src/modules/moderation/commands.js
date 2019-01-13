@@ -2,7 +2,9 @@ import {
   addWarning,
   removeWarning,
   removeAllWarnings,
-  addLog
+  addLog,
+  setNick,
+  removeNick
 } from '@moderation/moderation'
 import { embedWarnings, embedLogs } from '@moderation/embed'
 import { RichEmbed } from 'discord.js'
@@ -114,4 +116,32 @@ export async function sendLogs (ctx, { member }) {
   await embedLogs(embed, member, ctx)
 
   ctx.say(embed)
+}
+
+export async function addNick (ctx, { member, nickname }) {
+  member.setNickname(nickname)
+
+  await setNick(member, nickname, ctx.db)
+
+  await addLog(member, ctx.db, {
+    action: 'Nickname set',
+    modID: ctx.author.id,
+    timestamp: ctx.msg.createdAt.toUTCString()
+  })
+
+  ctx.say(`*Nickname changed to ${nickname} for ${member.user.tag}*`)
+}
+
+export async function deleteNick (ctx, member) {
+  member.setNickname('')
+
+  await removeNick(member, ctx.db)
+
+  await addLog(member, ctx.db, {
+    action: 'Nickname removed',
+    modID: ctx.author.id,
+    timestamp: ctx.msg.createdAt.toUTCString()
+  })
+
+  ctx.say(`*Nickname removed nickname for ${member.user.tag}*`)
 }
