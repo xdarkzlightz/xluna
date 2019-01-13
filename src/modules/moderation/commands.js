@@ -12,7 +12,7 @@ export async function banMember (ctx, { member, reason }) {
   ctx.say(`*${member.user.tag} has been banned!*`)
 
   await addLog(member, ctx.db, {
-    action: 'banned',
+    action: 'Banned',
     reason,
     modID: ctx.author.id,
     timestamp: ctx.msg.createdAt.toUTCString()
@@ -29,7 +29,7 @@ export async function softbanMember (ctx, { member, days, reason }) {
   ctx.guild.unban(member, reason)
 
   await addLog(member, ctx.db, {
-    action: 'soft-banned',
+    action: 'Soft-banned',
     reason,
     modID: ctx.author.id,
     timestamp: ctx.msg.createdAt.toUTCString()
@@ -48,7 +48,7 @@ export async function kickMember (ctx, { member, reason }) {
   ctx.say(`*${member.user.tag} has been kicked!*`)
 
   await addLog(member, ctx.db, {
-    action: 'kicked',
+    action: 'Kicked',
     reason,
     modID: ctx.author.id,
     timestamp: ctx.msg.createdAt.toUTCString()
@@ -64,7 +64,7 @@ export async function warnMember (ctx, { member, reason }) {
   await addWarning(member, reason, ctx)
 
   await addLog(member, ctx.db, {
-    action: 'warned',
+    action: 'Warned',
     reason,
     modID: ctx.author.id,
     timestamp: ctx.msg.createdAt.toUTCString()
@@ -87,7 +87,7 @@ export async function deleteWarning (ctx, { member, number }) {
   if (!removed) return ctx.say("*Warning doesn't exist*")
 
   await addLog(member, ctx.db, {
-    action: 'warning deleted',
+    action: 'Warning deleted',
     modID: ctx.author.id,
     timestamp: ctx.msg.createdAt.toUTCString()
   })
@@ -100,7 +100,7 @@ export async function clearWarnings (ctx, member) {
   if (!removed) return ctx.say('*Member has no warnings*')
 
   await addLog(member, ctx.db, {
-    action: 'warnings cleared',
+    action: 'Warnings cleared',
     modID: ctx.author.id,
     timestamp: ctx.msg.createdAt.toUTCString()
   })
