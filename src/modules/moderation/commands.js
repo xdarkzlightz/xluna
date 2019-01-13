@@ -1,14 +1,22 @@
 import {
   addWarning,
   removeWarning,
-  removeAllWarnings
+  removeAllWarnings,
+  addLog
 } from '@moderation/moderation'
-import { embedWarnings } from '@moderation/embed'
+import { embedWarnings, embedLogs } from '@moderation/embed'
 import { RichEmbed } from 'discord.js'
 
 export async function banMember (ctx, { member, reason }) {
   member.ban({ reason: reason })
   ctx.say(`*${member.user.tag} has been banned!*`)
+
+  await addLog(member, ctx.db, {
+    action: 'banned',
+    reason,
+    modID: ctx.author.id,
+    timestamp: ctx.msg.createdAt.toUTCString()
+  })
 
   const dm = await member.user.createDM().catch()
   dm.send(
@@ -19,6 +27,13 @@ export async function banMember (ctx, { member, reason }) {
 export async function softbanMember (ctx, { member, days, reason }) {
   member.ban({ reason: reason, days })
   ctx.guild.unban(member, reason)
+
+  await addLog(member, ctx.db, {
+    action: 'soft-banned',
+    reason,
+    modID: ctx.author.id,
+    timestamp: ctx.msg.createdAt.toUTCString()
+  })
 
   ctx.say(`*${member.user.tag} has been soft-banned!*`)
 
@@ -32,6 +47,13 @@ export async function kickMember (ctx, { member, reason }) {
   member.kick(reason)
   ctx.say(`*${member.user.tag} has been kicked!*`)
 
+  await addLog(member, ctx.db, {
+    action: 'kicked',
+    reason,
+    modID: ctx.author.id,
+    timestamp: ctx.msg.createdAt.toUTCString()
+  })
+
   const dm = await member.user.createDM().catch()
   dm.send(
     `*You have been kicked from ${ctx.guild.name} for: ${reason}*`
@@ -40,6 +62,13 @@ export async function kickMember (ctx, { member, reason }) {
 
 export async function warnMember (ctx, { member, reason }) {
   await addWarning(member, reason, ctx)
+
+  await addLog(member, ctx.db, {
+    action: 'warned',
+    reason,
+    modID: ctx.author.id,
+    timestamp: ctx.msg.createdAt.toUTCString()
+  })
 
   ctx.say(`*${member.user.tag} has been warned!*`)
 
@@ -57,6 +86,12 @@ export async function deleteWarning (ctx, { member, number }) {
   const removed = await removeWarning(member, number, ctx.db)
   if (!removed) return ctx.say("*Warning doesn't exist*")
 
+  await addLog(member, ctx.db, {
+    action: 'warning deleted',
+    modID: ctx.author.id,
+    timestamp: ctx.msg.createdAt.toUTCString()
+  })
+
   ctx.say('*Warning removed!*')
 }
 
@@ -64,5 +99,19 @@ export async function clearWarnings (ctx, member) {
   const removed = await removeAllWarnings(member, ctx.db)
   if (!removed) return ctx.say('*Member has no warnings*')
 
+  await addLog(member, ctx.db, {
+    action: 'warnings cleared',
+    modID: ctx.author.id,
+    timestamp: ctx.msg.createdAt.toUTCString()
+  })
+
   ctx.say('*Warnings removed*')
+}
+
+export async function sendLogs (ctx, { member }) {
+  const embed = new RichEmbed()
+
+  await embedLogs(embed, member, ctx)
+
+  ctx.say(embed)
 }
