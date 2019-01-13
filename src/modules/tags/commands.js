@@ -1,28 +1,30 @@
+import { getTag, saveTag, removeTag } from '@tags/tags'
+
 export function sendTag (ctx, { name }) {
-  const tag = ctx.client.tags.get(name)
+  const tag = getTag(name, ctx.db)
   if (!tag) {
     return ctx.error(`Could not find a tag with the name of: ${name}!`)
   }
 
-  ctx.say(tag)
+  ctx.say(tag.body)
 }
 
-export function createTag (ctx, { name, body }) {
-  const tag = ctx.client.tags.get(name)
+export async function createTag (ctx, { name, body }) {
+  const tag = getTag(name, ctx.db)
   if (tag) return ctx.error(`A tag with the name of ${name} already exists!`)
 
-  ctx.client.tags.set(name, body)
+  await saveTag({ name, body }, ctx.db)
 
   ctx.success('Tag created!')
 }
 
-export function deleteTag (ctx, { name }) {
-  const tag = ctx.client.tags.get(name)
+export async function deleteTag (ctx, name) {
+  const tag = getTag(name, ctx.db)
   if (!tag) {
     return ctx.error(`Could not find a tag with the name of ${name}!`)
   }
 
-  ctx.client.tags.delete(name)
+  await removeTag(tag, ctx.db)
 
   ctx.success('Tag deleted!')
 }
