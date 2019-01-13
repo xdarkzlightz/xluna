@@ -22,7 +22,8 @@ require('@babel/register')({
           '@uno': './src/modules/uno/',
           '@info': './src/modules/info/',
           '@reddit': './src/modules/reddit/',
-          '@tags': './src/modules/tags/'
+          '@tags': './src/modules/tags/',
+          '@moderation': './src/modules/moderation'
         }
       }
     ]
