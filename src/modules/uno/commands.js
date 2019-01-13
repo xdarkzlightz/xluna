@@ -1,7 +1,7 @@
 import { hand, gameStatus, actionDraw, draw as embedDraw } from '@uno/embed'
 
 import { asyncForEach } from '@eclipse/util/array'
-import { startCountdown } from '@uno/util'
+// import { startCountdown } from '@uno/util'
 
 export function createGame (ctx) {
   const gameCreated = ctx.client.gameEngine.newGame('uno', {
@@ -72,11 +72,11 @@ export async function startGame (ctx) {
         )
       )
 
-      game.state.currentTurnTimeout = startCountdown(
-        game.state.currentPlayer,
-        game,
-        ctx
-      )
+      // game.state.currentTurnTimeout = startCountdown(
+      //   game.state.currentPlayer,
+      //   game,
+      //   ctx
+      // )
     }
   } else {
     ctx.say(
@@ -282,11 +282,11 @@ export async function playCard (ctx, { colour, type }) {
         )
         game.end()
       })
-    game.state.currentTurnTimeout = startCountdown(
-      game.state.currentPlayer,
-      game,
-      ctx
-    )
+    // game.state.currentTurnTimeout = startCountdown(
+    //   game.state.currentPlayer,
+    //   game,
+    //   ctx
+    // )
   } else {
     ctx.say(
       "Could not play a card, a game probably doesn't exist in the channel!"
@@ -334,11 +334,11 @@ export async function drawCard (ctx) {
         )
         game.end()
       })
-    game.state.currentTurnTimeout = startCountdown(
-      game.state.currentPlayer,
-      game,
-      ctx
-    )
+    // game.state.currentTurnTimeout = startCountdown(
+    //   game.state.currentPlayer,
+    //   game,
+    //   ctx
+    // )
   } else {
     ctx.say(
       "Could not draw a card, a game probably doesn't exist in the channel!"
