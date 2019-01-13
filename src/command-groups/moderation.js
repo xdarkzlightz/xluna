@@ -6,7 +6,9 @@ import {
   getWarnings,
   deleteWarning,
   clearWarnings,
-  sendLogs
+  sendLogs,
+  addNick,
+  deleteNick
 } from '@moderation/commands'
 
 export const GroupConfig = {
@@ -160,12 +162,36 @@ export const logs = {
   run: sendLogs
 }
 
-// export const nick = {
-//   config: {
-//     description:
-//       'Lets you nickname a member, if they were to leave the server and join back this nickname will be applied to them',
-//     usage: 'nick (xdarkzlightz) (nickname)',
-//     example: 'nick xdarkzlightz nerd'
-//   },
-//   run: run
-// }
+export const nick = {
+  config: {
+    description:
+      'Lets you nickname a member, if they were to leave the server and join back this nickname will be applied to them',
+    usage: 'nick (xdarkzlightz) (nickname)',
+    example: 'nick xdarkzlightz nerd',
+    args: [
+      {
+        type: 'member',
+        name: 'member'
+      },
+      {
+        type: 'string',
+        name: 'nickname'
+      }
+    ],
+    flags: [
+      {
+        name: 'remove',
+        aliases: ['r'],
+        description: 'Remove a members nickname',
+        usage: 'nick --r',
+        arg: { type: 'member' },
+        run: deleteNick
+      }
+    ],
+    cooldown: {
+      amount: 2,
+      timer: 1
+    }
+  },
+  run: addNick
+}
