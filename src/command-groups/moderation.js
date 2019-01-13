@@ -1,4 +1,12 @@
-import { banMember, softbanMember, kickMember } from '@moderation/commands'
+import {
+  banMember,
+  softbanMember,
+  kickMember,
+  warnMember,
+  getWarnings,
+  deleteWarning,
+  clearWarnings
+} from '@moderation/commands'
 
 export const GroupConfig = {
   name: 'moderation',
@@ -77,14 +85,60 @@ export const kick = {
   run: kickMember
 }
 
-// export const warn = {
-//   config: {
-//     description: 'Warn a member in your server',
-//     usage: 'warn (member) (reason)',
-//     example: 'warn xdarkzlightz posting bad memes'
-//   },
-//   run: run
-// }
+export const warn = {
+  config: {
+    description: 'Warn a member in your server',
+    usage: 'warn (member) (reason)',
+    example: 'warn xdarkzlightz posting bad memes',
+    args: [
+      {
+        type: 'member',
+        name: 'member'
+      },
+      {
+        type: 'string',
+        name: 'reason'
+      }
+    ],
+    cooldown: {
+      amount: 2,
+      timer: 1
+    },
+    flags: [
+      {
+        name: 'list',
+        aliases: ['l'],
+        description: 'Get a list of warnings for a member',
+        usage: 'warn --l',
+        arg: { type: 'member' },
+        run: getWarnings
+      },
+      {
+        name: 'remove',
+        aliases: ['r'],
+        description: 'Get a remove a warning from a member using the warning #',
+        usage: 'warn --r',
+        args: [
+          { type: 'member', name: 'member' },
+          {
+            type: 'number',
+            name: 'number'
+          }
+        ],
+        run: deleteWarning
+      },
+      {
+        name: 'clear',
+        aliases: ['c'],
+        description: 'Clear a members warnings',
+        usage: 'warn --c',
+        arg: { type: 'member' },
+        run: clearWarnings
+      }
+    ]
+  },
+  run: warnMember
+}
 
 // export const logs = {
 //   config: {
