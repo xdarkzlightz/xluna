@@ -12,6 +12,8 @@ import {
 
 import { Client } from '@eclipse/core'
 import { createJoinEmbed } from '@eclipse/util/embed'
+import { findID } from '@eclipse/util/array'
+import { Guild } from '@eclipse/database'
 
 import GameEngine from './game-engine/game-engine'
 import uno from './modules/uno/uno.js'
@@ -63,6 +65,15 @@ client.on('ready', () => {
   client.user.setActivity(
     `${client.prefix}help | In ${client.guilds.size} servers!`
   )
+})
+
+client.on('guildMemberAdd', async member => {
+  const db = await Guild.findOne({ id: member.guild.id })
+  const dbMember = findID(db.members, member.id)
+
+  if (!member) return
+
+  if (dbMember.nickname) member.setNickname(dbMember.nickname)
 })
 
 client.on('guildCreate', async guild => {
