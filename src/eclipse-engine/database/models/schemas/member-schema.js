@@ -8,6 +8,7 @@ const Schema = _Schema
 
 const MemberSchema = new Schema({
   id: String,
+  nickname: String,
   groups: [GroupSchema],
   warnings: [WarningSchema],
   modLogs: [LogSchema]
