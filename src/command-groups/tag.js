@@ -46,7 +46,7 @@ export const tag = {
     description: 'Send a tag!',
     usage: 'tag (tag)',
     cooldown: {
-      amount: 10,
+      amount: 1,
       timer: 1
     }
   },
