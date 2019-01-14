@@ -23,7 +23,8 @@ require('@babel/register')({
           '@info': './src/modules/info/',
           '@reddit': './src/modules/reddit/',
           '@tags': './src/modules/tags/',
-          '@moderation': './src/modules/moderation'
+          '@moderation': './src/modules/moderation',
+          '@serverutil': './src/modules/serverutil/'
         }
       }
     ]
