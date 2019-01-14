@@ -1,4 +1,12 @@
-import { setLoggingChannel, updateLogger } from '@serverutil/commands'
+import {
+  setLoggingChannel,
+  updateLogger,
+  updateLeaveChannel,
+  updateWelcomeChannel,
+  updateLeaveMessage,
+  updateWelcomeMessage,
+  updateJoinRole
+} from '@serverutil/commands'
 
 export const GroupConfig = {
   name: 'serverutil',
@@ -80,6 +88,94 @@ export const log = {
         description: 'Think of a clever description',
         usage: 'log --mem',
         run: updateLogger
+      }
+    ],
+    cooldown: {
+      amount: 1,
+      timer: 1
+    }
+  },
+  run: ctx => {
+    console.log('temp')
+  }
+}
+
+export const welcome = {
+  config: {
+    description: 'A command for welcoming members',
+    usage: 'welcome',
+    flags: [
+      {
+        name: 'set-channel',
+        aliases: ['sc'],
+        description: 'Set the welcome channel',
+        usage: 'welcome --sc',
+        arg: { type: 'channel' },
+        run: updateWelcomeChannel
+      },
+      {
+        name: 'set-message',
+        aliases: ['sm'],
+        description: 'Set the welcome message',
+        usage: 'leave --sm',
+        arg: { type: 'string' },
+        run: updateWelcomeMessage
+      }
+    ],
+    cooldown: {
+      amount: 1,
+      timer: 1
+    }
+  },
+  run: ctx => {
+    console.log('temp')
+  }
+}
+
+export const leave = {
+  config: {
+    description: 'A command for leaving members',
+    usage: 'leave',
+    flags: [
+      {
+        name: 'set-channel',
+        aliases: ['sc'],
+        description: 'Set the leave channel',
+        usage: 'leave --sc',
+        arg: { type: 'channel' },
+        run: updateLeaveChannel
+      },
+      {
+        name: 'set-message',
+        aliases: ['sm'],
+        description: 'Set the leave message',
+        usage: 'leave --sm',
+        arg: { type: 'string' },
+        run: updateLeaveMessage
+      }
+    ],
+    cooldown: {
+      amount: 1,
+      timer: 1
+    }
+  },
+  run: ctx => {
+    console.log('temp')
+  }
+}
+
+export const autorole = {
+  config: {
+    description: 'A command for leaving members',
+    usage: 'leave',
+    flags: [
+      {
+        name: 'set-role',
+        aliases: ['sr'],
+        description: '',
+        usage: 'autorole --sr',
+        arg: { type: 'role' },
+        run: updateJoinRole
       }
     ],
     cooldown: {
