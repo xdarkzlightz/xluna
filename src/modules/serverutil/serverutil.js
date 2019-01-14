@@ -139,3 +139,34 @@ export async function handleMemberUpdate (oldMember, member) {
     if (logChannel) logChannel.send(embed)
   }
 }
+
+export async function setWelcomeChannel (channel, db) {
+  if (!db.config.welcome) db.config.welcome = {}
+  db.config.welcome.channelID = channel.id
+  await db.save()
+}
+
+export async function setWelcomeMessage (body, db) {
+  if (!db.config.welcome) db.config.welcome = {}
+  db.config.welcome.body = body
+  await db.save()
+}
+
+export async function setLeaveChannel (channel, db) {
+  if (!db.config.leave) db.config.leave = {}
+
+  db.config.leave.channelID = channel.id
+  await db.save()
+}
+
+export async function setLeaveMessage (body, db) {
+  if (!db.config.leave) db.config.leave = {}
+
+  db.config.leave.body = body
+  await db.save()
+}
+
+export async function setAutoRole (role, db) {
+  db.config.roleID = role.id
+  await db.save()
+}
