@@ -20,6 +20,17 @@ import uno from './modules/uno/uno.js'
 import { RichEmbed, Collection } from 'discord.js'
 
 import { connect } from '@reddit/reddit'
+import {
+  handleChannelCreate,
+  handleChannelDelete,
+  handleChannelUpdate,
+  handleRoleCreate,
+  handleRoleDelete,
+  handleRoleUpdate,
+  handleMessageUpdate,
+  handleMessageDelete,
+  handleMemberUpdate
+} from '@serverutil/serverutil'
 
 const { version } = require('../package.json')
 
@@ -75,6 +86,24 @@ client.on('guildMemberAdd', async member => {
 
   if (dbMember.nickname) member.setNickname(dbMember.nickname)
 })
+
+client.on('channelCreate', handleChannelCreate)
+
+client.on('channelUpdate', handleChannelUpdate)
+
+client.on('channelDelete', handleChannelDelete)
+
+client.on('roleCreate', handleRoleCreate)
+
+client.on('roleUpdate', handleRoleUpdate)
+
+client.on('roleDelete', handleRoleDelete)
+
+client.on('messageUpdate', handleMessageUpdate)
+
+client.on('messageDelete', handleMessageDelete)
+
+client.on('guildMemberUpdate', handleMemberUpdate)
 
 client.on('guildCreate', async guild => {
   client.logger.info(`Joined guild: ${guild.name} (${guild.id})`)
