@@ -37,42 +37,8 @@ class dispatcher {
 
       if (!canRun && !mentionsBot) return
 
-      ctx.cmd = cmd
-
-      let strikes = cmd.strikes.get(ctx.author.id)
-      if (cmd.userCooldowns.has(ctx.author.id)) {
-        if (cmd.messageCooldowns.has(ctx.author.id)) {
-          return
-        } else {
-          cmd.messageCooldowns.set(ctx.author.id, ctx.author)
-          setTimeout(() => {
-            cmd.messageCooldowns.delete(ctx.author.id)
-          }, 1000)
-          ctx.error(`This command is on cooldown!`)
-        }
-        return
-      } else if (strikes >= cmd.cooldown.amount) {
-        cmd.userCooldowns.set(ctx.author.id, ctx.author)
-        setTimeout(() => {
-          cmd.userCooldowns.delete(ctx.author.id)
-          cmd.strikes.delete(ctx.author.id)
-        }, cmd.cooldown.timer * 1000)
-        cmd.messageCooldowns.set(ctx.author.id, ctx.author)
-        setTimeout(() => {
-          cmd.messageCooldowns.delete(ctx.author.id)
-        }, 1000)
-        return ctx.error('This command is on cooldown!')
-      } else {
-        if (!strikes) {
-          cmd.strikes.set(ctx.author.id, 0)
-          strikes = cmd.strikes.get(ctx.author.id)
-        }
-        cmd.strikes.set(ctx.author.id, strikes + 1)
-        setTimeout(
-          () => cmd.strikes.delete(ctx.author.id),
-          cmd.cooldown.timer * 1000
-        )
-      }
+      const noCooldown = this.handleCooldown(ctx)
+      if (!noCooldown) return
 
       if (mentionsBot) {
         return ctx.success(`Current bot prefix is: ${ctx.prefix}`)
@@ -241,6 +207,42 @@ class dispatcher {
     } else if (enabled === false) {
       ctx.error('Command disabled!')
     } else {
+      return true
+    }
+  }
+
+  handleCooldown ({ say, cmd, author, error }) {
+    let strikes = cmd.strikes.get(author.id)
+    if (cmd.userCooldowns.has(author.id)) {
+      if (cmd.messageCooldowns.has(author.id)) {
+        return false
+      } else {
+        cmd.messageCooldowns.set(author.id, author)
+        setTimeout(() => {
+          cmd.messageCooldowns.delete(author.id)
+        }, 1000)
+        error(`This command is on cooldown!`)
+      }
+      return false
+    } else if (strikes >= cmd.cooldown.amount) {
+      cmd.userCooldowns.set(author.id, author)
+      setTimeout(() => {
+        cmd.userCooldowns.delete(author.id)
+        cmd.strikes.delete(author.id)
+      }, cmd.cooldown.timer * 1000)
+      cmd.messageCooldowns.set(author.id, author)
+      setTimeout(() => {
+        cmd.messageCooldowns.delete(author.id)
+      }, 1000)
+      error('This command is on cooldown!')
+      return false
+    } else {
+      if (!strikes) {
+        cmd.strikes.set(author.id, 0)
+        strikes = cmd.strikes.get(author.id)
+      }
+      cmd.strikes.set(author.id, strikes + 1)
+      setTimeout(() => cmd.strikes.delete(author.id), cmd.cooldown.timer * 1000)
       return true
     }
   }
