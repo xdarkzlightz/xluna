@@ -43,7 +43,8 @@ const client = new Client({
   botInvite,
   supportServer,
   version,
-  path: join(__dirname, '/command-groups/')
+  path: join(__dirname, '/command-groups/'),
+  eventPath: join(__dirname, '/events/')
 })
 
 // Use an asynchronus IIFE to initialize the bot
@@ -65,18 +66,6 @@ const client = new Client({
 
   client.login()
 })()
-
-client.on('ready', () => {
-  client.logger.info(
-    `[xluna]: Bot ready on ${client.guilds.size} guilds, ${
-      client.users.size
-    } total members`
-  )
-
-  client.user.setActivity(
-    `${client.prefix}help | In ${client.guilds.size} servers!`
-  )
-})
 
 client.on('guildMemberAdd', async member => {
   const db = await Guild.findOne({ id: member.guild.id })
