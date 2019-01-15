@@ -48,6 +48,7 @@ class EclipseClient extends Client {
 
     /** Path to the command groups */
     this.path = options.path
+    this.eventPath = options.eventPath
 
     /** Array of discord.js user ids that belong to the bot developer(s) */
     this.devs = options.devs
