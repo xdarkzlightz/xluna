@@ -139,6 +139,7 @@ class Registry {
     })
   }
 
+  // Borrowed this from https://github.com/AnIdiotsGuide/guidebot/blob/master/index.js
   async registerEvents () {
     const eventFiles = await readdir(this.eventPath)
 
