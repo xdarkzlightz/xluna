@@ -27,7 +27,7 @@ export function updateCommandInMember (id, cmd, enabled, db) {
 
 export function commandEnabledInMember (id, cmd, db) {
   const member = findID(db.members, id)
-  if (!member) return
+  if (!member || !member.groups) return
 
   const command = findCommand(member.groups, cmd)
 
