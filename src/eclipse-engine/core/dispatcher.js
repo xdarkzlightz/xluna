@@ -1,5 +1,7 @@
 import { ArgumentParser, CTX } from '@eclipse/core'
 import { findID } from '@eclipse/util/array'
+import { checkForClientPerms, checkForMemberPerms } from '@eclipse/util/other'
+
 import { commandEnabledFor } from '@eclipse/database'
 import { Collection } from 'discord.js'
 
@@ -34,6 +36,7 @@ class dispatcher {
       await ctx.init()
 
       let { canRun, cmd, group, args, mentionsBot } = this.parseMessage(ctx)
+      ctx.cmd = cmd
 
       if (!canRun && !mentionsBot) return
 
@@ -44,6 +47,7 @@ class dispatcher {
         return ctx.success(`Current bot prefix is: ${ctx.prefix}`)
       }
 
+      // Get rid of this in the future and handle it outside of eclipse
       if (!ctx.db && cmd.name !== 'config') {
         return ctx.error(
           'You need to create a guild config before running commands! Create one with /config'
@@ -82,31 +86,21 @@ class dispatcher {
       }
 
       if (cmd.clientPermissions) {
-        let err
-        cmd.clientPermissions.forEach(perm => {
-          if (err) return
-          if (!ctx.guild.me.hasPermission(perm)) {
-            err = true
-            return ctx.error(
-              `Could not run command! I'm missing permission: ${perm.toLowerCase()}`
-            )
-          }
-        })
-        if (err) return
+        const { perm, missingPerm } = checkForClientPerms(ctx)
+        if (!perm) {
+          return ctx.error(
+            `Could not run command! I'm missing permission: ${missingPerm.toLowerCase()}`
+          )
+        }
       }
 
       if (cmd.memberPermissions) {
-        let err
-        cmd.memberPermissions.forEach(perm => {
-          if (err) return
-          if (!ctx.member.hasPermission(perm)) {
-            err = true
-            return ctx.error(
-              `Could not run command! You're missing permission: ${perm.toLowerCase()}`
-            )
-          }
-        })
-        if (err) return
+        const { perm, missingPerm } = checkForMemberPerms(ctx)
+        if (!perm) {
+          return ctx.error(
+            `Could not run command! I'm missing permission: ${missingPerm.toLowerCase()}`
+          )
+        }
       }
 
       // Parses any arguments, if there's an error then say the error and return
@@ -211,7 +205,8 @@ class dispatcher {
     }
   }
 
-  handleCooldown ({ say, cmd, author, error }) {
+  handleCooldown ({ cmd, author, error }) {
+    if (!cmd.cooldown) return true
     let strikes = cmd.strikes.get(author.id)
     if (cmd.userCooldowns.has(author.id)) {
       if (cmd.messageCooldowns.has(author.id)) {
