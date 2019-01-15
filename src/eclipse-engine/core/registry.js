@@ -23,6 +23,7 @@ class Registry {
     this.logger = client.logger
 
     this.groupPath = client.path
+    this.eventPath = client.eventPath
 
     this.commands = new Collection()
     this.aliases = new Collection()
@@ -45,6 +46,7 @@ class Registry {
       this.logger.info('[Registry]: Done registering groups')
 
       this.registerCommands()
+      this.registerEvents()
 
       this.logger.info('[Registry]: Updating database documents')
       await this.updateDatabase()
@@ -135,6 +137,22 @@ class Registry {
         `[Registry Group: ${group.name}] Done registering commands`
       )
     })
+  }
+
+  async registerEvents () {
+    const eventFiles = await readdir(this.eventPath)
+
+    this.logger.info(`Loading event files`)
+
+    eventFiles.forEach(f => {
+      const eventName = f.split('.')[0]
+      this.logger.debug(`Loading Event: ${eventName}`)
+
+      const event = require(`${this.eventPath}${f}`)
+      this.client.on(eventName, event.bind(null, this.client))
+    })
+
+    this.logger.info(`Done event files`)
   }
 
   /**
