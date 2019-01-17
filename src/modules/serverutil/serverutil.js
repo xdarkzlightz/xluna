@@ -5,7 +5,7 @@ import {
   embedMessage,
   embedMember
 } from '@serverutil/embed'
-import { Guild } from '@eclipse/database'
+// import { Guild } from '@eclipse/database'
 
 export async function setChannel (channel, db) {
   if (!db.config.logger) db.config.logger = {}

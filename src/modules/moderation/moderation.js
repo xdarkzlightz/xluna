@@ -1,4 +1,4 @@
-import { getMember } from '@eclipse/database'
+import { getMember } from '@eclipse/core'
 import { removeFromArray } from '@eclipse/util/array'
 
 export async function addWarning (member, reason, ctx) {

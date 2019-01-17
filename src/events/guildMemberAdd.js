@@ -1,5 +1,4 @@
 import { findID } from '@eclipse/util/array'
-import { Guild } from '@eclipse/database'
 
 module.exports = async (client, member) => {
   const db = await Guild.findOne({ id: member.guild.id })
