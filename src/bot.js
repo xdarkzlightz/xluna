@@ -11,6 +11,7 @@ import {
 } from '../config'
 
 import { Client } from '@eclipse/core'
+import MongoProvider from '@eclipse/providers/mongo'
 
 import GameEngine from './game-engine/game-engine'
 import uno from './modules/uno/uno.js'
@@ -23,7 +24,6 @@ const client = new Client({
   token,
   prefix,
   devs,
-  dbString,
   logLevel,
   botInvite,
   supportServer,
@@ -34,7 +34,8 @@ const client = new Client({
 
 // Use an asynchronus IIFE to initialize the bot
 ;(async () => {
-  await client.connect()
+  await client.setProvider(new MongoProvider(dbString, client))
+
   await client.registry.init()
 
   client.gameEngine = new GameEngine()
