@@ -1,5 +1,4 @@
-import { setPrefix, addGuild, clear } from '@eclipse/database'
-import { ratings } from '@eclipse/util/database'
+import { clear } from '@eclipse/core'
 
 export const GroupConfig = {
   name: 'guild',
@@ -30,8 +29,7 @@ export const config = {
             )
           }
 
-          setPrefix(arg, ctx.db)
-          await ctx.db.save()
+          await ctx.db.setPrefix(ctx.guild.db, arg)
 
           ctx.success(`Prefix set to ${arg.replace(/\s+/g, '')}`)
         },
@@ -74,12 +72,18 @@ export const config = {
     example: 'config pg'
   },
   async run (ctx, { rating }) {
-    const guildExists = ctx.db
+    const guildExists = ctx.guild.db
     if (guildExists) {
       return ctx.error('Cannot create server config, one already exists')
     }
 
-    await addGuild(ctx, ratings[rating.toUpperCase()])
+    const ratings = {
+      PG: 0,
+      PG13: 1,
+      NSFW: 2
+    }
+
+    await ctx.db.newGuild(ctx, ratings[rating.toUpperCase()])
 
     ctx.success('Server config created, you can now run commands!')
   }

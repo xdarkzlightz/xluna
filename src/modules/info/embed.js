@@ -1,5 +1,5 @@
 import { findID } from '@eclipse/util/array'
-import { commandEnabledFor } from '@eclipse/database'
+// import { commandEnabledFor } from '@eclipse/database'
 
 export async function createHelpMessage (ctx, embed) {
   const app = await ctx.client.fetchApplication()

@@ -3,7 +3,7 @@ import { promisify } from 'util'
 import { join } from 'path'
 
 import { Command, Group } from '@eclipse/command'
-import { Guild } from '@eclipse/database/'
+// import { Guild } from '@eclipse/database/'
 
 import { asyncForEach, findName, removeFromArray } from '@eclipse/util/array'
 
@@ -311,18 +311,23 @@ class Registry {
    * @return {Promise}  Promise wrapper
    */
   async updateDatabase () {
-    const dbs = await Guild.find({})
-    await asyncForEach(dbs, async db => {
-      const _db = await Guild.findOne({ id: db.id })
+    await asyncForEach(this.client.db.guilds, async db => {
+      const _db = this.client.db.guilds.get(db.id).data
       const rating = _db.config.rating
       this.groups.forEach(group => {
-        _db.roles.forEach(role => this.updateCommands(role, group, rating))
-        _db.channels.forEach(channel =>
+        _db.roles.forEach(role => {
+          if (!role.groups.length) return
+          this.updateCommands(role, group, rating)
+        })
+        _db.channels.forEach(channel => {
+          if (!channel.groups.length) return
           this.updateCommands(channel, group, rating)
-        )
-        _db.members.forEach(member =>
+        })
+        _db.members.forEach(member => {
+          if (!member.groups.length) return
+
           this.updateCommands(member, group, rating)
-        )
+        })
       })
 
       _db.roles.forEach(role => this.removeCommands(role))

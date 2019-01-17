@@ -1,4 +1,3 @@
-import { Guild } from '@eclipse/database'
 import { error, success } from '@eclipse/util/embed'
 
 class CTX {
@@ -19,10 +18,11 @@ class CTX {
 
   async init () {
     this.logger.debug('[CTX]: Getting guild from collection')
-    this.db = await Guild.findOne({ id: this.guild.id })
+    this.db = this.client.db
+    this.guild.db = this.client.db.guilds.get(this.guild.id)
 
-    if (this.db) {
-      this.prefix = this.db.config.prefix
+    if (this.guild.db) {
+      this.prefix = this.guild.db.config.prefix
     } else {
       this.prefix = this.client.prefix
     }

@@ -1,8 +1,8 @@
 import { ArgumentParser, CTX } from '@eclipse/core'
-import { findID } from '@eclipse/util/array'
+// import { findID } from '@eclipse/util/array'
 import { checkForClientPerms, checkForMemberPerms } from '@eclipse/util/other'
 
-import { commandEnabledFor } from '@eclipse/database'
+// import { commandEnabledFor } from '@eclipse/database'
 import { Collection } from 'discord.js'
 
 /**
@@ -169,32 +169,12 @@ class dispatcher {
   }
 
   handleDB (cmd, ctx) {
-    if (!ctx.db) return true
+    if (!ctx.guild.db) return true
     if (cmd.devOnly || cmd.group.devOnly) return true
 
-    let enabled = commandEnabledFor('member', ctx.author.id, cmd, ctx.db)
+    let enabled = ctx.db.commandEnabledForMember(ctx)
 
-    if (enabled === undefined) {
-      const roles = ctx.db.roles
-      let roleEnabled
-
-      roles.forEach(roleDB => {
-        if (roleEnabled) return
-        const memberRole = ctx.msg.member.roles.get(roleDB.id)
-        if (!memberRole) return
-
-        const foundRole = findID(roles, memberRole.id)
-        roleEnabled = commandEnabledFor('role', foundRole.id, cmd, ctx.db)
-      })
-      enabled = roleEnabled
-    }
-
-    const channelEnabled = commandEnabledFor(
-      'channel',
-      ctx.channel.id,
-      cmd,
-      ctx.db
-    )
+    const channelEnabled = ctx.db.commandEnabledInChannel(ctx, ctx.guild.db.channels)
 
     if (enabled && channelEnabled === false) {
       ctx.error('Command disabled in this channel!')
@@ -206,7 +186,7 @@ class dispatcher {
   }
 
   handleCooldown ({ cmd, author, error }) {
-    if (!cmd.cooldown) return true
+    if (!cmd || !cmd.cooldown) return true
     let strikes = cmd.strikes.get(author.id)
     if (cmd.userCooldowns.has(author.id)) {
       if (cmd.messageCooldowns.has(author.id)) {

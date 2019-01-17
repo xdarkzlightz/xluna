@@ -1,6 +1,6 @@
 import { Collection, RichEmbed } from 'discord.js'
 
-import { setCommandEnabledTo, commandStatus } from '@eclipse/database'
+import { setCommandEnabledTo, commandStatus } from '@eclipse/core'
 import { generateCommandHelp } from '@eclipse/util/embed'
 
 class Command {
@@ -114,7 +114,7 @@ class Command {
         }
       },
       {
-        name: `commandStatus-channel`,
+        name: `status-channel`,
         run: commandStatus,
         arg: { type: 'channel' },
         default: ctx => {
@@ -122,12 +122,12 @@ class Command {
         }
       },
       {
-        name: `commandStatus-member`,
+        name: `status-member`,
         run: commandStatus,
         arg: { type: 'member' }
       },
       {
-        name: `commandStatus-role`,
+        name: `status-role`,
         run: commandStatus,
         arg: { type: 'role' },
         default: ctx => {

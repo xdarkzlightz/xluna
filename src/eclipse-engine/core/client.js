@@ -1,5 +1,4 @@
 import { Client } from 'discord.js'
-import mongoose from 'mongoose'
 
 import { createLogger, format, transports } from 'winston'
 
@@ -84,27 +83,10 @@ class EclipseClient extends Client {
     super.login(this.token)
   }
 
-  /** Connects to the provided mongoDB database using the connection string provided to the client */
-  async connect () {
-    mongoose.set('debug', (collectionName, methodName, arg1, arg2) => {
-      this.logger.debug(
-        `[Mongoose]: ${collectionName}.${methodName}(${JSON.stringify(
-          arg1
-        )}, ${JSON.stringify(arg2)}`
-      )
-    })
+  async setProvider (provider) {
+    await provider.init()
 
-    mongoose.connect(
-      this.dbString,
-      { useNewUrlParser: true }
-    )
-    mongoose.connection
-      .once('open', () => this.logger.info('[Mongoose]: Database connected!'))
-      .on('error', err => {
-        this.logger.error(
-          `Something went wrong. ${err}\n Call stack: ${err.stack}`
-        )
-      })
+    this.db = provider
   }
 }
 
