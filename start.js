@@ -17,7 +17,8 @@ require('@babel/register')({
         alias: {
           '@eclipse/core': './src/eclipse-engine/core/core.js',
           '@eclipse/command': './src/eclipse-engine/command/command.js',
-          '@eclipse/database': './src/eclipse-engine/database/database.js',
+          '@eclipse/providers/mongo':
+            './src/eclipse-engine/dbProvider/mongoProvider/mongoProvider.js',
           '@eclipse': './src/eclipse-engine/',
           '@uno': './src/modules/uno/',
           '@info': './src/modules/info/',
