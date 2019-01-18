@@ -8,7 +8,9 @@ import {
   clearWarnings,
   sendLogs,
   addNick,
-  deleteNick
+  deleteNick,
+  deleteMod,
+  addMod
 } from '@moderation/commands'
 
 export const GroupConfig = {
@@ -21,6 +23,8 @@ export const ban = {
     description: 'Ban a member from your server',
     usage: 'ban (member) (reason)',
     example: "ban xdarkzlightz 'get yeeted'",
+    clientPermissions: ['BAN_MEMBERS'],
+    memberPermissions: ['BAN_MEMBERS'],
     args: [
       {
         type: 'member',
@@ -30,11 +34,7 @@ export const ban = {
         type: 'string',
         name: 'reason'
       }
-    ],
-    cooldown: {
-      amount: 2,
-      timer: 1
-    }
+    ]
   },
   run: banMember
 }
@@ -43,6 +43,8 @@ export const softban = {
     description: 'Removes messages from a member by banning and unbanning them',
     usage: 'softban (member) (reason)',
     example: "softban xdarkzlightz 7d 'get yeeted fam'",
+    clientPermissions: ['BAN_MEMBERS'],
+    memberPermissions: ['BAN_MEMBERS'],
     args: [
       {
         type: 'member',
@@ -56,11 +58,7 @@ export const softban = {
         type: 'string',
         name: 'reason'
       }
-    ],
-    cooldown: {
-      amount: 2,
-      timer: 1
-    }
+    ]
   },
   run: softbanMember
 }
@@ -70,6 +68,8 @@ export const kick = {
     description: 'kick a member from your server',
     usage: 'kick (member) (reason)',
     example: 'kick xdarkzlightz ya bad',
+    clientPermissions: ['KICK_MEMBERS'],
+    memberPermissions: ['KICK_MEMBERS'],
     args: [
       {
         type: 'member',
@@ -166,8 +166,10 @@ export const nick = {
   config: {
     description:
       'Lets you nickname a member, if they were to leave the server and join back this nickname will be applied to them',
-    usage: 'nick (xdarkzlightz) (nickname)',
+    usage: 'nick (member) (nickname)',
     example: 'nick xdarkzlightz nerd',
+    clientPermissions: ['MANAGE_NICKNAMES'],
+    memberPermissions: ['MANAGE_NICKNAMES'],
     args: [
       {
         type: 'member',
@@ -187,11 +189,33 @@ export const nick = {
         arg: { type: 'member' },
         run: deleteNick
       }
-    ],
-    cooldown: {
-      amount: 2,
-      timer: 1
-    }
+    ]
   },
   run: addNick
+}
+
+export const mod = {
+  config: {
+    description: 'Lets you add a mod role',
+    usage: 'mod (role)',
+    example: 'mod moderators',
+    memberPermissions: ['ADMINISTRATOR'],
+    args: [
+      {
+        type: 'role',
+        name: 'role'
+      }
+    ],
+    flags: [
+      {
+        name: 'remove',
+        aliases: ['r'],
+        description: 'Remove a mod role',
+        usage: ' --r',
+        arg: { type: 'role' },
+        run: deleteMod
+      }
+    ]
+  },
+  run: addMod
 }
