@@ -1,7 +1,7 @@
 export function embedChannel (action, { oldChannel, channel }, embed) {
-  embed.setAuthor(`Channel was ${action}`, channel.guild.iconURL)
+  embed.setAuthor(`${channel.name} (${channel.id})`, channel.guild.iconURL)
   embed.setColor(0x44aea5)
-  embed.setDescription(`**${channel.name} (${channel.id})**\n<#${channel.id}>`)
+  embed.setDescription(`**Channel was ${action}**\n<#${channel.id}>`)
   embed.setFooter(`At ${new Date().toUTCString()}`)
 
   if (oldChannel && channel.name !== oldChannel.name) {
@@ -11,9 +11,9 @@ export function embedChannel (action, { oldChannel, channel }, embed) {
 }
 
 export function embedRole (action, { oldRole, role }, embed) {
-  embed.setAuthor(`Role was ${action}`, role.guild.iconURL)
-  embed.setColor(0x44aea5)
-  embed.setDescription(`**${role.name} (${role.id})**\n<@&${role.id}>`)
+  embed.setAuthor(`${role.name} (${role.id})`, role.guild.iconURL)
+  embed.setColor(role.hexColor)
+  embed.setDescription(`**Role was ${action}**\n<@&${role.id}>`)
   embed.setFooter(`At ${new Date().toUTCString()}`)
 
   if (oldRole && role.name !== oldRole.name) {
@@ -28,13 +28,13 @@ export function embedRole (action, { oldRole, role }, embed) {
 }
 
 export function embedMessage (action, { oldMsg, message }, embed) {
-  embed.setAuthor(`Message was ${action}`, message.guild.iconURL)
-  embed.setColor(0x44aea5)
-  embed.setDescription(
-    `**${message.author.tag} (${message.author.id})**\n<@${message.author.id}>`
+  embed.setAuthor(
+    `${message.author.tag} (${message.author.id})`,
+    message.guild.iconURL
   )
+  embed.setColor(0x44aea5)
+  embed.setDescription(`**Message was ${action}**\n<@${message.author.id}>`)
   embed.setFooter(`At ${new Date().toUTCString()}`)
-
   if (oldMsg && oldMsg.content !== message.content) {
     embed.addField('Message before', oldMsg.content)
     embed.addField('Message after', message.content)
@@ -46,10 +46,11 @@ export function embedMessage (action, { oldMsg, message }, embed) {
 }
 
 export function embedMember (action, { oldMember, member }, embed) {
-  embed.setAuthor(`Member was ${action}`, member.guild.iconURL)
+  embed.setAuthor(`${member.user.tag} (${member.id})`, member.guild.iconURL)
   embed.setColor(0x44aea5)
-  embed.setDescription(`**${member.user.tag} (${member.id})**\n<@${member.id}>`)
+  embed.setDescription(`**Member was ${action}**\n<@${member.id}>`)
   embed.setFooter(`At ${new Date().toUTCString()}`)
+  embed.setThumbnail(member.displayAvatarURL)
 
   if (
     oldMember &&
@@ -57,7 +58,7 @@ export function embedMember (action, { oldMember, member }, embed) {
     oldMember.nickname !== member.nickname
   ) {
     embed.addField('Nickname before', oldMember.nickname)
-    embed.addField('Nickname after', oldMember.nickname)
+    embed.addField('Nickname after', member.nickname || 'No nickname')
   }
 
   const newRole = member.roles.find(r => !oldMember.roles.has(r.id))
