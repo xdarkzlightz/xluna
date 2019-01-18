@@ -5,7 +5,11 @@ import {
   updateWelcomeChannel,
   updateLeaveMessage,
   updateWelcomeMessage,
-  updateJoinRole
+  updateJoinRole,
+  removeWelcome,
+  removeLeave,
+  removeAutorole,
+  removeLogger
 } from '@serverutil/commands'
 
 export const GroupConfig = {
@@ -17,77 +21,83 @@ export const log = {
   config: {
     description: 'A command for logging',
     usage: 'log',
-    flags: [
+    args: [
       {
-        name: 'set-channel',
-        aliases: ['sc'],
-        description: 'Set the logging channel',
-        usage: 'log --sc',
-        arg: { type: 'channel' },
-        run: setLoggingChannel
-      },
+        type: 'channel',
+        name: 'channel',
+        description: 'The channel you want to log in'
+      }
+    ],
+    flags: [
       {
         name: 'channel-create',
         aliases: ['cc'],
-        description: 'Think of a clever description',
+        description: 'enable logging for channel creation',
         usage: 'log --cc',
         run: updateLogger
       },
       {
         name: 'channel-update',
         aliases: ['cu'],
-        description: 'Think of a clever description',
+        description: 'enable logging for channel updates',
         usage: 'log --cu',
         run: updateLogger
       },
       {
         name: 'channel-delete',
         aliases: ['cd'],
-        description: 'Think of a clever description',
+        description: 'enable logging for channel deletion',
         usage: 'log --cd',
         run: updateLogger
       },
       {
         name: 'role-create',
         aliases: ['rc'],
-        description: 'Think of a clever description',
+        description: 'enable logging for role creation',
         usage: 'log --rc',
         run: updateLogger
       },
       {
         name: 'role-update',
         aliases: ['ru'],
-        description: 'Think of a clever description',
+        description: 'enable logging for role updates',
         usage: 'log --ru',
         run: updateLogger
       },
       {
         name: 'role-delete',
         aliases: ['rd'],
-        description: 'Think of a clever description',
+        description: 'enable logging for role deletions',
         usage: 'log --rd',
         run: updateLogger
       },
       {
         name: 'message-update',
         aliases: ['mu'],
-        description: 'Think of a clever description',
+        description: 'enable logging for message updates',
         usage: 'log --mu',
         run: updateLogger
       },
       {
         name: 'message-delete',
         aliases: ['md'],
-        description: 'Think of a clever description',
+        description: 'enable logging for message deletions',
         usage: 'log --m',
         run: updateLogger
       },
       {
         name: 'member-update',
         aliases: ['mem'],
-        description: 'Think of a clever description',
+        description: 'enable logging for member deletions',
         usage: 'log --mem',
         run: updateLogger
+      },
+      {
+        name: 'remove',
+        aliases: ['r'],
+        description: 'Remove the logging channel',
+        usage: 'log --r',
+        run: removeLogger
       }
     ],
     cooldown: {
@@ -95,23 +105,27 @@ export const log = {
       timer: 1
     }
   },
-  run: ctx => {
-    console.log('temp')
-  }
+  run: setLoggingChannel
 }
 
 export const welcome = {
   config: {
     description: 'A command for welcoming members',
     usage: 'welcome',
+    args: [
+      {
+        type: 'channel',
+        name: 'channel',
+        description: 'The channel you want to welcome people in'
+      }
+    ],
     flags: [
       {
-        name: 'set-channel',
-        aliases: ['sc'],
-        description: 'Set the welcome channel',
-        usage: 'welcome --sc',
-        arg: { type: 'channel' },
-        run: updateWelcomeChannel
+        name: 'remove',
+        aliases: ['r'],
+        description: 'Remove the welcome message',
+        usage: 'welcome --r',
+        run: removeWelcome
       },
       {
         name: 'set-message',
@@ -121,29 +135,29 @@ export const welcome = {
         arg: { type: 'string' },
         run: updateWelcomeMessage
       }
-    ],
-    cooldown: {
-      amount: 1,
-      timer: 1
-    }
+    ]
   },
-  run: ctx => {
-    console.log('temp')
-  }
+  run: updateWelcomeChannel
 }
 
 export const leave = {
   config: {
     description: 'A command for leaving members',
     usage: 'leave',
+    args: [
+      {
+        type: 'channel',
+        name: 'channel',
+        description: 'The channel you want to send leave messages in'
+      }
+    ],
     flags: [
       {
-        name: 'set-channel',
-        aliases: ['sc'],
-        description: 'Set the leave channel',
-        usage: 'leave --sc',
-        arg: { type: 'channel' },
-        run: updateLeaveChannel
+        name: 'remove',
+        aliases: ['r'],
+        description: 'Remove the leave message',
+        usage: 'leave --r',
+        run: removeLeave
       },
       {
         name: 'set-message',
@@ -153,37 +167,31 @@ export const leave = {
         arg: { type: 'string' },
         run: updateLeaveMessage
       }
-    ],
-    cooldown: {
-      amount: 1,
-      timer: 1
-    }
+    ]
   },
-  run: ctx => {
-    console.log('temp')
-  }
+  run: updateLeaveChannel
 }
 
 export const autorole = {
   config: {
     description: 'A command for leaving members',
     usage: 'leave',
-    flags: [
+    args: [
       {
-        name: 'set-role',
-        aliases: ['sr'],
-        description: '',
-        usage: 'autorole --sr',
-        arg: { type: 'role' },
-        run: updateJoinRole
+        type: 'role',
+        name: 'role',
+        description: 'The role you want to give to people when they join'
       }
     ],
-    cooldown: {
-      amount: 1,
-      timer: 1
-    }
+    flags: [
+      {
+        name: 'remove',
+        aliases: ['r'],
+        description: 'Remove the auto-role',
+        usage: 'autorole --r',
+        run: removeAutorole
+      }
+    ]
   },
-  run: ctx => {
-    console.log('temp')
-  }
+  run: updateJoinRole
 }
