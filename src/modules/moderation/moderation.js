@@ -17,6 +17,8 @@ export async function addWarning (member, reason, ctx) {
     return
   }
 
+  if (!dbMember.data.warnings) dbMember.data.warnings = []
+
   dbMember.data.warnings.push(warning)
 
   await ctx.db.save(ctx.guild.db.data, ctx)
@@ -24,7 +26,7 @@ export async function addWarning (member, reason, ctx) {
 
 export async function removeWarning (member, number, ctx) {
   let dbMember = ctx.guild.db.members.get(member.id)
-  if (!dbMember) return false
+  if (!dbMember || !dbMember.data.warnings) return false
   dbMember = dbMember.data
 
   const warning = dbMember.warnings[number - 1]
@@ -38,7 +40,7 @@ export async function removeWarning (member, number, ctx) {
 
 export async function removeAllWarnings (member, ctx) {
   let dbMember = ctx.guild.db.members.get(member.id)
-  if (!dbMember) return false
+  if (!dbMember || !dbMember.data.warnings) return false
   dbMember = dbMember.data
 
   if (!dbMember.warnings.length) return false
@@ -54,6 +56,7 @@ export async function addLog (member, log, ctx) {
   let dbMember = ctx.guild.db.members.get(member.id)
   if (!dbMember) return false
 
+  if (!dbMember.data.modLogs) dbMember.data.modLogs = []
   dbMember.data.modLogs.push(log)
 
   await ctx.db.save(ctx.guild.db.data)
