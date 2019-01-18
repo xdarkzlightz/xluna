@@ -92,8 +92,10 @@ class mongoProvider {
 
     let enabled
     const dbMember = dbGuild.members.get(member.id)
-    if (dbMember) enabled = dbMember.commands.get(cmd.name).enabled
-    if (enabled === undefined) enabled = this.enabledForRoles(ctx, dbGuild.roles)
+    if (dbMember && dbMember.commands.size !== 0) { enabled = dbMember.commands.get(cmd.name).enabled }
+    if (enabled === undefined) {
+      enabled = this.enabledForRoles(ctx, dbGuild.roles)
+    }
 
     return enabled
   }
