@@ -1,5 +1,7 @@
-import { handleRoleDelete } from '@serverutil/serverutil'
+import { handleRoleDelete } from '@serverutil/events'
 
 module.exports = (client, role) => {
-  handleRoleDelete(role)
+  const db = client.db.guilds.get(role.guild.id)
+
+  handleRoleDelete(role, db)
 }

@@ -1,7 +1,5 @@
-import { findID } from '@eclipse/util/array'
-
 module.exports = async (client, member) => {
-  const db = await Guild.findOne({ id: member.guild.id })
+  const db = client.db.guilds.get(member.guild.id)
   if (db.config.welcome) {
     const channel = member.guild.channels.get(db.config.welcome.channelID)
     if (channel) channel.send(`<@${member.id}>, ${db.config.welcome.body}`)
@@ -12,9 +10,9 @@ module.exports = async (client, member) => {
     if (role) await member.addRole(role)
   }
 
-  const dbMember = findID(db.members, member.id)
+  const dbMember = db.members.get(member.id)
 
   if (!dbMember) return
 
-  if (dbMember.nickname) member.setNickname(dbMember.nickname)
+  if (dbMember.data.nickname) member.setNickname(dbMember.data.nickname)
 }

@@ -1,5 +1,7 @@
-import { handleRoleCreate } from '@serverutil/serverutil'
+import { handleRoleCreate } from '@serverutil/events'
 
 module.exports = (client, role) => {
-  handleRoleCreate(role)
+  const db = client.db.guilds.get(role.guild.id)
+
+  handleRoleCreate(role, db)
 }

@@ -1,5 +1,6 @@
-import { handleChannelUpdate } from '@serverutil/serverutil'
+import { handleChannelUpdate } from '@serverutil/events'
 
 module.exports = (client, oldChannel, newChannel) => {
-  handleChannelUpdate(oldChannel, newChannel)
+  const db = client.db.guilds.get(newChannel.guild.id)
+  handleChannelUpdate(oldChannel, newChannel, db)
 }
