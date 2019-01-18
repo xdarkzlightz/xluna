@@ -174,7 +174,10 @@ class dispatcher {
 
     let enabled = ctx.db.commandEnabledForMember(ctx)
 
-    const channelEnabled = ctx.db.commandEnabledInChannel(ctx, ctx.guild.db.channels)
+    const channelEnabled = ctx.db.commandEnabledInChannel(
+      ctx,
+      ctx.guild.db.channels
+    )
 
     if (enabled && channelEnabled === false) {
       ctx.error('Command disabled in this channel!')
