@@ -27,6 +27,7 @@ const logRole = (action, { oldRole, role }, embed, db) => {
 export async function handleChannelCreate (channel, db) {
   if (channel.type !== 'group' || channel.type !== 'dm') {
     const embed = new RichEmbed()
+    if (!db.config.logger) return
 
     if (db.config.logger.channelCreate) {
       logChannel('created', { channel }, embed, db)
@@ -37,6 +38,7 @@ export async function handleChannelCreate (channel, db) {
 export async function handleChannelDelete (channel, db) {
   if (channel.type !== 'group' || channel.type !== 'dm') {
     const embed = new RichEmbed()
+    if (!db.config.logger) return
 
     if (db.config.logger.channelCreate) {
       logChannel('deleted', { channel }, embed, db)
@@ -47,7 +49,7 @@ export async function handleChannelDelete (channel, db) {
 export async function handleChannelUpdate (oldChannel, channel, db) {
   if (channel.type !== 'group' || channel.type !== 'dm') {
     const embed = new RichEmbed()
-
+    if (!db.config.logger) return
     if (db.config.logger.channelCreate) {
       logChannel('updated', { oldChannel, channel }, embed, db)
     }
@@ -56,6 +58,7 @@ export async function handleChannelUpdate (oldChannel, channel, db) {
 
 export async function handleRoleCreate (role, db) {
   const embed = new RichEmbed()
+  if (!db.config.logger) return
 
   if (db.config.logger.channelCreate) {
     logRole('created', { role }, embed, db)
@@ -69,6 +72,8 @@ export async function handleRoleUpdate (oldRole, role, db) {
 
   const embed = new RichEmbed()
 
+  if (!db.config.logger) return
+
   if (db.config.logger.channelCreate) {
     logRole('updated', { oldRole, role }, embed, db)
   }
@@ -76,6 +81,8 @@ export async function handleRoleUpdate (oldRole, role, db) {
 
 export async function handleRoleDelete (role, db) {
   const embed = new RichEmbed()
+
+  if (!db.config.logger) return
 
   if (db.config.logger.channelCreate) {
     logRole('deleted', { role }, embed, db)
@@ -86,6 +93,8 @@ export async function handleMessageUpdate (oldMsg, message, db) {
   if (message.author.bot) return
   const embed = new RichEmbed()
 
+  if (!db.config.logger) return
+
   if (db.config.logger.channelCreate) {
     const logChannel = message.guild.channels.get(db.config.logger.channelID)
     embedMessage('edited', { oldMsg, message }, embed)
@@ -95,6 +104,7 @@ export async function handleMessageUpdate (oldMsg, message, db) {
 
 export async function handleMessageDelete (message, db) {
   const embed = new RichEmbed()
+  if (!db.config.logger) return
 
   if (db.config.logger.channelCreate) {
     const logChannel = message.guild.channels.get(db.config.logger.channelID)
@@ -106,6 +116,7 @@ export async function handleMessageDelete (message, db) {
 export async function handleMemberUpdate (oldMember, member, db) {
   if (member.user.bot) return
   const embed = new RichEmbed()
+  if (!db.config.logger) return
 
   if (db.config.logger.channelCreate) {
     logMember('updated', { oldMember, member }, embed, db)
