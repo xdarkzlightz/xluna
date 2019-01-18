@@ -153,7 +153,13 @@ class mongoProvider {
   async updateGroup (type, id, group, enable, db) {
     let dbType = db[`${type}s`].get(id)
     if (!dbType) {
-      db.data[`${type}s`].push({ id: id })
+      db.data[`${type}s`].push({ id: id, groups: this.createGroups(db.rating) })
+      await this.save(db.data)
+      dbType = this.guilds.get(db.data.id)[`${type}s`].get(id)
+    }
+
+    if (dbType.commands.size === 0) {
+      dbType.data.groups = this.createGroups(db.rating)
       await this.save(db.data)
       dbType = this.guilds.get(db.data.id)[`${type}s`].get(id)
     }
