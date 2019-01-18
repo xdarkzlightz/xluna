@@ -73,6 +73,7 @@ class Command {
     this.registerFlags([
       {
         name: `enable-channel`,
+        memberPermissions: ['ADMINISTRATOR'],
         run: setCommandEnabledTo,
         arg: { type: 'channel' },
         default: ctx => {
@@ -82,6 +83,7 @@ class Command {
       {
         name: `disable-channel`,
         run: setCommandEnabledTo,
+        memberPermissions: ['ADMINISTRATOR'],
         arg: { type: 'channel' },
         default: ctx => {
           return ctx.channel
@@ -90,16 +92,19 @@ class Command {
       {
         name: `enable-member`,
         run: setCommandEnabledTo,
+        memberPermissions: ['ADMINISTRATOR'],
         arg: { type: 'member' }
       },
       {
         name: `disable-member`,
         run: setCommandEnabledTo,
+        memberPermissions: ['ADMINISTRATOR'],
         arg: { type: 'member' }
       },
       {
         name: `enable-role`,
         run: setCommandEnabledTo,
+        memberPermissions: ['ADMINISTRATOR'],
         arg: { type: 'role' },
         default: ctx => {
           return ctx.guild.roles.get(ctx.guild.id)
@@ -108,6 +113,7 @@ class Command {
       {
         name: `disable-role`,
         run: setCommandEnabledTo,
+        memberPermissions: ['ADMINISTRATOR'],
         arg: { type: 'role' },
         default: ctx => {
           return ctx.guild.roles.get(ctx.guild.id)

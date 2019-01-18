@@ -59,6 +59,7 @@ class Group {
       {
         name: `enable-channel`,
         run: setGroupEnabledTo,
+        memberPermissions: ['ADMINISTRATOR'],
         arg: { type: 'channel' },
         default: ctx => {
           return ctx.channel
@@ -67,6 +68,7 @@ class Group {
       {
         name: `disable-channel`,
         run: setGroupEnabledTo,
+        memberPermissions: ['ADMINISTRATOR'],
         arg: { type: 'channel' },
         default: ctx => {
           return ctx.channel
@@ -75,16 +77,19 @@ class Group {
       {
         name: `enable-member`,
         run: setGroupEnabledTo,
+        memberPermissions: ['ADMINISTRATOR'],
         arg: { type: 'member' }
       },
       {
         name: `disable-member`,
         run: setGroupEnabledTo,
+        memberPermissions: ['ADMINISTRATOR'],
         arg: { type: 'member' }
       },
       {
         name: `enable-role`,
         run: setGroupEnabledTo,
+        memberPermissions: ['ADMINISTRATOR'],
         arg: { type: 'role' },
         default: ctx => {
           return ctx.guild.roles.get(ctx.guild.id)
@@ -93,6 +98,7 @@ class Group {
       {
         name: `disable-role`,
         run: setGroupEnabledTo,
+        memberPermissions: ['ADMINISTRATOR'],
         arg: { type: 'role' },
         default: ctx => {
           return ctx.guild.roles.get(ctx.guild.id)
