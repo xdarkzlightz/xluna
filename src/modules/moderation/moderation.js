@@ -1,62 +1,82 @@
-import { getMember } from '@eclipse/core'
 import { removeFromArray } from '@eclipse/util/array'
 
 export async function addWarning (member, reason, ctx) {
-  const dbMember = getMember(member.id, ctx.db)
-
-  dbMember.warnings.push({
+  let dbMember = ctx.guild.db.members.get(member.id)
+  const warning = {
     reason,
     modID: ctx.author.id.toString(),
     timestamp: ctx.msg.createdAt.toUTCString()
-  })
+  }
 
-  await ctx.db.save()
+  if (!dbMember) {
+    ctx.guild.db.data.members.push({
+      id: member.id,
+      warnings: [warning]
+    })
+    await ctx.db.save(ctx.guild.db.data, ctx)
+    return
+  }
+
+  dbMember.data.warnings.push(warning)
+
+  await ctx.db.save(ctx.guild.db.data, ctx)
 }
 
-export async function removeWarning (member, number, db) {
-  const dbMember = getMember(member.id, db)
+export async function removeWarning (member, number, ctx) {
+  let dbMember = ctx.guild.db.members.get(member.id)
+  if (!dbMember) return false
+  dbMember = dbMember.data
 
   const warning = dbMember.warnings[number - 1]
   if (!warning) return false
 
   removeFromArray(dbMember.warnings, warning)
-  await db.save()
+  await ctx.db.save(ctx.guild.db.data, ctx)
 
   return true
 }
 
-export async function removeAllWarnings (member, db) {
-  const dbMember = getMember(member.id, db)
+export async function removeAllWarnings (member, ctx) {
+  let dbMember = ctx.guild.db.members.get(member.id)
+  if (!dbMember) return false
+  dbMember = dbMember.data
 
   if (!dbMember.warnings.length) return false
 
   dbMember.warnings = []
 
-  await db.save()
+  await ctx.db.save(ctx.guild.db.data, ctx)
 
   return true
 }
 
-export async function addLog (member, db, log) {
-  const dbMember = getMember(member.id, db)
+export async function addLog (member, log, ctx) {
+  let dbMember = ctx.guild.db.members.get(member.id)
+  if (!dbMember) return false
 
-  dbMember.modLogs.push(log)
+  dbMember.data.modLogs.push(log)
 
-  await db.save()
+  await ctx.db.save(ctx.guild.db.data)
 }
 
-export async function setNick (member, nickname, db) {
-  const dbMember = getMember(member.id, db)
+export async function setNick (member, nickname, ctx) {
+  let dbMember = ctx.guild.db.members.get(member.id)
+  if (!dbMember) {
+    ctx.guild.db.data.members.push({ id: member.id, nickname })
+    await ctx.db.save(ctx.guild.db.data, ctx)
+    return
+  }
 
-  dbMember.nickname = nickname
+  dbMember.data.nickname = nickname
 
-  await db.save()
+  await ctx.db.save(ctx.guild.db.data, ctx)
 }
 
-export async function removeNick (member, db) {
-  const dbMember = getMember(member.id, db)
+export async function removeNick (member, ctx) {
+  let dbMember = ctx.guild.db.members.get(member.id)
+  if (!dbMember) return false
 
-  dbMember.nickname = ''
+  dbMember.data.nickname = ''
 
-  await db.save()
+  await ctx.db.save(ctx.guild.db.data, ctx)
 }

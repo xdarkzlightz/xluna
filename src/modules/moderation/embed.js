@@ -1,13 +1,14 @@
-import { getMember } from '@eclipse/core'
 import { asyncForEach } from '@eclipse/util/array'
 
 export async function embedWarnings (embed, member, ctx) {
   embed.setAuthor(`${member.user.tag} (${member.id})`, member.user.avatarURL)
   embed.setColor(0x8b89e7)
-  const dbMember = getMember(member.id, ctx.db)
-  if (!dbMember.warnings.length) {
+  let dbMember = ctx.guild.db.members.get(member.id)
+
+  if (!dbMember || !dbMember.data.warnings.length) {
     return embed.setDescription(`${member.user.tag} has no warnings!`)
   }
+  dbMember = dbMember.data
 
   await asyncForEach(dbMember.warnings, async warning => {
     const mod = await ctx.client.fetchUser(warning.modID)
@@ -25,11 +26,11 @@ export async function embedWarnings (embed, member, ctx) {
 export async function embedLogs (embed, member, ctx) {
   embed.setAuthor(`${member.user.tag} (${member.id})`, member.user.avatarURL)
   embed.setColor(0x8b89e7)
-  const dbMember = getMember(member.id, ctx.db)
-  if (!dbMember.modLogs.length) {
+  let dbMember = ctx.guild.db.members.get(member.id)
+  if (!dbMember || !dbMember.data.modLogs.length) {
     return embed.setDescription(`${member.user.tag} has no logs!`)
   }
-
+  dbMember = dbMember.data
   if (member.nickname) {
     embed.setDescription(`Current nickname: ${member.nickname}`)
   }
