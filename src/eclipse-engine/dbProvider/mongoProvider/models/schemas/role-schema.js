@@ -6,7 +6,8 @@ const Schema = _Schema
 
 const RoleSchema = new Schema({
   id: String,
-  groups: [GroupSchema]
+  groups: [GroupSchema],
+  mod: Boolean
 })
 
 export default RoleSchema
