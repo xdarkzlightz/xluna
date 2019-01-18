@@ -151,7 +151,13 @@ class mongoProvider {
   }
 
   async updateGroup (type, id, group, enable, db) {
-    const dbType = db[`${type}s`].get(id)
+    let dbType = db[`${type}s`].get(id)
+    if (!dbType) {
+      db.data[`${type}s`].push({ id: id })
+      await this.save(db.data)
+      dbType = this.guilds.get(db.data.id)[`${type}s`].get(id)
+    }
+
     const dbGroup = dbType.groups.get(group.name)
     dbGroup.commands.forEach(cmd => (cmd.enabled = enable))
 
