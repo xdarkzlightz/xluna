@@ -311,39 +311,39 @@ class Registry {
    * @return {Promise}  Promise wrapper
    */
   async updateDatabase () {
-    await asyncForEach(this.client.db.guilds, async db => {
-      const _db = this.client.db.guilds.get(db.id).data
+    await asyncForEach(this.client.db.guilds.array(), async db => {
+      const _db = this.client.db.guilds.get(db.data.id)
+
       const rating = _db.config.rating
       this.groups.forEach(group => {
         _db.roles.forEach(role => {
-          if (!role.groups.length) return
-          this.updateCommands(role, group, rating)
+          if (!role.data.groups.length) return
+          this.updateCommands(role.data, group, rating)
         })
         _db.channels.forEach(channel => {
-          if (!channel.groups.length) return
-          this.updateCommands(channel, group, rating)
+          if (!channel.data.groups.length) return
+          this.updateCommands(channel.data, group, rating)
         })
         _db.members.forEach(member => {
-          if (!member.groups.length) return
-          this.updateCommands(member, group, rating)
+          if (!member.data.groups.length) return
+          this.updateCommands(member.data, group, rating)
         })
       })
 
       _db.roles.forEach(role => {
-        if (!role.groups.length) return
-
-        this.removeCommands(role)
+        if (!role.data.groups.length) return
+        this.removeCommands(role.data)
       })
       _db.channels.forEach(channel => {
-        if (!channel.groups.length) return
-        this.removeCommands(channel)
+        if (!channel.data.groups.length) return
+        this.removeCommands(channel.data)
       })
       _db.members.forEach(member => {
-        if (!member.groups.length) return
-        this.removeCommands(member)
+        if (!member.data.groups.length) return
+        this.removeCommands(member.data)
       })
 
-      await _db.save()
+      await this.client.db.save(_db.data)
     })
   }
 
