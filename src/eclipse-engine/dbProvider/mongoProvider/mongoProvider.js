@@ -48,10 +48,11 @@ class mongoProvider {
     })
   }
 
-  async save (guild) {
+  async save (guild, ctx) {
     await guild.save()
 
     this.guilds.set(guild.id, new MongoGuild(guild))
+    if (ctx) ctx.guild.db = this.guilds.get(guild.id)
   }
 
   async newGuild (ctx, rating) {
@@ -92,7 +93,9 @@ class mongoProvider {
 
     let enabled
     const dbMember = dbGuild.members.get(member.id)
-    if (dbMember && dbMember.commands.size !== 0) { enabled = dbMember.commands.get(cmd.name).enabled }
+    if (dbMember && dbMember.commands.size !== 0) {
+      enabled = dbMember.commands.get(cmd.name).enabled
+    }
     if (enabled === undefined) {
       enabled = this.enabledForRoles(ctx, dbGuild.roles)
     }
