@@ -24,6 +24,33 @@ export async function addWarning (member, reason, ctx) {
   await ctx.db.save(ctx.guild.db.data, ctx)
 }
 
+export async function newMod (role, ctx) {
+  let dbRole = ctx.guild.db.roles.get(role.id)
+
+  if (!dbRole) {
+    ctx.guild.db.data.roles.push({
+      id: role.id,
+      mod: true
+    })
+    await ctx.db.save(ctx.guild.db.data, ctx)
+    return
+  }
+
+  dbRole.data.mod = true
+
+  await ctx.db.save(ctx.guild.db.data, ctx)
+}
+
+export async function removeMod (role, ctx) {
+  let dbRole = ctx.guild.db.roles.get(role.id)
+
+  if (!dbRole) return false
+
+  dbRole.data.mod = false
+
+  await ctx.db.save(ctx.guild.db.data, ctx)
+}
+
 export async function removeWarning (member, number, ctx) {
   let dbMember = ctx.guild.db.members.get(member.id)
   if (!dbMember || !dbMember.data.warnings) return false
