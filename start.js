@@ -1,4 +1,6 @@
 require('@babel/register')({
+  sourceMaps: 'inline',
+  retainLines: true,
   presets: [
     [
       '@babel/preset-env',
