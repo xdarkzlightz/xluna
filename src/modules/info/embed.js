@@ -1,6 +1,3 @@
-import { findID } from '@eclipse/util/array'
-// import { commandEnabledFor } from '@eclipse/database'
-
 export async function createHelpMessage (ctx, embed) {
   const app = await ctx.client.fetchApplication()
   embed.setAuthor(`Bot Help`, app.iconURL)
@@ -28,23 +25,7 @@ export async function createHelpMessage (ctx, embed) {
 
     let commands = ''
     group.commands.forEach(cmd => {
-      let enabled = commandEnabledFor('member', ctx.author.id, cmd, ctx.db)
-
-      if (enabled === undefined) {
-        const roles = ctx.db.roles
-        let roleEnabled
-
-        roles.forEach(roleDB => {
-          if (roleEnabled) return
-          const memberRole = ctx.msg.member.roles.get(roleDB.id)
-          if (!memberRole) return
-
-          const foundRole = findID(roles, memberRole.id)
-          roleEnabled = commandEnabledFor('role', foundRole.id, cmd, ctx.db)
-        })
-        enabled = roleEnabled
-      }
-
+      let enabled = ctx.db.commandEnabledForMember(ctx)
       if (!enabled) return
 
       let aliases = ''

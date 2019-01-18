@@ -107,7 +107,7 @@ class mongoProvider {
     let roleEnabled
     roles.forEach(roleDB => {
       if (roleEnabled) return
-      const memberRole = member.roles.get(roleDB.id)
+      const memberRole = member.roles.get(roleDB.data.id)
       if (!memberRole) return
 
       const foundRole = roles.get(memberRole.id)
