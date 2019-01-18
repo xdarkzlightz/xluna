@@ -325,14 +325,23 @@ class Registry {
         })
         _db.members.forEach(member => {
           if (!member.groups.length) return
-
           this.updateCommands(member, group, rating)
         })
       })
 
-      _db.roles.forEach(role => this.removeCommands(role))
-      _db.channels.forEach(channel => this.removeCommands(channel))
-      _db.members.forEach(member => this.removeCommands(member))
+      _db.roles.forEach(role => {
+        if (!role.groups.length) return
+
+        this.removeCommands(role)
+      })
+      _db.channels.forEach(channel => {
+        if (!channel.groups.length) return
+        this.removeCommands(channel)
+      })
+      _db.members.forEach(member => {
+        if (!member.groups.length) return
+        this.removeCommands(member)
+      })
 
       await _db.save()
     })
