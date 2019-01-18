@@ -21,6 +21,7 @@ export const log = {
   config: {
     description: 'A command for logging',
     usage: 'log',
+    memberPermissions: ['ADMINISTRATOR'],
     args: [
       {
         type: 'channel',
@@ -112,6 +113,7 @@ export const welcome = {
   config: {
     description: 'A command for welcoming members',
     usage: 'welcome',
+    memberPermissions: ['ADMINISTRATOR'],
     args: [
       {
         type: 'channel',
@@ -144,6 +146,7 @@ export const leave = {
   config: {
     description: 'A command for leaving members',
     usage: 'leave',
+    memberPermissions: ['ADMINISTRATOR'],
     args: [
       {
         type: 'channel',
@@ -176,6 +179,7 @@ export const autorole = {
   config: {
     description: 'A command for leaving members',
     usage: 'leave',
+    memberPermissions: ['ADMINISTRATOR'],
     args: [
       {
         type: 'role',
