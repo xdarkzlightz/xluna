@@ -1,6 +1,6 @@
 import { Collection, RichEmbed } from 'discord.js'
 
-import { setCommandEnabledTo, commandStatus } from '@eclipse/core'
+import { setCommandEnabledTo, commandStatus, showEnabled } from '@eclipse/core'
 import { generateCommandHelp } from '@eclipse/util/embed'
 
 class Command {
@@ -139,6 +139,18 @@ class Command {
         default: ctx => {
           return ctx.guild.roles.get(ctx.guild.id)
         }
+      },
+      {
+        name: `show-roles`,
+        run: ctx => showEnabled(ctx, 'role')
+      },
+      {
+        name: `show-channels`,
+        run: ctx => showEnabled(ctx, 'channel')
+      },
+      {
+        name: `show-members`,
+        run: ctx => showEnabled(ctx, 'member')
       },
       {
         name: `reload`,
