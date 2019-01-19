@@ -54,6 +54,9 @@ class dispatcher {
         )
       }
 
+      // If the command/group was disabled return, if there is no DB handleDB() will return true
+      if (!this.handleDB(cmd, ctx)) return
+
       // If there was a found group then parse any command flags else the group variable gets set to the command group
       let flag
       if (group && !cmd) {
@@ -77,9 +80,6 @@ class dispatcher {
       flag = await this.argumentParser.parseFlags(cmd, args, ctx)
       // Parses any command flags, if a command flag was found it runs it and then returns
       if (flag) return
-
-      // If the command/group was disabled return, if there is no DB handleDB() will return true
-      if (!this.handleDB(cmd, ctx)) return
 
       if (cmd.nsfw && !ctx.channel.nsfw) {
         return ctx.error('Cannot run nsfw commands in non nsfw channels')
