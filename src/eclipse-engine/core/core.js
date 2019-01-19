@@ -9,5 +9,6 @@ export {
   commandStatus,
   setGroupEnabledTo,
   groupStatus,
-  clear
+  clear,
+  showEnabled
 } from './database'
