@@ -50,6 +50,6 @@ const client = new Client({
 
     client.login()
   } catch (e) {
-    client.logger.error(e)
+    client.logger.error(`${e}:\nstack: ${e.stack}`)
   }
 })()
