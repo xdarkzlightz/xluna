@@ -55,7 +55,7 @@ class dispatcher {
       }
 
       // If the command/group was disabled return, if there is no DB handleDB() will return true
-      if (!this.handleDB(cmd, ctx)) return
+      if (cmd && !this.handleDB(cmd, ctx)) return
 
       // If there was a found group then parse any command flags else the group variable gets set to the command group
       let flag
