@@ -50,6 +50,6 @@ const client = new Client({
 
     client.login()
   } catch (e) {
-    this.logger.error(e)
+    client.logger.error(e)
   }
 })()
