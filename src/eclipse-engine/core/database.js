@@ -86,3 +86,40 @@ export async function clear (ctx, arg) {
 
   ctx.success(`Config has been cleared for ${name}!`)
 }
+
+export function showEnabled (ctx, _type) {
+  if (ctx.group.devOnly) return
+  // const name = arg.user ? arg.user.username : arg.name
+
+  const type = ctx.guild.db[`${_type}s`]
+
+  const embed = new RichEmbed()
+    .setAuthor(`${_type}s that have: ${ctx.cmd.name} enabled`)
+    .setColor(0x57e69)
+  let commands = ''
+  type.forEach(t => {
+    let types = []
+    t.commands.forEach(c =>
+      c.enabled && c.name === ctx.cmd.name ? types.push(t.data.id) : undefined
+    )
+    if (!types.length) return
+
+    const msg = types
+      .map(t => {
+        if (_type === 'role') return `<@&${t}> (${t})\n`
+        if (_type === 'channel') return `<@#${t}> (${t})\n`
+        if (_type === 'member') return `<@${t}> (${t})\n`
+      })
+      .join('')
+    commands += msg
+  })
+  if (commands === '') {
+    embed.setDescription(
+      `There are no ${_type}s enabled for this command or a config wasn't found`
+    )
+  } else {
+    embed.addField('roles', commands)
+  }
+
+  ctx.say(embed)
+}
