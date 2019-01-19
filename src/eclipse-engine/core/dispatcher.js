@@ -170,7 +170,7 @@ class dispatcher {
 
   handleDB (cmd, ctx) {
     if (!ctx.guild.db) return true
-    if (cmd.devOnly || cmd.group.devOnly) return true
+    if (cmd && (cmd.devOnly || cmd.group.devOnly)) return true
 
     let enabled = ctx.db.commandEnabledForMember(ctx)
 
