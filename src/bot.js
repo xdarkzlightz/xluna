@@ -34,18 +34,22 @@ const client = new Client({
 
 // Use an asynchronus IIFE to initialize the bot
 ;(async () => {
-  await client.setProvider(new MongoProvider(dbString, client))
+  try {
+    await client.setProvider(new MongoProvider(dbString, client))
 
-  await client.registry.init()
+    await client.registry.init()
 
-  client.gameEngine = new GameEngine()
+    client.gameEngine = new GameEngine()
 
-  client.gameEngine.on('GameEngine-debug', msg => {
-    client.logger.debug('[GameEngine]: ' + msg)
-  })
-  client.gameEngine.registerGame('uno', uno)
+    client.gameEngine.on('GameEngine-debug', msg => {
+      client.logger.debug('[GameEngine]: ' + msg)
+    })
+    client.gameEngine.registerGame('uno', uno)
 
-  client.r = await connect(r)
+    client.r = await connect(r)
 
-  client.login()
+    client.login()
+  } catch (e) {
+    this.logger.error(e)
+  }
 })()
