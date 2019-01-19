@@ -56,7 +56,7 @@ class mongoProvider {
   }
 
   async newGuild (ctx, rating) {
-    const groups = this.createGroups(this.client.registry.groups, rating)
+    const groups = this.createGroups(rating)
     const config = {
       prefix: ctx.client.prefix,
       rating: rating
