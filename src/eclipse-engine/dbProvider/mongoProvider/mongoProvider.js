@@ -89,15 +89,27 @@ class mongoProvider {
     const { guild, cmd, member } = ctx
 
     const dbGuild = this.guilds.get(guild.id)
+    this.logger.debug(`[Database] Found guild: ${dbGuild}`)
     if (!dbGuild) return
 
     let enabled
     const dbMember = dbGuild.members.get(member.id)
     if (dbMember && dbMember.commands.size !== 0) {
+      this.logger.debug(
+        `[Database]: enabled getting set to: ${
+          dbMember.commands.get(cmd.name).enabled
+        }`
+      )
       enabled = dbMember.commands.get(cmd.name).enabled
     }
     if (enabled === undefined) {
       enabled = this.enabledForRoles(ctx, dbGuild.roles)
+      this.logger.debug(
+        `[Database]: enabled getting set to ${this.enabledForRoles(
+          ctx,
+          dbGuild.roles
+        )}`
+      )
     }
 
     return enabled
