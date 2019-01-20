@@ -89,7 +89,6 @@ export async function clear (ctx, arg) {
 
 export function showEnabled (ctx, _type) {
   if (ctx.group.devOnly) return
-  // const name = arg.user ? arg.user.username : arg.name
 
   const type = ctx.guild.db[`${_type}s`]
 
@@ -120,6 +119,33 @@ export function showEnabled (ctx, _type) {
   } else {
     embed.addField('roles', commands)
   }
+
+  ctx.say(embed)
+}
+
+export function groupShowEnabled (ctx, _type) {
+  if (ctx.group.devOnly) return
+
+  const type = ctx.guild.db[`${_type}s`]
+
+  const embed = new RichEmbed()
+    .setAuthor(`Showing roles for the ${ctx.group.name} group`)
+    .setColor(0x57e69)
+
+  ctx.group.commands.forEach(c => {
+    let typesEnabled = ''
+    type.forEach(t => {
+      const id = t.data.id
+      const enabled = t.commands.get(c.name)
+      if (!enabled) return
+
+      if (_type === 'role') typesEnabled += `<@&${id}>\n`
+      if (_type === 'channel') typesEnabled += `<@#${id}>\n`
+      if (_type === 'member') typesEnabled += `<@${id}>\n`
+    })
+    if (typesEnabled === '') typesEnabled = 'Nothing has this command enabled'
+    embed.addField(c.name, typesEnabled, true)
+  })
 
   ctx.say(embed)
 }

@@ -10,5 +10,6 @@ export {
   setGroupEnabledTo,
   groupStatus,
   clear,
-  showEnabled
+  showEnabled,
+  groupShowEnabled
 } from './database'

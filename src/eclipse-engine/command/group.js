@@ -1,7 +1,7 @@
 import { Collection, RichEmbed } from 'discord.js'
 
 import { success, generateGroupHelp } from '@eclipse/util/embed'
-import { setGroupEnabledTo, groupStatus } from '@eclipse/core'
+import { setGroupEnabledTo, groupStatus, groupShowEnabled } from '@eclipse/core'
 
 class Group {
   constructor (client, path, groupObject) {
@@ -124,6 +124,18 @@ class Group {
         default: ctx => {
           return ctx.guild.roles.get(ctx.guild.id)
         }
+      },
+      {
+        name: `show-roles`,
+        run: ctx => groupShowEnabled(ctx, 'role')
+      },
+      {
+        name: `show-channels`,
+        run: ctx => groupShowEnabled(ctx, 'channel')
+      },
+      {
+        name: `show-members`,
+        run: ctx => groupShowEnabled(ctx, 'member')
       },
       {
         name: `help`,
