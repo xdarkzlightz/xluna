@@ -48,9 +48,13 @@ class dispatcher {
       }
       this.logger.debug(`[Dispatcher]: Command: ${cmd}`)
       this.logger.debug(
-        `User is an admin? ${ctx.member.hasPermission('ADMINISTRATOR')}`
+        `[Dispatcher]: User is an admin? ${ctx.member.hasPermission(
+          'ADMINISTRATOR'
+        )}`
       )
-      this.logger.debug(`Command enabled: ${this.handleDB(cmd, ctx)}`)
+      this.logger.debug(
+        `Dispatcher: Command enabled: ${this.handleDB(cmd, ctx)}\n`
+      )
 
       // Get rid of this in the future and handle it outside of eclipse
       if (!ctx.db && cmd.name !== 'config') {
