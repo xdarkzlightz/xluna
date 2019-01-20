@@ -129,7 +129,7 @@ export function groupShowEnabled (ctx, _type) {
   const type = ctx.guild.db[`${_type}s`]
 
   const embed = new RichEmbed()
-    .setAuthor(`Showing roles for the ${ctx.group.name} group`)
+    .setAuthor(`Showing ${_type}s enabled for the ${ctx.group.name} group`)
     .setColor(0x57e69)
 
   ctx.group.commands.forEach(c => {
