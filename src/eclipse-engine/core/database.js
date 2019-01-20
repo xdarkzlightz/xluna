@@ -143,7 +143,7 @@ export function groupShowEnabled (ctx, _type) {
       if (_type === 'channel') typesEnabled += `<@#${id}>\n`
       if (_type === 'member') typesEnabled += `<@${id}>\n`
     })
-    if (typesEnabled === '') typesEnabled = 'Nothing has this command enabled'
+    if (typesEnabled === '') typesEnabled = 'Nothing has this command enabled\nor no configs were found'
     embed.addField(c.name, typesEnabled, true)
   })
 
