@@ -106,7 +106,7 @@ export function showEnabled (ctx, _type) {
     const msg = types
       .map(t => {
         if (_type === 'role') return `<@&${t}> (${t})\n`
-        if (_type === 'channel') return `<@#${t}> (${t})\n`
+        if (_type === 'channel') return `<#${t}> (${t})\n`
         if (_type === 'member') return `<@${t}> (${t})\n`
       })
       .join('')
@@ -140,7 +140,7 @@ export function groupShowEnabled (ctx, _type) {
       if (!enabled) return
 
       if (_type === 'role') typesEnabled += `<@&${id}>\n`
-      if (_type === 'channel') typesEnabled += `<@#${id}>\n`
+      if (_type === 'channel') typesEnabled += `<#${id}>\n`
       if (_type === 'member') typesEnabled += `<@${id}>\n`
     })
     if (typesEnabled === '') typesEnabled = 'Nothing has this command enabled\nor no configs were found'
