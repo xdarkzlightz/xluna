@@ -29,6 +29,11 @@ export async function banMember (ctx, { member, reason }) {
   const mod = isMod(ctx.guild.db.roles, ctx.member)
   if (!mod) return
 
+  const dm = await member.user.createDM().catch()
+  dm.send(
+    `*You have been banned from ${ctx.guild.name} for: ${reason}*`
+  ).catch()
+
   member.ban({ reason: reason })
   ctx.say(`*${member.user.tag} has been banned!*`)
 
@@ -42,16 +47,16 @@ export async function banMember (ctx, { member, reason }) {
     },
     ctx
   )
-
-  const dm = await member.user.createDM().catch()
-  dm.send(
-    `*You have been banned from ${ctx.guild.name} for: ${reason}*`
-  ).catch()
 }
 
 export async function softbanMember (ctx, { member, days, reason }) {
   const mod = isMod(ctx.guild.db.roles, ctx.member)
   if (!mod) return
+
+  const dm = await member.user.createDM().catch()
+  dm.send(
+    `*You have been soft-banned from ${ctx.guild.name} for: ${reason}*`
+  ).catch()
 
   member.ban({ reason: reason, days })
   ctx.guild.unban(member, reason)
@@ -68,16 +73,16 @@ export async function softbanMember (ctx, { member, days, reason }) {
   )
 
   ctx.say(`*${member.user.tag} has been soft-banned!*`)
-
-  const dm = await member.user.createDM().catch()
-  dm.send(
-    `*You have been soft-banned from ${ctx.guild.name} for: ${reason}*`
-  ).catch()
 }
 
 export async function kickMember (ctx, { member, reason }) {
   const mod = isMod(ctx.guild.db.roles, ctx.member)
   if (!mod) return
+
+  const dm = await member.user.createDM().catch()
+  dm.send(
+    `*You have been kicked from ${ctx.guild.name} for: ${reason}*`
+  ).catch()
 
   member.kick(reason)
   ctx.say(`*${member.user.tag} has been kicked!*`)
@@ -92,11 +97,6 @@ export async function kickMember (ctx, { member, reason }) {
     },
     ctx
   )
-
-  const dm = await member.user.createDM().catch()
-  dm.send(
-    `*You have been kicked from ${ctx.guild.name} for: ${reason}*`
-  ).catch()
 }
 
 export async function warnMember (ctx, { member, reason }) {
