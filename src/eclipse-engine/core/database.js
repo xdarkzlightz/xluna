@@ -136,7 +136,7 @@ export function groupShowEnabled (ctx, _type) {
     let typesEnabled = ''
     type.forEach(t => {
       const id = t.data.id
-      const enabled = t.commands.get(c.name)
+      const enabled = t.commands.get(c.name).enabled
       if (!enabled) return
 
       if (_type === 'role') typesEnabled += `<@&${id}>\n`
