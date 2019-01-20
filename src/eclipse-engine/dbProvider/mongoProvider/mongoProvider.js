@@ -94,6 +94,7 @@ class mongoProvider {
 
     let enabled
     const dbMember = dbGuild.members.get(member.id)
+    this.logger.debug(`[Database]: Found member ${dbMember}`)
     if (dbMember && dbMember.commands.size !== 0) {
       this.logger.debug(
         `[Database]: Member Enabled getting set to: ${
@@ -121,14 +122,18 @@ class mongoProvider {
     let roleEnabled
     roles.forEach(roleDB => {
       if (roleEnabled) return
+
       const memberRole = member.roles.get(roleDB.data.id)
       if (!memberRole) return
 
       const foundRole = roles.get(memberRole.id)
+      this.logger.debug(`[Database]: Role found: ${foundRole}`)
       const enabled = foundRole.commands.get(cmd.name).enabled
+      this.logger.debug(`[Database]: Command enabled for role? ${enabled}`)
       if (enabled) roleEnabled = enabled
     })
 
+    this.logger.debug(`[Database]: roleEnabled returning ${roleEnabled}`)
     return roleEnabled
   }
 
