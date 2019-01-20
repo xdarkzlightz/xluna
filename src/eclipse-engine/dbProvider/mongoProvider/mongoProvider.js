@@ -151,14 +151,14 @@ class mongoProvider {
     if (!dbType) {
       db.data[`${type}s`].push({
         id: arg.id,
-        groups: this.createGroups(db.rating)
+        groups: db.roles.get(db.data.id).data.groups
       })
       await this.save(db.data)
       dbType = this.guilds.get(ctx.guild.id)[`${type}s`].get(arg.id)
     }
 
     if (dbType.commands.size === 0) {
-      dbType.data.groups = this.createGroups(db.rating)
+      dbType.data.groups = db.roles.get(db.data.id).data.groups
       await this.save(db.data)
       dbType = this.guilds.get(ctx.guild.id)[`${type}s`].get(arg.id)
     }
@@ -172,13 +172,16 @@ class mongoProvider {
   async updateGroup (type, id, group, enable, db) {
     let dbType = db[`${type}s`].get(id)
     if (!dbType) {
-      db.data[`${type}s`].push({ id: id, groups: this.createGroups(db.rating) })
+      db.data[`${type}s`].push({
+        id: id,
+        groups: db.roles.get(db.data.id).data.groups
+      })
       await this.save(db.data)
       dbType = this.guilds.get(db.data.id)[`${type}s`].get(id)
     }
 
     if (dbType.commands.size === 0) {
-      dbType.data.groups = this.createGroups(db.rating)
+      dbType.data.groups = db.roles.get(db.data.id).data.groups
       await this.save(db.data)
       dbType = this.guilds.get(db.data.id)[`${type}s`].get(id)
     }
