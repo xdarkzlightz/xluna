@@ -46,6 +46,11 @@ class dispatcher {
       if (mentionsBot) {
         return ctx.success(`Current bot prefix is: ${ctx.prefix}`)
       }
+      this.logger.debug(`[Dispatcher]: Command: ${cmd}`)
+      this.logger.debug(
+        `User is an admin? ${ctx.member.hasPermission('ADMINISTRATOR')}`
+      )
+      this.logger.debug(`Command enabled: ${this.handleDB(cmd, ctx)}`)
 
       // Get rid of this in the future and handle it outside of eclipse
       if (!ctx.db && cmd.name !== 'config') {
@@ -54,12 +59,19 @@ class dispatcher {
         )
       }
 
+      this.logger.debug(
+        `[Dispather] Database check resulting in: ${cmd &&
+          !ctx.member.hasPermission('ADMINISTRATOR') &&
+          !this.handleDB(cmd, ctx)}`
+      )
       // If the command/group was disabled return, if there is no DB handleDB() will return true
       if (
         cmd &&
         !ctx.member.hasPermission('ADMINISTRATOR') &&
         !this.handleDB(cmd, ctx)
-      ) { return }
+      ) {
+        return
+      }
 
       // If there was a found group then parse any command flags else the group variable gets set to the command group
       let flag
