@@ -119,7 +119,7 @@ class mongoProvider {
   }
 
   enabledForRoles ({ member, cmd }, roles) {
-    let roleEnabled
+    let roleEnabled = false
     roles.forEach(roleDB => {
       if (roleEnabled) return
 

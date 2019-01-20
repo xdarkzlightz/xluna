@@ -64,7 +64,7 @@ class dispatcher {
       }
 
       this.logger.debug(
-        `[Dispather] Database check resulting in: ${cmd &&
+        `[Dispatcher] Database check resulting in: ${cmd &&
           !ctx.member.hasPermission('ADMINISTRATOR') &&
           !this.handleDB(cmd, ctx)}`
       )
