@@ -16,7 +16,12 @@ export class Music {
       quality: 'highestaudio'
     })
     this.streams.set(
-      connection.playStream(stream, { seek: 0, volume: 1, bitrate: 'auto' })
+      connection.playStream(stream, {
+        seek: 0,
+        volume: 1,
+        bitrate: 'auto',
+        passes: 10
+      })
     )
   }
 }
