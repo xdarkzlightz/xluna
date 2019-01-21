@@ -27,8 +27,7 @@ require('@babel/register')({
           '@reddit': './src/modules/reddit/',
           '@tags': './src/modules/tags/',
           '@moderation': './src/modules/moderation',
-          '@serverutil': './src/modules/serverutil/',
-          '@music': './src/modules/music/'
+          '@serverutil': './src/modules/serverutil/'
         }
       }
     ]
