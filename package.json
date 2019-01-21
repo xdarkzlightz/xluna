@@ -20,12 +20,12 @@
     "babel-plugin-module-resolver": "^3.1.1",
     "discord.js": "^11.4.2",
     "ffbinaries": "^1.1.0",
-    "libsodium-wrappers": "^0.7.4",
     "mongodb": "^3.1.10",
     "mongoose": "^5.3.16",
     "node-opus": "^0.3.1",
     "simple-youtube-api": "^5.1.1",
     "snoowrap": "^1.15.2",
+    "sodium": "^3.0.2",
     "winston": "^3.1.0",
     "ytdl-core": "^0.29.1"
   },
