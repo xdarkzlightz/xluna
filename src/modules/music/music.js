@@ -12,7 +12,8 @@ export class Music {
 
   play (connection, url) {
     const stream = ytdl('https://www.youtube.com/watch?v=n0tW6bZWbS8', {
-      filter: 'audioonly'
+      filter: 'audioonly',
+      quality: 'highestaudio'
     })
     this.streams.set(
       connection.playStream(stream, { seek: 0, volume: 1, bitrate: 'auto' })
