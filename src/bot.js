@@ -17,7 +17,6 @@ import GameEngine from './game-engine/game-engine'
 import uno from './modules/uno/uno.js'
 
 import { connect } from '@reddit/reddit'
-import { Music } from '@music/music'
 
 const { version } = require('../package.json')
 
@@ -48,7 +47,6 @@ const client = new Client({
     client.gameEngine.registerGame('uno', uno)
 
     client.r = await connect(r)
-    client.music = new Music('temp')
 
     client.login()
   } catch (e) {
