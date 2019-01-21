@@ -1,10 +1,8 @@
 import { ArgumentParser, CTX } from '@eclipse/core'
-// import { findID } from '@eclipse/util/array'
 import { checkForClientPerms, checkForMemberPerms } from '@eclipse/util/other'
 
-// import { commandEnabledFor } from '@eclipse/database'
 import { Collection } from 'discord.js'
-
+import { levelUpReady, randomEXP } from '@levels/level'
 /**
  * This class controls how messages get handled
  */
@@ -21,6 +19,7 @@ class dispatcher {
     this.argumentParser = new ArgumentParser(client)
 
     this.userCooldowns = new Collection()
+    this.levelCooldowns = new Collection()
   }
 
   /**
@@ -34,6 +33,36 @@ class dispatcher {
       if (ctx.msg.author.bot) return
 
       await ctx.init()
+      let member = ctx.guild.db.members.get(ctx.member.id)
+      if (!member) {
+        ctx.guild.db.data.members.push({ id: ctx.member.id })
+        await ctx.db.save(ctx.guild.db.data)
+        member = ctx.guild.db.members.get(ctx.member.id)
+      }
+
+      if (!member.data.exp) {
+        member.data.exp = 0
+        member.data.level = 1
+        await ctx.db.save(ctx.guild.db.data)
+      }
+
+      const readyToLevel = levelUpReady(member.data.level, member.data.exp)
+      if (readyToLevel) {
+        member.data.level += 1
+        await ctx.db.save(ctx.guild.db.data)
+
+        ctx.say(`<@${ctx.member.id}> has leveled up to ${member.data.level}`)
+      }
+
+      if (!this.levelCooldowns.has(ctx.author.id)) {
+        member.data.exp += randomEXP(1, 100)
+        await ctx.db.save(ctx.guild.db.data)
+
+        this.levelCooldowns.set(ctx.author.id, ctx.author)
+        setTimeout(() => {
+          this.levelCooldowns.delete(ctx.author.id)
+        }, 1000)
+      }
 
       let { canRun, cmd, group, args, mentionsBot } = this.parseMessage(ctx)
       ctx.cmd = cmd

@@ -11,7 +11,15 @@ const MemberSchema = new Schema({
   nickname: String,
   groups: [GroupSchema],
   warnings: [WarningSchema],
-  modLogs: [LogSchema]
+  modLogs: [LogSchema],
+  exp: {
+    type: Number,
+    default: 0
+  },
+  level: {
+    type: Number,
+    default: 1
+  }
 })
 
 export default MemberSchema
