@@ -1,8 +1,11 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "/home/xdarkzlightz/Documents/Programming/typescript/eclipse"
+    }
   ],
   "settings": {
     "prettier.eslintIntegration": true,

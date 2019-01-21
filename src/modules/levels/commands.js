@@ -1,5 +1,5 @@
 import { RichEmbed } from 'discord.js'
-import { serverRank } from '@levels/level'
+import { serverRank, updateEXPChannel } from '@levels/level'
 
 export function sendLevel (ctx) {
   const member = ctx.guild.db.members.get(ctx.member.id)
@@ -15,4 +15,13 @@ export function sendLevel (ctx) {
     .addField('Total EXP', member.data.exp, true)
 
   ctx.say(embed)
+}
+
+export async function updateChannel (ctx, { channel }) {
+  await updateEXPChannel(ctx, channel)
+  const enabled = ctx.guild.db.channels.get(channel.id).data.expEnabled
+
+  ctx.say(
+    `Channel ${channel.name} was ${enabled ? 'enabled' : 'disabled'} for exp`
+  )
 }

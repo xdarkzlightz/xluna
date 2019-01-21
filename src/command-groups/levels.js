@@ -1,4 +1,4 @@
-import { sendLevel } from '@levels/commands'
+import { sendLevel, updateChannel } from '@levels/commands'
 
 export const GroupConfig = {
   name: 'levels',
@@ -11,4 +11,18 @@ export const rank = {
     usage: 'rank'
   },
   run: sendLevel
+}
+
+export const expchannel = {
+  config: {
+    description: 'Update a exp channel',
+    usage: 'updateChannel',
+    args: [
+      {
+        type: 'channel',
+        name: 'channel'
+      }
+    ]
+  },
+  run: updateChannel
 }
