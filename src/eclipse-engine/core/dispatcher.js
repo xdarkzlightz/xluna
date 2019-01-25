@@ -70,15 +70,15 @@ class dispatcher {
           user = ctx.db.users.get(ctx.author.id)
         }
 
-        readyToLevel = levelUpReady(ctx.author.db.level, ctx.author.db.exp)
+        readyToLevel = levelUpReady(user.profile.level, user.profile.exp)
         if (readyToLevel) {
-          ctx.author.db.level += 1
-          await ctx.db.saveUser(ctx.author.db)
+          user.profile.level += 1
+          await ctx.db.saveUser(user)
 
           if (!channel || channel.data.expEnabled !== false) {
             ctx.say(
               `<@${ctx.member.id}> has reached global level ${
-                ctx.author.db.level
+                user.profile.level
               }`
             )
           }
@@ -92,8 +92,8 @@ class dispatcher {
             await ctx.db.save(ctx.guild.db.data)
           }
 
-          user.exp += exp
-          await ctx.db.saveUser(ctx.author.db)
+          user.profile.exp += exp
+          await ctx.db.saveUser(user)
 
           this.levelCooldowns.set(ctx.author.id, ctx.author)
           setTimeout(() => {

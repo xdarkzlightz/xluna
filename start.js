@@ -28,7 +28,8 @@ require('@babel/register')({
           '@tags': './src/modules/tags/',
           '@moderation': './src/modules/moderation',
           '@serverutil': './src/modules/serverutil/',
-          '@levels': './src/modules/levels/'
+          '@levels': './src/modules/levels/',
+          '@profiles': './src/modules/profiles'
         }
       }
     ]

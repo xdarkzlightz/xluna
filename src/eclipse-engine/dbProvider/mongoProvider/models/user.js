@@ -1,16 +1,11 @@
 import { Schema as _Schema, model } from 'mongoose'
+import ProfileSchema from './user-schemas/profile-schema'
+
 const Schema = _Schema
 
 const UserSchema = new Schema({
   id: String,
-  exp: {
-    type: Number,
-    default: 0
-  },
-  level: {
-    type: Number,
-    default: 1
-  }
+  profile: ProfileSchema
 })
 
 const User = model('user', UserSchema)

@@ -73,7 +73,8 @@ class mongoProvider {
 
   async newUser (ctx) {
     const dbUser = new User({
-      id: ctx.author.id
+      id: ctx.author.id,
+      profile: {}
     })
 
     await dbUser.save()
