@@ -46,6 +46,8 @@ export async function sendMarriageRequest (ctx, { member }) {
     return ctx.say("Hey don't be alone! Go out and find someone to marry!")
   }
 
+  if (ctx.author.db.profile.marriedTo !== '') { return ctx.say("Hey you're already married to someone!") }
+
   let target = await User.findOne({ id: member.id.toString() })
   if (!target) {
     target = new User({
