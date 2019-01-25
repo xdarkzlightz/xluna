@@ -98,7 +98,7 @@ class dispatcher {
           this.levelCooldowns.set(ctx.author.id, ctx.author)
           setTimeout(() => {
             this.levelCooldowns.delete(ctx.author.id)
-          }, 1000)
+          }, 60 * 1000)
         }
       }
 
