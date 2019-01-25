@@ -17,6 +17,7 @@ export const expchannel = {
   config: {
     description: 'Update a exp channel',
     usage: 'updateChannel',
+    memberPermissions: ['MANAGE_CHANNELS'],
     args: [
       {
         type: 'channel',
