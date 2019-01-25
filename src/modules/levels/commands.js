@@ -1,18 +1,31 @@
 import { RichEmbed } from 'discord.js'
-import { serverRank, updateEXPChannel } from '@levels/level'
+import { serverRank, updateEXPChannel, getLevelEXP } from '@levels/level'
 
 export function sendLevel (ctx) {
   const member = ctx.guild.db.members.get(ctx.member.id)
   const members = ctx.guild.db.members.array().slice()
   const rank = serverRank(members, member)
-
   const embed = new RichEmbed()
     .setAuthor(ctx.author.tag, ctx.author.avatarURL)
     .setDescription(`**Here are your levels!**\n**Server rank #${rank}**`)
     .setThumbnail(ctx.author.avatarURL)
     .setColor(0x5936e7)
-    .addField('Level', member.data.level, true)
-    .addField('Total EXP', member.data.exp, true)
+    .addField('Server Level', `Lvl. ${member.data.level}`, true)
+    .addField(
+      'Server progress',
+      `${member.data.exp}/${getLevelEXP(
+        member.data.level + 1
+      )} till Lvl. ${member.data.level + 1}`,
+      true
+    )
+    .addField('Global Level', `Lvl. ${ctx.author.db.level}`, true)
+    .addField(
+      'Global progress',
+      `${ctx.author.db.exp}/${getLevelEXP(
+        ctx.author.db.level + 1
+      )} till Lvl. ${ctx.author.db.level + 1}`,
+      true
+    )
 
   ctx.say(embed)
 }
@@ -24,4 +37,8 @@ export async function updateChannel (ctx, { channel }) {
   ctx.say(
     `Channel ${channel.name} was ${enabled ? 'enabled' : 'disabled'} for exp`
   )
+}
+
+export function expTo (ctx, { level }) {
+  ctx.say(`Level ${level} requires ${getLevelEXP(level)} exp!`)
 }

@@ -4,6 +4,7 @@ import mongoose from 'mongoose'
 import { removeFromArray } from '@eclipse/util/array'
 import Guild from './models/guild'
 import MongoGuild from './types/guild'
+import User from './models/user'
 
 class mongoProvider {
   constructor (dbString, client) {
@@ -14,6 +15,8 @@ class mongoProvider {
     // Cache of all guilds in the database
     // This is used so we don't have to make a lot of requests to the database
     this.guilds = new Collection()
+
+    this.users = new Collection()
   }
 
   async connect () {
@@ -46,6 +49,12 @@ class mongoProvider {
     guilds.forEach(guild => {
       this.guilds.set(guild.id, new MongoGuild(guild))
     })
+
+    const users = await User.find({})
+
+    users.forEach(user => {
+      this.users.set(user.id, user)
+    })
   }
 
   async save (guild, ctx) {
@@ -53,6 +62,23 @@ class mongoProvider {
 
     this.guilds.set(guild.id, new MongoGuild(guild))
     if (ctx) ctx.guild.db = this.guilds.get(guild.id)
+  }
+
+  async saveUser (user, ctx) {
+    await user.save()
+
+    this.users.set(user.id, user)
+    if (ctx) ctx.author.db = this.users.get(user.id)
+  }
+
+  async newUser (ctx) {
+    const dbUser = new User({
+      id: ctx.author.id
+    })
+
+    await dbUser.save()
+    this.users.set(ctx.author.id, dbUser)
+    ctx.author.db = this.users.get(ctx.author.id)
   }
 
   async newGuild (ctx, rating) {

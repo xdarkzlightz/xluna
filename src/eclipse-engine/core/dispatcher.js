@@ -3,6 +3,7 @@ import { checkForClientPerms, checkForMemberPerms } from '@eclipse/util/other'
 
 import { Collection } from 'discord.js'
 import { levelUpReady, randomEXP } from '@levels/level'
+
 /**
  * This class controls how messages get handled
  */
@@ -33,35 +34,72 @@ class dispatcher {
       if (ctx.msg.author.bot) return
 
       await ctx.init()
-      let member = ctx.guild.db.members.get(ctx.member.id)
-      if (!member) {
-        ctx.guild.db.data.members.push({ id: ctx.member.id })
-        await ctx.db.save(ctx.guild.db.data)
-        member = ctx.guild.db.members.get(ctx.member.id)
-      }
+      if (ctx.guild.db) {
+        let channel = ctx.guild.db.channels.get(ctx.channel.id)
 
-      if (!member.data.exp) {
-        member.data.exp = 0
-        member.data.level = 1
-        await ctx.db.save(ctx.guild.db.data)
-      }
+        let member = ctx.guild.db.members.get(ctx.member.id)
+        if (!member) {
+          ctx.guild.db.data.members.push({ id: ctx.member.id })
+          await ctx.db.save(ctx.guild.db.data, ctx)
+          member = ctx.guild.db.members.get(ctx.member.id)
+        }
 
-      const readyToLevel = levelUpReady(member.data.level, member.data.exp)
-      if (readyToLevel) {
-        member.data.level += 1
-        await ctx.db.save(ctx.guild.db.data)
+        if (member.data.exp === undefined) {
+          member.data.exp = 0
+          member.data.level = 1
+          await ctx.db.save(ctx.guild.db.data, ctx)
+        }
 
-        ctx.say(`<@${ctx.member.id}> has leveled up to ${member.data.level}`)
-      }
+        let readyToLevel = levelUpReady(member.data.level, member.data.exp)
+        if (readyToLevel) {
+          member.data.level += 1
+          await ctx.db.save(ctx.guild.db.data, ctx)
 
-      if (!this.levelCooldowns.has(ctx.author.id)) {
-        member.data.exp += randomEXP(1, 100)
-        await ctx.db.save(ctx.guild.db.data)
+          if (!channel || channel.data.expEnabled !== false) {
+            ctx.say(
+              `<@${ctx.member.id}> has reached server level ${
+                member.data.level
+              }`
+            )
+          }
+        }
 
-        this.levelCooldowns.set(ctx.author.id, ctx.author)
-        setTimeout(() => {
-          this.levelCooldowns.delete(ctx.author.id)
-        }, 1000)
+        let user = ctx.author.db
+        if (!user) {
+          await ctx.db.newUser(ctx)
+          user = ctx.db.users.get(ctx.author.id)
+        }
+
+        readyToLevel = levelUpReady(ctx.author.db.level, ctx.author.db.exp)
+        if (readyToLevel) {
+          ctx.author.db.level += 1
+          await ctx.db.saveUser(ctx.author.db)
+
+          if (!channel || channel.data.expEnabled !== false) {
+            ctx.say(
+              `<@${ctx.member.id}> has reached global level ${
+                ctx.author.db.level
+              }`
+            )
+          }
+        }
+
+        if (!this.levelCooldowns.has(ctx.author.id)) {
+          const exp = randomEXP(1, 100)
+
+          if (!channel || channel.data.expEnabled !== false) {
+            member.data.exp += exp
+            await ctx.db.save(ctx.guild.db.data)
+          }
+
+          user.exp += exp
+          await ctx.db.saveUser(ctx.author.db)
+
+          this.levelCooldowns.set(ctx.author.id, ctx.author)
+          setTimeout(() => {
+            this.levelCooldowns.delete(ctx.author.id)
+          }, 1000)
+        }
       }
 
       let { canRun, cmd, group, args, mentionsBot } = this.parseMessage(ctx)

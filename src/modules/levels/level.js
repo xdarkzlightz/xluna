@@ -32,7 +32,8 @@ export async function updateEXPChannel (ctx, channel) {
 
   if (!dbChannel) {
     ctx.guild.db.data.channels.push({ id: channel.id, expEnabled: false })
-    await ctx.db.save(ctx.guild.db.data)
+    await ctx.db.save(ctx.guild.db.data, ctx)
+    return
   }
 
   const enabled = dbChannel.data.expEnabled

@@ -6,7 +6,8 @@ const Schema = _Schema
 
 const ChannelSchema = new Schema({
   id: String,
-  groups: [GroupSchema]
+  groups: [GroupSchema],
+  expEnabled: Boolean
 })
 
 export default ChannelSchema

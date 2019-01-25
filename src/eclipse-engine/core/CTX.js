@@ -20,6 +20,7 @@ class CTX {
     this.logger.debug('[CTX]: Getting guild from collection')
     this.db = this.client.db
     this.guild.db = this.client.db.guilds.get(this.guild.id)
+    this.author.db = this.client.db.users.get(this.author.id)
 
     if (this.guild.db) {
       this.prefix = this.guild.db.config.prefix

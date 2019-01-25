@@ -3,7 +3,6 @@ import { promisify } from 'util'
 import { join } from 'path'
 
 import { Command, Group } from '@eclipse/command'
-// import { Guild } from '@eclipse/database/'
 
 import { asyncForEach, findName, removeFromArray } from '@eclipse/util/array'
 
