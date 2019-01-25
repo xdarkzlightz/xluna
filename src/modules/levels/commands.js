@@ -8,7 +8,7 @@ export function sendLevel (ctx) {
 
   const embed = new RichEmbed()
     .setAuthor(ctx.author.tag, ctx.author.avatarURL)
-    .setDescription(`**Here are your levels!**\n**Server rank #${rank}**`)
+    .setDescription(`Server rank #${rank}`)
     .setThumbnail(ctx.author.avatarURL)
     .setColor(0x5936e7)
     .addField('Server Level', `Lvl. ${member.data.level}`, true)
