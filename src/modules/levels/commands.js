@@ -5,6 +5,7 @@ export function sendLevel (ctx) {
   const member = ctx.guild.db.members.get(ctx.member.id)
   const members = ctx.guild.db.members.array().slice()
   const rank = serverRank(members, member)
+
   const embed = new RichEmbed()
     .setAuthor(ctx.author.tag, ctx.author.avatarURL)
     .setDescription(`**Here are your levels!**\n**Server rank #${rank}**`)
@@ -16,14 +17,6 @@ export function sendLevel (ctx) {
       `${member.data.exp}/${getLevelEXP(
         member.data.level + 1
       )} till Lvl. ${member.data.level + 1}`,
-      true
-    )
-    .addField('Global Level', `Lvl. ${ctx.author.db.level}`, true)
-    .addField(
-      'Global progress',
-      `${ctx.author.db.exp}/${getLevelEXP(
-        ctx.author.db.level + 1
-      )} till Lvl. ${ctx.author.db.level + 1}`,
       true
     )
 
