@@ -12,7 +12,7 @@ import {
   calloutUno,
   promotePlayer,
   dmHand
-} from '@uno/commands'
+} from '@modules/uno/commands'
 
 export const GroupConfig = {
   name: 'uno',

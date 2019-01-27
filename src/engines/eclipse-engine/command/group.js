@@ -1,7 +1,11 @@
 import { Collection, RichEmbed } from 'discord.js'
 
-import { success, generateGroupHelp } from '@eclipse/util/embed'
-import { setGroupEnabledTo, groupStatus, groupShowEnabled } from '@eclipse/core'
+import { success, generateGroupHelp } from '@engines/eclipse/util/embed'
+import {
+  setGroupEnabledTo,
+  groupStatus,
+  groupShowEnabled
+} from '@engines/eclipse/core'
 
 class Group {
   constructor (client, path, groupObject) {

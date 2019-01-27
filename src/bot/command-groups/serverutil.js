@@ -10,7 +10,7 @@ import {
   removeLeave,
   removeAutorole,
   removeLogger
-} from '@serverutil/commands'
+} from '@modules/serverutil/commands'
 
 export const GroupConfig = {
   name: 'serverutil',

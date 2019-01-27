@@ -5,7 +5,7 @@ import {
   getST,
   getHentai,
   getFood
-} from '@reddit/commands'
+} from '@modules/reddit/commands'
 
 export const GroupConfig = {
   name: 'reddit',

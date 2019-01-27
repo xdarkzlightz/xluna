@@ -1,5 +1,5 @@
-import { asyncForEach } from '@eclipse/util/array'
-import EclipseError from '@eclipse/error/EclipseError'
+import { asyncForEach } from '@util/array'
+import EclipseError from '@engines/eclipse/error/EclipseError'
 
 /*
   Add clear and status command flags

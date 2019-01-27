@@ -1,4 +1,4 @@
-import { sendLevel, updateChannel, expTo } from '@levels/commands'
+import { sendLevel, updateChannel, expTo } from '@modules/levels/commands'
 
 export const GroupConfig = {
   name: 'levels',

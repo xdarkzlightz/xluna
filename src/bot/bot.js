@@ -8,17 +8,16 @@ import {
   botInvite,
   supportServer,
   r
-} from '../config'
+} from '@config'
 
-import { Client } from '@eclipse/core'
-import MongoProvider from '@eclipse/providers/mongo'
+import { Client } from '@engines/eclipse/core'
 
-import GameEngine from './game-engine/game-engine'
-import uno from './modules/uno/uno.js'
+import GameEngine from '@engines/game/game-engine'
+import uno from '@modules/uno/uno.js'
 
-import { connect } from '@reddit/reddit'
+import { connect } from '@modules/reddit/reddit'
 
-const { version } = require('../package.json')
+const { version } = require('../../package.json')
 
 const client = new Client({
   token,
@@ -28,6 +27,7 @@ const client = new Client({
   botInvite,
   supportServer,
   version,
+  dbString,
   path: join(__dirname, '/command-groups/'),
   eventPath: join(__dirname, '/events/')
 })
@@ -35,8 +35,6 @@ const client = new Client({
 // Use an asynchronus IIFE to initialize the bot
 ;(async () => {
   try {
-    await client.setProvider(new MongoProvider(dbString, client))
-
     await client.registry.init()
 
     client.gameEngine = new GameEngine()

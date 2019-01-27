@@ -2,9 +2,9 @@ import { Collection } from 'discord.js'
 import { promisify } from 'util'
 import { join } from 'path'
 
-import { Command, Group } from '@eclipse/command'
+import { Command, Group } from '@engines/eclipse/command'
 
-import { asyncForEach, findName, removeFromArray } from '@eclipse/util/array'
+import { asyncForEach, findName, removeFromArray } from '@util/array'
 
 const readdir = promisify(require('fs').readdir)
 

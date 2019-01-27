@@ -1,7 +1,7 @@
 import { Collection } from 'discord.js'
 import mongoose from 'mongoose'
 
-import { removeFromArray } from '@eclipse/util/array'
+import { removeFromArray } from '@util/array'
 import Guild from './models/guild'
 import MongoGuild from './types/guild'
 import User from './models/user'

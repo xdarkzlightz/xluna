@@ -1,4 +1,4 @@
-import { sendTag, createTag, deleteTag } from '@tags/commands'
+import { sendTag, createTag, deleteTag } from '@modules/tags/commands'
 
 export const GroupConfig = {
   name: 'tag',

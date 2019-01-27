@@ -1,4 +1,4 @@
-const Card = require('../../game-engine/game-types/card/card')
+import Card from '@engines/game/game-types/card/card'
 /**
  * Uno card class
  */

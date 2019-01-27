@@ -11,7 +11,7 @@ import {
   deleteNick,
   deleteMod,
   addMod
-} from '@moderation/commands'
+} from '@modules/moderation/commands'
 
 export const GroupConfig = {
   name: 'moderation',

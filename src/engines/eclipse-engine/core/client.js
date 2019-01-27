@@ -2,8 +2,8 @@ import { Client } from 'discord.js'
 
 import { createLogger, format, transports } from 'winston'
 
-import { Registry, Dispatcher } from '@eclipse/core'
-
+import { Registry, Dispatcher } from '@engines/eclipse/core'
+import Provider from '@engines/eclipse/mongo/provider'
 /**
  * An extension of the discord.js client
  * @extends Discord.Client
@@ -39,30 +39,19 @@ class EclipseClient extends Client {
       transports: [new transports.Console()]
     })
 
-    /** Bot token */
     this.token = options.token
-
-    /** Default bot prefix */
+    this.dbString = options.dbString
     this.prefix = options.prefix
-
-    /** Path to the command groups */
     this.path = options.path
     this.eventPath = options.eventPath
-
-    /** Array of discord.js user ids that belong to the bot developer(s) */
     this.devs = options.devs
-
-    /** mongoDB connection string */
-    this.dbString = options.dbString
     this.supportServer = options.supportServer
     this.botInvite = options.botInvite
     this.version = options.version
 
-    /** Eclipse Registry */
     this.registry = new Registry(this)
-
-    /** Eclipse Dispatcher */
     this.dispatcher = new Dispatcher(this)
+    this.db = new Provider(options.dbString, this)
 
     // Whenever a message event occurs handle the message
     this.on('message', async msg => {
@@ -78,15 +67,14 @@ class EclipseClient extends Client {
     this.logger.debug('[Eclipse-Engine]: Created client')
   }
 
+  async init () {
+    await this.db.init()
+    await this.registry.init()
+  }
+
   /** Custom login, calls super.login() with the token provided */
   login () {
     super.login(this.token)
-  }
-
-  async setProvider (provider) {
-    await provider.init()
-
-    this.db = provider
   }
 }
 

@@ -1,7 +1,11 @@
 import { Collection, RichEmbed } from 'discord.js'
 
-import { setCommandEnabledTo, commandStatus, showEnabled } from '@eclipse/core'
-import { generateCommandHelp } from '@eclipse/util/embed'
+import {
+  setCommandEnabledTo,
+  commandStatus,
+  showEnabled
+} from '@engines/eclipse/core'
+import { generateCommandHelp } from '@engines/eclipse/util/embed'
 
 class Command {
   constructor (Client, commandObject) {

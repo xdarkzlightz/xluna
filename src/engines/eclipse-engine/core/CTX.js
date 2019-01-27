@@ -1,4 +1,4 @@
-import { error, success } from '@eclipse/util/embed'
+import { error, success } from '@engines/eclipse/util/embed'
 
 class CTX {
   constructor (message, client) {

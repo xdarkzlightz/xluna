@@ -1,8 +1,11 @@
-import { ArgumentParser, CTX } from '@eclipse/core'
-import { checkForClientPerms, checkForMemberPerms } from '@eclipse/util/other'
-
 import { Collection } from 'discord.js'
-import { levelUpReady, randomEXP } from '@levels/level'
+
+import { ArgumentParser, CTX } from '@engines/eclipse/core'
+import {
+  checkForClientPerms,
+  checkForMemberPerms
+} from '@engines/eclipse/util/other'
+import { levelUpReady, randomEXP } from '@modules/levels/level'
 
 /**
  * This class controls how messages get handled

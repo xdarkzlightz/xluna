@@ -1,5 +1,5 @@
-import { asyncForEach } from '@eclipse/util/array'
-const { RichEmbed } = require('discord.js')
+import { RichEmbed } from 'discord.js'
+import { asyncForEach } from '@util/array'
 
 const colours = {
   success: 0x57e69,

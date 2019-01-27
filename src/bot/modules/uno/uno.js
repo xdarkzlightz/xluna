@@ -1,7 +1,7 @@
 import { Collection } from 'discord.js'
 
-const CardGame = require('../../game-engine/game-types/card/game')
-const Player = require('../../game-engine/game-types/card/player')
+const CardGame = require('@engines/game/game-types/card/game')
+const Player = require('@engines/game/game-types/card/player')
 
 const { types, colours } = require('./util')
 const UnoCard = require('./card')

@@ -5,7 +5,7 @@ import {
   acceptMarriageRequest,
   rejectMarriageRequest,
   divorceUser
-} from '@profiles/commands'
+} from '@modules/profiles/commands'
 
 export const GroupConfig = {
   name: 'userprofile',

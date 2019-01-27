@@ -1,4 +1,4 @@
-import { hand, gameStatus, draw as embedDraw } from '@uno/embed'
+import { hand, gameStatus, draw as embedDraw } from './embed'
 
 module.exports.colours = {
   '1': 'red',

@@ -1,3 +1,4 @@
+import { RichEmbed } from 'discord.js'
 import {
   addWarning,
   removeWarning,
@@ -7,9 +8,8 @@ import {
   removeNick,
   newMod,
   removeMod
-} from '@moderation/moderation'
-import { embedWarnings, embedLogs } from '@moderation/embed'
-import { RichEmbed } from 'discord.js'
+} from './moderation'
+import { embedWarnings, embedLogs } from './embed'
 
 const isMod = (roles, member) => {
   let isMod

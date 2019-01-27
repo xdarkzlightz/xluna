@@ -7,7 +7,7 @@ import {
   sendServerInfo,
   sendRoleInfo,
   sendMemberCount
-} from '@info/commands'
+} from '@modules/info/commands'
 
 export const GroupConfig = {
   name: 'info',

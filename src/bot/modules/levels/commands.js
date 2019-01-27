@@ -1,5 +1,5 @@
 import { RichEmbed } from 'discord.js'
-import { serverRank, updateEXPChannel, getLevelEXP } from '@levels/level'
+import { serverRank, updateEXPChannel, getLevelEXP } from './level'
 
 export function sendLevel (ctx) {
   const member = ctx.guild.db.members.get(ctx.member.id)
