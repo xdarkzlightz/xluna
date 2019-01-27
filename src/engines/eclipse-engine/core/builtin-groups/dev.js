@@ -35,7 +35,7 @@ export const test = {
     description: 'This is just a test command',
     usage: 'test'
   },
-  run (ctx) {
-    ctx.say(ctx.beforeEachVal)
+  run (ctx, { testArg }) {
+    ctx.say(testArg)
   }
 }

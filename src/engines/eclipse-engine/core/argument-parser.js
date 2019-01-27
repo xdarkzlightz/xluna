@@ -1,4 +1,3 @@
-import { asyncForEach } from '@util/array'
 import EclipseError from '@engines/eclipse/error/EclipseError'
 
 /*
@@ -16,31 +15,30 @@ class ArgumentParser {
   }
 
   // Parses args from an argument array
-  async parseArgs (cmd, argsArray, ctx) {
-    if (argsArray.length === 0 && cmd.args[0]) {
-      throw new EclipseError(
-        { type: 'friendly' },
-        `You did not specify a ${cmd.args[0].name}`
-      )
-    } else if (argsArray.length === 0) {
-      return false
-    }
+  async parseArgs (cmd, argsArray, ctx, parsed = {}, pass = 0) {
+    if (!argsArray.length) {
+      return parsed
+    } else {
+      const arg = cmd.args[pass]
 
-    const args = this.getArgs(argsArray.join(' '))
-    let parsedArgs = {}
-    let x = 0
-    await asyncForEach(cmd.args, async arg => {
-      if (parsedArgs.error) return
-      if (!args[x]) {
+      if (argsArray.length === 0 && arg) {
         throw new EclipseError(
           { type: 'friendly' },
-          `You did not specify a ${cmd.args[0].name}`
+          `You did not specify a ${arg.name}`
         )
       }
 
+      if (!argsArray[pass]) {
+        throw new EclipseError(
+          { type: 'friendly' },
+          `You did not specify a ${arg.name}`
+        )
+      }
+
+      const args = this.getArgs(argsArray.join(' '))
       const obj = this.isPrimitive(arg.type)
-        ? this.parsePrimitives(arg.type, args[x])
-        : await this.parseDiscordTypes(arg.type, args[x], ctx)
+        ? this.parsePrimitives(arg.type, args[pass])
+        : await this.parseDiscordTypes(arg.type, args[pass], ctx)
 
       if (arg.values) {
         const foundValue = arg.values.find(val => obj.toLowerCase() === val)
@@ -51,11 +49,12 @@ class ArgumentParser {
           )
         }
       }
-      parsedArgs[arg.name] = obj
-      return x++
-    })
 
-    return parsedArgs
+      parsed[arg.name] = obj
+
+      argsArray.shift()
+      return this.parseArgs(cmd, argsArray, ctx, parsed, pass++)
+    }
   }
 
   // Parses a primitve from an argument
