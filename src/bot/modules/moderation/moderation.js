@@ -1,4 +1,4 @@
-import { removeFromArray } from '@eclipse/util/array'
+import { removeFromArray } from '@util/array'
 
 export async function addWarning (member, reason, ctx) {
   let dbMember = ctx.guild.db.members.get(member.id)

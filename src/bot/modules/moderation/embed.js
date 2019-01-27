@@ -1,4 +1,4 @@
-import { asyncForEach } from '@eclipse/util/array'
+import { asyncForEach } from '@util/array'
 
 export async function embedWarnings (embed, member, ctx) {
   embed.setAuthor(`${member.user.tag} (${member.id})`, member.user.avatarURL)

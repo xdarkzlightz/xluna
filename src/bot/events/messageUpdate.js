@@ -1,4 +1,4 @@
-import { handleMessageUpdate } from '@serverutil/events'
+import { handleMessageUpdate } from '@modules/serverutil/events'
 
 module.exports = (client, oldMessage, newMessage) => {
   if (!newMessage.guild) return

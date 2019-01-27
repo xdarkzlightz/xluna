@@ -1,10 +1,5 @@
 import { RichEmbed } from 'discord.js'
-import {
-  embedChannel,
-  embedRole,
-  embedMessage,
-  embedMember
-} from '@serverutil/embed'
+import { embedChannel, embedRole, embedMessage, embedMember } from './embed'
 
 const logMember = (action, { oldMember, member }, embed, db) => {
   const logChannel = member.guild.channels.get(db.config.logger.channelID)

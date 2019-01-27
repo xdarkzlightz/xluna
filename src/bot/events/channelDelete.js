@@ -1,4 +1,4 @@
-import { handleChannelDelete } from '@serverutil/events'
+import { handleChannelDelete } from '@modules/serverutil/events'
 
 module.exports = (client, channel) => {
   const db = client.db.guilds.get(channel.guild.id)

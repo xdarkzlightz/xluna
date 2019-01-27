@@ -1,4 +1,4 @@
-import { handleMemberUpdate } from '@serverutil/events'
+import { handleMemberUpdate } from '@modules/serverutil/events'
 
 module.exports = (client, oldMember, member) => {
   if (!member.guild) return

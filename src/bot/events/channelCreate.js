@@ -1,4 +1,4 @@
-import { handleChannelCreate } from '@serverutil/events'
+import { handleChannelCreate } from '@modules/serverutil/events'
 
 module.exports = (client, channel) => {
   if (!channel.guild) return

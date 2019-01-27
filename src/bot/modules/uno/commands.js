@@ -1,6 +1,6 @@
-import { hand, gameStatus, actionDraw, draw as embedDraw } from '@uno/embed'
+import { hand, gameStatus, actionDraw, draw as embedDraw } from './embed'
 
-import { asyncForEach } from '@eclipse/util/array'
+import { asyncForEach } from '@util/array'
 // import { startCountdown } from '@uno/util'
 
 export function createGame (ctx) {

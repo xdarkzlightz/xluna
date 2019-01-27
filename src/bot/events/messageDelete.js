@@ -1,4 +1,4 @@
-import { handleMessageDelete } from '@serverutil/events'
+import { handleMessageDelete } from '@modules/serverutil/events'
 
 module.exports = (client, message) => {
   if (!message.guild) return

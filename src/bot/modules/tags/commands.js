@@ -1,4 +1,4 @@
-import { getTag, saveTag, removeTag } from '@tags/tags'
+import { getTag, saveTag, removeTag } from './tags'
 
 export function sendTag (ctx, { name }) {
   const tag = getTag(name, ctx)

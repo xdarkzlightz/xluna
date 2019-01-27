@@ -1,8 +1,8 @@
 import { RichEmbed } from 'discord.js'
 
-import { getRandomFromSub } from '@reddit/reddit'
-import { embedPost, embedTIL } from '@reddit/embed'
-import { getRandomElement } from '@reddit/util'
+import { getRandomFromSub } from './reddit'
+import { embedPost, embedTIL } from './embed'
+import { getRandomElement } from './util'
 
 export async function getPost (ctx, { subreddit }) {
   const embed = new RichEmbed()

@@ -1,7 +1,7 @@
 import { RichEmbed } from 'discord.js'
-import { removeFromArray } from '@eclipse/util/array'
-import { getLevelEXP } from '@levels/level'
-import User from '@eclipse/dbProvider/mongoProvider/models/user'
+import { removeFromArray } from '@util/array'
+import { getLevelEXP } from '@modules/levels/level'
+import User from '@engines/eclipse/mongo/models/user'
 
 export async function sendProfile (ctx) {
   const user = ctx.author.db

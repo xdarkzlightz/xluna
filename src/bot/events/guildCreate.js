@@ -1,6 +1,6 @@
 import { RichEmbed } from 'discord.js'
 
-import { createJoinEmbed } from '@eclipse/util/embed'
+import { createJoinEmbed } from '@engines/eclipse/util/embed'
 
 module.exports = async (client, guild) => {
   try {

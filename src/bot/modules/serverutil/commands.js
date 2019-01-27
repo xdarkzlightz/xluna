@@ -10,7 +10,7 @@ import {
   deleteLeave,
   deleteAutoRole,
   deleteLogger
-} from '@serverutil/serverutil'
+} from './serverutil'
 
 export async function setLoggingChannel (ctx, { channel }) {
   await setChannel(channel, ctx)

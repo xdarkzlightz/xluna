@@ -1,4 +1,4 @@
-import { removeFromArray } from '@eclipse/util/array'
+import { removeFromArray } from '@util/array'
 
 export function getTag (name, ctx) {
   const db = ctx.guild.db

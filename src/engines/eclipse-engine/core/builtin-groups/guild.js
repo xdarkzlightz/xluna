@@ -1,4 +1,4 @@
-import { clear } from '@eclipse/core'
+import { clear } from '@engines/eclipse/core'
 
 export const GroupConfig = {
   name: 'guild',
