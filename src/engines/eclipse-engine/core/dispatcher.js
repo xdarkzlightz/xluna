@@ -1,10 +1,6 @@
 import { Collection } from 'discord.js'
 
 import { ArgumentParser, CTX } from '@engines/eclipse/core'
-import {
-  checkForClientPerms,
-  checkForMemberPerms
-} from '@engines/eclipse/util/other'
 
 /**
  * This class controls how messages get handled
@@ -182,7 +178,7 @@ class dispatcher {
 
   postCommand (ctx) {
     if (ctx.guild && ctx.guild.db) {
-      ctx.guild.db.save()
+      // ctx.guild.db.save()
     }
     this.client.emit('command', ctx)
   }
