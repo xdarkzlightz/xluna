@@ -35,7 +35,7 @@ const client = new Client({
 // Use an asynchronus IIFE to initialize the bot
 ;(async () => {
   try {
-    await client.registry.init()
+    await client.init()
 
     client.gameEngine = new GameEngine()
 
