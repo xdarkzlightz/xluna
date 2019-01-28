@@ -18,11 +18,14 @@ class ArgumentParser {
   // Parses args from an argument array
   async parseArgs (cmd, argsArray, ctx, parsed = {}, pass = 0) {
     if (!argsArray.length) {
-      if (!argsArray[pass] && !pass) {
+      if (!argsArray[pass] && !pass && !cmd.args[pass].default) {
         throw new EclipseError(
           { type: 'friendly' },
-          `You did not specify a ${cmd.args[0].name}`
+          `You did not specify a ${cmd.args[0].name || cmd.args[0].type}`
         )
+      } else if (cmd.args[pass] && cmd.args[pass].default) {
+        const arg = cmd.args[0]
+        parsed[arg.name || arg.type] = await arg.default(ctx)
       }
 
       return parsed
@@ -74,14 +77,14 @@ class ArgumentParser {
   // Returns a eclipse type from an argument
   async parseDiscordTypes (type, arg, ctx) {
     const cbs = {
-      roles: r => r.id === arg || r.name === arg,
-      members: m =>
+      role: r => r.id === arg || r.name === arg,
+      member: m =>
         m.id === arg || m.user.username === arg || m.user.tag === arg,
-      channels: c => c.id === arg || c.name === arg
+      channel: c => c.id === arg || c.name === arg
     }
 
-    let obj = await ctx.guild[type].find(val => cbs[type](val))
-    if (!obj) obj = ctx.msg.mentions[type].first()
+    let obj = ctx.guild[`${type}s`].find(cbs[type])
+    if (!obj) obj = ctx.msg.mentions[`${type}s`].first()
     if (!obj) {
       throw new EclipseError(
         { type: 'friendly' },
@@ -93,7 +96,10 @@ class ArgumentParser {
 
   // Parses command flags
   async parseFlags (cmd, args, ctx) {
-    if (!args[0] || !args[0].startsWith('--')) return
+    if (!args[0]) return
+    const startsWith = args[0].startsWith('--') || args[0].startsWith('—')
+    if (!startsWith) return
+
     const arg = args[0].substring(2, args[0].length)
     let flag = cmd.flags.get(arg) || cmd.flagAliases.get(arg)
     if (!flag) return true
@@ -101,7 +107,8 @@ class ArgumentParser {
     this.logger.debug(`[Argument-Parser]: Found flag: ${args[0]}`)
     if (flag.devOnly && !dev(ctx)) return true
     if (!hasPermission(flag)) return true
-    await flag.run(ctx, await this.parseFlagArgs(flag, ctx, args))
+    args.shift()
+    await flag.run(ctx, await this.parseArgs(flag, args, ctx))
     return true
   }
 
