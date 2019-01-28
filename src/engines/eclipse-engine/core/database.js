@@ -1,6 +1,6 @@
 import { RichEmbed } from 'discord.js'
 
-export async function setCommandEnabledTo (ctx, arg) {
+export async function setCommandEnabledTo (ctx, { arg }) {
   if (ctx.cmd.devOnly) return
   const [action] = this.name.split('-')
   const enabling = action === 'enable'
@@ -12,16 +12,16 @@ export async function setCommandEnabledTo (ctx, arg) {
   )
 
   const guild = ctx.guild.db
-  await ctx.db.updateCommand(this.arg.type, ctx, arg, enabling, guild)
+  await ctx.db.updateCommand(this.args[0].type, ctx, arg, enabling, guild)
 
   const name = arg.user ? arg.user.username : arg.name
   ctx.success(`Command: ${ctx.cmd.name} ${action}d for ${name}!`)
 }
 
-export function commandStatus (ctx, arg) {
+export function commandStatus (ctx, { arg }) {
   if (ctx.cmd.devOnly) return
   const name = arg.user ? arg.user.username : arg.name
-  const type = ctx.guild.db[`${this.arg.type}s`].get(arg.id)
+  const type = ctx.guild.db[`${this.args[0].type}s`].get(arg.id)
   if (!type) {
     return ctx.error(`Config not found for ${name}!`)
   }
