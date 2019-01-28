@@ -35,10 +35,8 @@ export function hasPermission (obj, ctx) {
     if (!perm) {
       ctx.say(`I'm missing permission: ${missingPerm.toLowerCase()}`)
       return false
-    } else {
-      return true
     }
-  }
+  } else return true
 }
 
 export function dev (ctx) {
