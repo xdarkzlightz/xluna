@@ -6,6 +6,7 @@ import {
   showEnabled
 } from '@engines/eclipse/core'
 import { generateCommandHelp } from '@engines/eclipse/util/embed'
+import Flag from './flag'
 
 class Command {
   constructor (Client, commandObject) {
@@ -42,18 +43,11 @@ class Command {
     if (this.group.beforeEach) {
       ctx.beforeEachVal = this.group.beforeEach(ctx)
     }
-
-    // Currently not needed, however if needed in the future simply uncomment line below
-    // this.command.run.call(this, ctx, args)
     this.command.run(ctx, args)
   }
 
   registerFlag (flag) {
-    if (flag.arg) {
-      if (!flag.arg.name) flag.arg.name = flag.arg.type
-    }
-
-    this.flags.set(flag.name, flag)
+    this.flags.set(flag.name, new Flag(flag.name, flag))
 
     if (flag.aliases) {
       flag.aliases.forEach(alias => {
@@ -62,7 +56,7 @@ class Command {
             `Could not add flag alias ${alias}, a flag with the name of ${alias} already exists`
           )
         }
-        this.flagAliases.set(alias, flag)
+        this.flagAliases.set(alias, new Flag(flag.name, flag))
       })
     }
   }
@@ -79,70 +73,70 @@ class Command {
         name: `enable-channel`,
         memberPermissions: ['ADMINISTRATOR'],
         run: setCommandEnabledTo,
-        arg: { type: 'channel' },
-        default: ctx => {
-          return ctx.channel
-        }
+        args: [{ type: 'channel', name: 'arg', default: ctx => ctx.channel }]
       },
       {
         name: `disable-channel`,
         run: setCommandEnabledTo,
         memberPermissions: ['ADMINISTRATOR'],
-        arg: { type: 'channel' },
-        default: ctx => {
-          return ctx.channel
-        }
+        args: [{ type: 'channel', name: 'arg', default: ctx => ctx.channel }]
       },
       {
         name: `enable-member`,
         run: setCommandEnabledTo,
         memberPermissions: ['ADMINISTRATOR'],
-        arg: { type: 'member' }
+        args: [{ type: 'member', name: 'arg' }]
       },
       {
         name: `disable-member`,
         run: setCommandEnabledTo,
         memberPermissions: ['ADMINISTRATOR'],
-        arg: { type: 'member' }
+        args: [{ type: 'member', name: 'arg' }]
       },
       {
         name: `enable-role`,
         run: setCommandEnabledTo,
         memberPermissions: ['ADMINISTRATOR'],
-        arg: { type: 'role' },
-        default: ctx => {
-          return ctx.guild.roles.get(ctx.guild.id)
-        }
+        args: [
+          {
+            type: 'role',
+            name: 'arg',
+            default: ctx => ctx.guild.roles.get(ctx.guild.id)
+          }
+        ]
       },
       {
         name: `disable-role`,
         run: setCommandEnabledTo,
         memberPermissions: ['ADMINISTRATOR'],
-        arg: { type: 'role' },
-        default: ctx => {
-          return ctx.guild.roles.get(ctx.guild.id)
-        }
+        args: [
+          {
+            type: 'role',
+            name: 'arg',
+            default: ctx => ctx.guild.roles.get(ctx.guild.id)
+          }
+        ]
       },
       {
         name: `status-channel`,
         run: commandStatus,
-        arg: { type: 'channel' },
-        default: ctx => {
-          return ctx.channel
-        }
+        args: [{ type: 'channel', name: 'arg', default: ctx => ctx.channel }]
       },
       {
         name: `status-member`,
         run: commandStatus,
-        arg: { type: 'member' }
+        args: [{ type: 'member', name: 'arg' }]
       },
       {
         name: `status-role`,
         run: commandStatus,
-        arg: { type: 'role' },
-        default: ctx => {
-          return ctx.guild.roles.get(ctx.guild.id)
-        }
+        args: [
+          {
+            type: 'role',
+            name: 'arg',
+            default: ctx => ctx.guild.roles.get(ctx.guild.id)
+          }
+        ]
       },
       {
         name: `show-roles`,
