@@ -1,6 +1,6 @@
-export function checkForClientPerms ({ cmd, guild }) {
+export function checkForClientPerms (obj, { guild }) {
   const response = { perm: true, missingPerm: null }
-  cmd.clientPermissions.forEach(perm => {
+  obj.clientPermissions.forEach(perm => {
     if (!response.perm) return
     if (!guild.me.hasPermission(perm)) {
       response.perm = false
@@ -11,9 +11,9 @@ export function checkForClientPerms ({ cmd, guild }) {
   return response
 }
 
-export function checkForMemberPerms ({ cmd, member }) {
+export function checkForMemberPerms (obj, { member }) {
   const response = { perm: true, missingPerm: null }
-  cmd.memberPermissions.forEach(perm => {
+  obj.memberPermissions.forEach(perm => {
     if (!response.perm) return
     if (!member.hasPermission(perm)) {
       response.perm = false
@@ -25,17 +25,17 @@ export function checkForMemberPerms ({ cmd, member }) {
 
 export function hasPermission (obj, ctx) {
   if (obj.memberPermissions) {
-    const { perm, missingPerm } = checkForMemberPerms(ctx)
+    const { perm, missingPerm } = checkForMemberPerms(obj, ctx)
     if (!perm) {
       ctx.say(`You're missing permission: ${missingPerm.toLowerCase()}`)
       return false
-    }
+    } else return true
   } else if (obj.clientPermissions) {
-    const { perm, missingPerm } = checkForClientPerms(ctx)
+    const { perm, missingPerm } = checkForClientPerms(obj, ctx)
     if (!perm) {
       ctx.say(`I'm missing permission: ${missingPerm.toLowerCase()}`)
       return false
-    }
+    } else return true
   } else return true
 }
 
