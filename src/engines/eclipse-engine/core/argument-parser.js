@@ -16,8 +16,8 @@ class ArgumentParser {
   }
 
   // Parses args from an argument array
-  async parseArgs (cmd, argsArray, ctx, parsed = {}, pass = 0) {
-    if (!argsArray.length) {
+  async parseArgs (cmd, ctx, parsed = {}, pass = 0) {
+    if (!ctx.args.length) {
       if (cmd.args && !pass && !cmd.args[pass].default) {
         throw new EclipseError(
           { type: 'friendly' },
@@ -32,23 +32,23 @@ class ArgumentParser {
     } else {
       const arg = cmd.args[pass]
 
-      if (argsArray.length === 0 && arg) {
+      if (ctx.args.length === 0 && arg) {
         throw new EclipseError(
           { type: 'friendly' },
           `You did not specify a ${arg.name}`
         )
       }
 
-      const args = this.getArgs(argsArray.join(' '))
+      const args = this.getArgs(ctx.args.join(' '))
       const obj = this.isPrimitive(arg.type)
         ? this.parsePrimitives(arg.type, args[pass])
         : await this.parseDiscordTypes(arg.type, args[pass], ctx)
 
-      if (arg.values) {
+      if (arg.options) {
         const foundValue = arg.values.find(val => obj.toLowerCase() === val)
         if (!foundValue) {
           throw new EclipseError(
-            { type: 'friendly', defaults: arg.values },
+            { type: 'friendly', options: arg.options },
             `Invalid argument: ${obj}`
           )
         }
@@ -56,8 +56,8 @@ class ArgumentParser {
 
       parsed[arg.name] = obj
 
-      argsArray.shift()
-      return this.parseArgs(cmd, argsArray, ctx, parsed, (pass += 1))
+      ctx.args.shift()
+      return this.parseArgs(cmd, ctx, parsed, (pass += 1))
     }
   }
 
@@ -99,20 +99,28 @@ class ArgumentParser {
   }
 
   // Parses command flags
-  async parseFlags (cmd, args, ctx) {
+  async parseFlags (ctx) {
+    let flag
+    if (ctx.cmd) flag = this.parseFlag(ctx.cmd, ctx)
+    if (!flag) flag = this.parseFlag(ctx.group, ctx)
+    return flag
+  }
+
+  async parseFlag (obj, ctx) {
+    const args = ctx.args
     if (!args[0]) return
     const startsWith = args[0].startsWith('--') || args[0].startsWith('—')
     if (!startsWith) return
 
     const arg = args[0].substring(2, args[0].length)
-    let flag = cmd.flags.get(arg) || cmd.flagAliases.get(arg)
+    let flag = obj.flags.get(arg) || obj.flagAliases.get(arg)
     if (!flag) return true
 
     this.logger.debug(`[Argument-Parser]: Found flag: ${args[0]}`)
     if (flag.devOnly && !dev(ctx)) return true
     if (!hasPermission(flag, ctx)) return true
     args.shift()
-    await flag.run(ctx, await this.parseArgs(flag, args, ctx))
+    await flag.run(ctx, await this.parseArgs(flag, ctx))
     return true
   }
 
