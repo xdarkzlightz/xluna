@@ -1,9 +1,9 @@
 class EclipseError extends Error {
-  constructor ({ type, defaults }, ...rest) {
+  constructor ({ type, options }, ...rest) {
     super(...rest)
 
     this.type = type
-    this.defaults = defaults
+    this.options = options
   }
 }
 

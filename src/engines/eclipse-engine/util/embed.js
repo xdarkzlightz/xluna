@@ -43,7 +43,7 @@ export function error (msg, settings = {}) {
   const embed = new RichEmbed().setAuthor(msg, images.x).setColor(colours.error)
 
   if (settings.defaults) {
-    embed.addField('Valid options', settings.defaults.join(' '))
+    embed.addField('Valid options', settings.options.join(' '))
   }
 
   return embed
