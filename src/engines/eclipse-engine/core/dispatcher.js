@@ -1,6 +1,7 @@
 import { Collection } from 'discord.js'
 
 import { ArgumentParser, CTX } from '@engines/eclipse/core'
+import { dev } from '@engines/eclipse/util/other'
 
 /**
  * This class controls how messages get handled
@@ -21,70 +22,38 @@ class dispatcher {
     this.levelCooldowns = new Collection()
   }
 
-  /**
-   * Parses the message from the ctx object and get a command or group
-   * @param  {ctx object} ctx An object contaning helper functions and proprety shortcuts
-   * @return {response object}     An object contaning if the command can run
-   */
-  parseMessage (ctx) {
-    this.logger.debug(`[Dispatcher]: Parsing message ${ctx.msg.id}`)
-    const response = { canRun: true }
-    const prefix = ctx.prefix
-    const content = ctx.msg.content
-    const mentionsBot = ctx.msg.mentions.members.get(ctx.client.user.id)
-    if (mentionsBot) {
-      response.mentionsBot = true
-      response.canRun = true
-    }
-
-    if (ctx.msg.channel.type === 'dm') response.canRun = false
-    if (!content.startsWith(prefix)) response.canRun = false
-    if (content.startsWith(prefix + ' ')) {
-      response.canRun = false
-    }
-    if (!response.canRun) return response
-
-    response.args = content
-      .slice(prefix.length)
-      .trim()
-      .split(/ +/g)
-
-    const name = response.args.shift().toLowerCase()
-    response.cmd = this.registry.commands.get(name)
-    if (!response.cmd) response.cmd = this.registry.aliases.get(name)
-
-    // Get the group from the name constant
-    response.group = this.registry.groups.get(name)
-    if (!response.group) response.group = this.registry.groupAliases.get(name)
-
-    if (!response.cmd && response.group) {
-      response.cmd = response.group.commands.get(response.args[0])
-      if (!response.cmd) {
-        response.cmd = response.group.commandAliases.get(response.args[0])
-      }
-      if (response.cmd) response.args.shift()
-    }
-
-    if (!response.group && !response.cmd & !mentionsBot) response.canRun = false
-    return response
-  }
-
   // Runs before the command gets handled, sets up variables & CTX
   // Emits an pre-command event to the client so you can do things before the command runs
   // Using CTX
   async preCommand (ctx) {
+    this.client.emit('preCommand', ctx)
+    if (ctx.msg.author.bot) return false
+
+    if (ctx.msg.channel.type === 'dm') return false
+
     await ctx.init()
-    const cmdMsg = this.parseMessage(ctx)
-    ctx.cmd = cmdMsg.cmd
-    if (cmdMsg.group) {
-      ctx.group = cmdMsg.group
-    } else if (ctx.cmd) {
-      ctx.group = cmdMsg.cmd.group
+
+    const mentionsBot = ctx.msg.mentions.members.get(ctx.client.user.id)
+    if (mentionsBot) {
+      ctx.success(`Current bot prefix is: ${ctx.prefix}`)
+      return false
     }
 
-    this.client.emit('preCommand', ctx)
+    const content = ctx.msg.content
+    if (!content.startsWith(ctx.prefix)) return false
+    if (content.startsWith(ctx.prefix + ' ')) return false
 
-    return cmdMsg
+    this.getCommand(ctx)
+
+    if (ctx.cmd) this.logger.debug(`[Dispatcher]: Command: ${ctx.cmd.name}`)
+    if (ctx.group) this.logger.debug(`[Dispatcher: Group ${ctx.group.name}`)
+    this.logger.debug(
+      `[Dispatcher]: User is an admin? ${ctx.member.hasPermission(
+        'ADMINISTRATOR'
+      )}`
+    )
+
+    return true
   }
 
   // Runs after a command is found or group is found
@@ -92,50 +61,39 @@ class dispatcher {
   // Emits a command event so you can modify CTX at this state
   // And check to see if the command should actually run
   async handleCommand (ctx) {
-    const { cmd, group } = ctx
-    if (!cmd) return true
+    this.client.emit('command', ctx)
 
-    if (
-      (group.devOnly || cmd.devOnly) &&
-      this.devs.indexOf(ctx.author.id) === -1
-    ) {
-      return
-    }
+    const { cmd } = ctx
+    if (cmd && cmd.devOnly && !dev(ctx)) return
 
-    const noCooldown = this.handleCooldown(ctx)
-    if (!noCooldown) return false
-
-    // We will never need this function outside of eclipse so we just put it here
-    const handleDB = () => {
-      if (cmd && (cmd.devOnly || cmd.group.devOnly)) return true
-
-      let enabled = ctx.db.commandEnabledForMember(ctx)
-
-      const channelEnabled = ctx.db.commandEnabledInChannel(
-        ctx,
-        ctx.guild.db.channels
-      )
-
-      if (enabled && channelEnabled === false) {
-        ctx.error('Command disabled in this channel!')
-      } else if (enabled === false) {
-        ctx.error('Command disabled!')
-      } else {
-        return true
-      }
-    }
+    let cooldown = false
+    if (cmd) cooldown = this.handleCooldown(ctx)
+    if (cooldown) return false
 
     // If the command/group was disabled return, if there is no DB handleDB() will return true
-    if (!ctx.member.hasPermission('ADMINISTRATOR') && !handleDB(cmd, ctx)) {
+    if (
+      cmd &&
+      !ctx.member.hasPermission('ADMINISTRATOR') &&
+      !this.handleDB(cmd, ctx)
+    ) {
       return false
     }
 
-    if (cmd.nsfw && !ctx.channel.nsfw) {
+    if (cmd && cmd.nsfw && !ctx.channel.nsfw) {
       ctx.error('Cannot run nsfw commands in non nsfw channels')
       return false
     }
 
-    this.client.emit('command', ctx)
+    // If there was a found group then parse any command flags else the group variable gets set to the command group
+    const flag = await this.argumentParser.parseFlags(ctx)
+
+    if (flag || !cmd) return false
+
+    // Parses any arguments, if there's an error then say the error and return
+    let parsedArgs
+    if (cmd.args) parsedArgs = await this.argumentParser.parseArgs(cmd, ctx)
+
+    await cmd.run(ctx, parsedArgs)
     return true
   }
 
@@ -154,50 +112,8 @@ class dispatcher {
   async handleMessage (message) {
     const ctx = new CTX(message, this.client)
     try {
-      if (ctx.msg.author.bot) return this.postCommand(ctx)
-
-      let { canRun, mentionsBot, cmd, group, args } = await this.preCommand(ctx)
-      this.logger.debug(`[Dispatcher]: Command: ${cmd ? cmd.name : false}`)
-      this.logger.debug(
-        `[Dispatcher: Group ${ctx.group ? ctx.group.name : false}`
-      )
-      this.logger.debug(
-        `[Dispatcher]: User is an admin? ${ctx.member.hasPermission(
-          'ADMINISTRATOR'
-        )}`
-      )
-      if (!canRun && !mentionsBot) return this.postCommand(ctx)
-      if (mentionsBot) {
-        ctx.success(`Current bot prefix is: ${ctx.prefix}`)
-        return this.postCommand(ctx)
-      }
-
-      canRun = await this.handleCommand(ctx)
-      if (!canRun) return this.postCommand(ctx)
-
-      // If there was a found group then parse any command flags else the group variable gets set to the command group
-      let flag
-      if (group && !cmd) {
-        ctx.group = group
-        flag = await this.argumentParser.parseFlags(group, args, ctx)
-      } else {
-        group = cmd.group
-        ctx.group = group
-      }
-      if (flag || !cmd) return this.postCommand(ctx)
-
-      flag = await this.argumentParser.parseFlags(cmd, args, ctx)
-      // Parses any command flags, if a command flag was found it runs it and then returns
-      if (flag) return this.postCommand(ctx)
-
-      // Parses any arguments, if there's an error then say the error and return
-      let parsedArgs
-      if (cmd.args) {
-        parsedArgs = await this.argumentParser.parseArgs(cmd, args, ctx)
-      }
-
-      await cmd.run(ctx, parsedArgs)
-
+      let canRun = await this.preCommand(ctx)
+      if (canRun) await this.handleCommand(ctx)
       await this.postCommand(ctx)
     } catch (e) {
       this.postCommand(ctx)
@@ -209,13 +125,51 @@ class dispatcher {
       }
     }
   }
+  /**
+   * Parses the message from the ctx object and gets a command or group
+   * @param  {ctx object} ctx An object contaning helper functions and proprety shortcuts
+   */
+  getCommand (ctx) {
+    this.logger.debug(
+      `[Dispatcher]: Getting command from message ${ctx.msg.id}`
+    )
+    const args = ctx.msg.content
+      .slice(ctx.prefix.length)
+      .trim()
+      .split(/ +/g)
+
+    const name = args.shift().toLowerCase()
+
+    // Checks if there's a command with the name variable
+    // If no command was found then check if there's an alias with the name
+    ctx.cmd = this.registry.commands.get(name)
+    if (!ctx.cmd) ctx.cmd = this.registry.aliases.get(name)
+
+    // Checks if there's a group with the name variable
+    // If no group was found then check if there's an alias
+    ctx.group = this.registry.groups.get(name)
+    if (!ctx.group) ctx.group = this.registry.groupAliases.get(name)
+
+    // If there was a found group but not a found command then
+    // check if the group has a registered command with the first argument
+    if (!ctx.cmd && ctx.group) {
+      ctx.cmd = ctx.group.commands.get(args[0])
+      if (!ctx.cmd) ctx.cmd = ctx.group.commandAliases.get(args[0])
+      if (ctx.cmd) args.shift()
+    }
+
+    if (!ctx.group && !ctx.cmd) return false
+    if (ctx.cmd && !ctx.group) ctx.group = ctx.cmd.group
+
+    ctx.args = args
+  }
 
   handleCooldown ({ cmd, author, error }) {
-    if (!cmd || !cmd.cooldown) return true
+    if (!cmd || !cmd.cooldown) return false
     let strikes = cmd.strikes.get(author.id)
     if (cmd.userCooldowns.has(author.id)) {
       if (cmd.messageCooldowns.has(author.id)) {
-        return false
+        return true
       } else {
         cmd.messageCooldowns.set(author.id, author)
         setTimeout(() => {
@@ -223,7 +177,7 @@ class dispatcher {
         }, 1000)
         error(`This command is on cooldown!`)
       }
-      return false
+      return true
     } else if (strikes >= cmd.cooldown.amount) {
       cmd.userCooldowns.set(author.id, author)
       setTimeout(() => {
@@ -235,7 +189,7 @@ class dispatcher {
         cmd.messageCooldowns.delete(author.id)
       }, 1000)
       error('This command is on cooldown!')
-      return false
+      return true
     } else {
       if (!strikes) {
         cmd.strikes.set(author.id, 0)
@@ -243,6 +197,25 @@ class dispatcher {
       }
       cmd.strikes.set(author.id, strikes + 1)
       setTimeout(() => cmd.strikes.delete(author.id), cmd.cooldown.timer * 1000)
+      return false
+    }
+  }
+
+  handleDB (ctx) {
+    if (ctx.cmd && (ctx.cmd.devOnly || ctx.cmd.group.devOnly)) return true
+
+    let enabled = ctx.db.commandEnabledForMember(ctx)
+
+    const channelEnabled = ctx.db.commandEnabledInChannel(
+      ctx,
+      ctx.guild.db.channels
+    )
+
+    if (enabled && channelEnabled === false) {
+      ctx.error('Command disabled in this channel!')
+    } else if (enabled === false) {
+      ctx.error('Command disabled!')
+    } else {
       return true
     }
   }
