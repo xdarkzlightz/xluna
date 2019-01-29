@@ -8,7 +8,6 @@ class CTX {
 
     this.channel = message.channel
     this.guild = message.guild
-
     this.author = message.author
     this.member = message.member
 
@@ -21,6 +20,7 @@ class CTX {
     this.db = this.client.db
     this.guild.db = this.client.db.guilds.get(this.guild.id)
     this.author.db = this.client.db.users.get(this.author.id)
+    this.everyone = this.guild.roles.get(this.guild.id)
 
     if (this.guild.db) {
       this.prefix = this.guild.db.config.prefix
