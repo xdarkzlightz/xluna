@@ -1,11 +1,11 @@
 import { Collection } from 'discord.js'
 import mongoose from 'mongoose'
 
-import { removeFromArray } from '@util/array'
 import Guild from './models/guild'
 import MongoGuild from './types/guild'
 import User from './models/user'
 
+// TODO: MAKE AN EXTENSION OF THE PROVIDER TO HANDLE USERS + OTHER EXTENSIONS
 class mongoProvider {
   constructor (dbString, client) {
     this.dbString = dbString
@@ -13,12 +13,13 @@ class mongoProvider {
     this.logger = client.logger
 
     // Cache of all guilds in the database
-    // This is used so we don't have to make a lot of requests to the database
     this.guilds = new Collection()
 
+    // TODO MOVE USERS TO THEY'RE OWN EXTENSION OF THE PROVIDER
     this.users = new Collection()
   }
 
+  // Connects to the mongodb database
   async connect () {
     mongoose.set('debug', (collectionName, methodName, arg1, arg2) => {
       this.logger.debug(
@@ -41,13 +42,15 @@ class mongoProvider {
       })
   }
 
+  /** Connects to the database and caches all guilds */
+  // TODO: EXTEND PROVIDER AND MOVE USERS TO IT'S OWN EXTENSION
   async init () {
     await this.connect()
 
     const guilds = await Guild.find({})
 
     guilds.forEach(guild => {
-      this.guilds.set(guild.id, new MongoGuild(guild))
+      this.guilds.set(guild.id, new MongoGuild(guild, this))
     })
 
     const users = await User.find({})
@@ -57,13 +60,7 @@ class mongoProvider {
     })
   }
 
-  async save (guild, ctx) {
-    await guild.save()
-
-    this.guilds.set(guild.id, new MongoGuild(guild))
-    if (ctx) ctx.guild.db = this.guilds.get(guild.id)
-  }
-
+  // TODO:  MOVE TO IT'S OWN EXTENSION
   async saveUser (user, ctx) {
     await user.save()
 
@@ -71,6 +68,7 @@ class mongoProvider {
     if (ctx) ctx.author.db = this.users.get(user.id)
   }
 
+  // TODO:  MOVE TO IT'S OWN EXTENSION
   async newUser (ctx) {
     const dbUser = new User({
       id: ctx.author.id,
@@ -82,6 +80,7 @@ class mongoProvider {
     ctx.author.db = this.users.get(ctx.author.id)
   }
 
+  /** Creates a new guild document and caches it */
   async newGuild (ctx, rating) {
     const groups = this.createGroups(rating)
     const config = {
@@ -99,19 +98,13 @@ class mongoProvider {
       members: []
     })
 
-    await this.save(dbGuild)
+    this.guilds.set(ctx.guild.id, new MongoGuild(dbGuild, this))
+    return dbGuild
   }
 
-  async setPrefix (db, prefix) {
-    db.data.config.prefix = prefix.replace(/\s+/g, '')
-    this.save(db.data)
-  }
-
-  async clear (type, obj, ctx) {
-    removeFromArray(ctx.guild.db.data[`${type}s`], obj.data)
-    await this.save(ctx.guild.db.data)
-  }
-
+  /** Checks if a command is enabled for a member
+   * Checks if it's enabled for them, and checks if it's enabled for one of their roles
+   */
   commandEnabledForMember (ctx) {
     const { guild, cmd, member } = ctx
 
@@ -145,6 +138,7 @@ class mongoProvider {
     return enabled
   }
 
+  /** Checks if a command is enabled for a members roles by using the roles array */
   enabledForRoles ({ member, cmd }, roles) {
     let roleEnabled = false
     roles.forEach(roleDB => {
@@ -164,6 +158,7 @@ class mongoProvider {
     return roleEnabled
   }
 
+  /** Checks if a command is enabled for a channel */
   commandEnabledInChannel ({ channel, cmd }, channels) {
     const dbChannel = channels.get(channel.id)
     if (dbChannel === undefined) return
@@ -173,52 +168,22 @@ class mongoProvider {
     if (!enabled) return false
   }
 
-  async updateCommand (type, ctx, arg, enable, db) {
-    let dbType = db[`${type}s`].get(arg.id)
-    if (!dbType) {
-      db.data[`${type}s`].push({
-        id: arg.id,
-        groups: db.roles.get(db.data.id).data.groups
-      })
-      await this.save(db.data)
-      dbType = this.guilds.get(ctx.guild.id)[`${type}s`].get(arg.id)
-    }
-
-    if (dbType.commands.size === 0) {
-      dbType.data.groups = db.roles.get(db.data.id).data.groups
-      await this.save(db.data)
-      dbType = this.guilds.get(ctx.guild.id)[`${type}s`].get(arg.id)
-    }
-
-    const command = dbType.commands.get(ctx.cmd.name)
+  /** Updates a command for a data object */
+  async updateCommand (enable, arg, ctx) {
+    const db = arg.db
+    if (db.commands.size === 0) db.addGroups()
+    const command = db.commands.get(ctx.cmd.name)
     command.enabled = enable
-
-    await this.save(db.data)
   }
 
-  async updateGroup (type, id, group, enable, db) {
-    let dbType = db[`${type}s`].get(id)
-    if (!dbType) {
-      db.data[`${type}s`].push({
-        id: id,
-        groups: db.roles.get(db.data.id).data.groups
-      })
-      await this.save(db.data)
-      dbType = this.guilds.get(db.data.id)[`${type}s`].get(id)
-    }
-
-    if (dbType.commands.size === 0) {
-      dbType.data.groups = db.roles.get(db.data.id).data.groups
-      await this.save(db.data)
-      dbType = this.guilds.get(db.data.id)[`${type}s`].get(id)
-    }
-
-    const dbGroup = dbType.groups.get(group.name)
+  /** Updates an entire group */
+  async updateGroup (enable, arg, ctx) {
+    if (!arg.db.commands.size) arg.db.addGroups()
+    const dbGroup = arg.db.groups.get(ctx.group.name)
     dbGroup.commands.forEach(cmd => (cmd.enabled = enable))
-
-    await this.save(db.data)
   }
 
+  /** Creates an array of group schemas based on the guild rating */
   createGroups (rating) {
     let groups = []
     this.client.registry.groups.forEach(group => {
