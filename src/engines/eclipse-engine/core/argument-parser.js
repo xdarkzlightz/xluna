@@ -18,12 +18,12 @@ class ArgumentParser {
   // Parses args from an argument array
   async parseArgs (cmd, argsArray, ctx, parsed = {}, pass = 0) {
     if (!argsArray.length) {
-      if (!argsArray[pass] && !pass && !cmd.args[pass].default) {
+      if (cmd.args && !pass && !cmd.args[pass].default) {
         throw new EclipseError(
           { type: 'friendly' },
           `You did not specify a ${cmd.args[0].name || cmd.args[0].type}`
         )
-      } else if (cmd.args[pass] && cmd.args[pass].default) {
+      } else if (cmd.args && cmd.args[pass] && cmd.args[pass].default) {
         const arg = cmd.args[0]
         parsed[arg.name || arg.type] = await arg.default(ctx)
       }
@@ -91,6 +91,10 @@ class ArgumentParser {
         `Could not find ${type.substring(0, type.length - 1)}: ${arg}`
       )
     }
+    let db = ctx.guild.db[`${type}s`].get(obj.id)
+    if (!db) db = ctx.guild.db.add(type, { id: obj.id })
+    obj.db = db
+
     return obj
   }
 
@@ -106,7 +110,7 @@ class ArgumentParser {
 
     this.logger.debug(`[Argument-Parser]: Found flag: ${args[0]}`)
     if (flag.devOnly && !dev(ctx)) return true
-    if (!hasPermission(flag)) return true
+    if (!hasPermission(flag, ctx)) return true
     args.shift()
     await flag.run(ctx, await this.parseArgs(flag, args, ctx))
     return true

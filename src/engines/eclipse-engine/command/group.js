@@ -4,7 +4,8 @@ import { success, generateGroupHelp } from '@engines/eclipse/util/embed'
 import {
   setGroupEnabledTo,
   groupStatus,
-  groupShowEnabled
+  groupShowEnabled,
+  clear
 } from '@engines/eclipse/core'
 
 class Group {
@@ -64,70 +65,70 @@ class Group {
         name: `enable-channel`,
         run: setGroupEnabledTo,
         memberPermissions: ['ADMINISTRATOR'],
-        arg: { type: 'channel' },
-        default: ctx => {
-          return ctx.channel
-        }
+        args: [{ type: 'channel', name: 'arg', default: ctx => ctx.channel }]
       },
       {
         name: `disable-channel`,
         run: setGroupEnabledTo,
         memberPermissions: ['ADMINISTRATOR'],
-        arg: { type: 'channel' },
-        default: ctx => {
-          return ctx.channel
-        }
+        args: [{ type: 'channel', name: 'arg', default: ctx => ctx.channel }]
       },
       {
         name: `enable-member`,
         run: setGroupEnabledTo,
         memberPermissions: ['ADMINISTRATOR'],
-        arg: { type: 'member' }
+        args: [{ type: 'member', name: 'arg' }]
       },
       {
         name: `disable-member`,
         run: setGroupEnabledTo,
         memberPermissions: ['ADMINISTRATOR'],
-        arg: { type: 'member' }
+        args: [{ type: 'member', name: 'arg' }]
       },
       {
         name: `enable-role`,
         run: setGroupEnabledTo,
         memberPermissions: ['ADMINISTRATOR'],
-        arg: { type: 'role' },
-        default: ctx => {
-          return ctx.guild.roles.get(ctx.guild.id)
-        }
+        args: [
+          {
+            type: 'role',
+            name: 'arg',
+            default: ctx => ctx.guild.roles.get(ctx.guild.id)
+          }
+        ]
       },
       {
         name: `disable-role`,
         run: setGroupEnabledTo,
         memberPermissions: ['ADMINISTRATOR'],
-        arg: { type: 'role' },
-        default: ctx => {
-          return ctx.guild.roles.get(ctx.guild.id)
-        }
+        args: [
+          {
+            type: 'role',
+            name: 'arg',
+            default: ctx => ctx.guild.roles.get(ctx.guild.id)
+          }
+        ]
       },
       {
         name: `status-channel`,
         run: groupStatus,
-        arg: { type: 'channel' },
-        default: ctx => {
-          return ctx.channel
-        }
+        args: [{ type: 'channel', name: 'arg', default: ctx => ctx.channel }]
       },
       {
         name: `status-member`,
         run: groupStatus,
-        arg: { type: 'member' }
+        args: [{ type: 'member', name: 'arg' }]
       },
       {
         name: `status-role`,
         run: groupStatus,
-        arg: { type: 'role' },
-        default: ctx => {
-          return ctx.guild.roles.get(ctx.guild.id)
-        }
+        args: [
+          {
+            type: 'role',
+            name: 'arg',
+            default: ctx => ctx.guild.roles.get(ctx.guild.id)
+          }
+        ]
       },
       {
         name: `show-roles`,
@@ -145,6 +146,36 @@ class Group {
         name: `help`,
         aliases: ['h'],
         run: this.sendHelpMessage
+      },
+      {
+        name: `clear-channel`,
+        description: 'Lets you clear the config for a channel',
+        usage: 'config --clear-channel (channel)',
+        example: 'config --clear-channel general',
+        run: clear,
+        args: [{ type: 'channel', name: 'arg', default: ctx => ctx.channel }]
+      },
+      {
+        name: `clear-member`,
+        description: 'Lets you clear the config for a member',
+        usage: 'config --clear-member (member)',
+        example: 'config --clear-member xdarkzlightz',
+        run: clear,
+        args: [{ type: 'member', name: 'arg' }]
+      },
+      {
+        name: `clear-role`,
+        description: 'Lets you clear the config for a role',
+        usage: 'config --clear-role (role)',
+        example: 'config --clear-role role',
+        run: clear,
+        args: [
+          {
+            type: 'role',
+            name: 'arg',
+            default: ctx => ctx.guild.roles.get(ctx.guild.id)
+          }
+        ]
       }
     ])
   }

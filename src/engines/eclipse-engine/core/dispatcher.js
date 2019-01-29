@@ -87,43 +87,6 @@ class dispatcher {
     return cmdMsg
   }
 
-  handleCooldown ({ cmd, author, error }) {
-    if (!cmd || !cmd.cooldown) return true
-    let strikes = cmd.strikes.get(author.id)
-    if (cmd.userCooldowns.has(author.id)) {
-      if (cmd.messageCooldowns.has(author.id)) {
-        return false
-      } else {
-        cmd.messageCooldowns.set(author.id, author)
-        setTimeout(() => {
-          cmd.messageCooldowns.delete(author.id)
-        }, 1000)
-        error(`This command is on cooldown!`)
-      }
-      return false
-    } else if (strikes >= cmd.cooldown.amount) {
-      cmd.userCooldowns.set(author.id, author)
-      setTimeout(() => {
-        cmd.userCooldowns.delete(author.id)
-        cmd.strikes.delete(author.id)
-      }, cmd.cooldown.timer * 1000)
-      cmd.messageCooldowns.set(author.id, author)
-      setTimeout(() => {
-        cmd.messageCooldowns.delete(author.id)
-      }, 1000)
-      error('This command is on cooldown!')
-      return false
-    } else {
-      if (!strikes) {
-        cmd.strikes.set(author.id, 0)
-        strikes = cmd.strikes.get(author.id)
-      }
-      cmd.strikes.set(author.id, strikes + 1)
-      setTimeout(() => cmd.strikes.delete(author.id), cmd.cooldown.timer * 1000)
-      return true
-    }
-  }
-
   // Runs after a command is found or group is found
   // This determines if the command should actually run
   // Emits a command event so you can modify CTX at this state
@@ -176,9 +139,9 @@ class dispatcher {
     return true
   }
 
-  postCommand (ctx) {
+  async postCommand (ctx) {
     if (ctx.guild && ctx.guild.db) {
-      // ctx.guild.db.save()
+      await ctx.guild.db.save()
     }
     this.client.emit('command', ctx)
   }
@@ -191,7 +154,7 @@ class dispatcher {
   async handleMessage (message) {
     const ctx = new CTX(message, this.client)
     try {
-      if (ctx.msg.author.bot) return
+      if (ctx.msg.author.bot) return this.postCommand(ctx)
 
       let { canRun, mentionsBot, cmd, group, args } = await this.preCommand(ctx)
       this.logger.debug(`[Dispatcher]: Command: ${cmd ? cmd.name : false}`)
@@ -203,13 +166,14 @@ class dispatcher {
           'ADMINISTRATOR'
         )}`
       )
-      if (!canRun && !mentionsBot) return false
+      if (!canRun && !mentionsBot) return this.postCommand(ctx)
       if (mentionsBot) {
-        return ctx.success(`Current bot prefix is: ${ctx.prefix}`)
+        ctx.success(`Current bot prefix is: ${ctx.prefix}`)
+        return this.postCommand(ctx)
       }
 
       canRun = await this.handleCommand(ctx)
-      if (!canRun) return
+      if (!canRun) return this.postCommand(ctx)
 
       // If there was a found group then parse any command flags else the group variable gets set to the command group
       let flag
@@ -220,11 +184,11 @@ class dispatcher {
         group = cmd.group
         ctx.group = group
       }
-      if (flag || !cmd) return
+      if (flag || !cmd) return this.postCommand(ctx)
 
       flag = await this.argumentParser.parseFlags(cmd, args, ctx)
       // Parses any command flags, if a command flag was found it runs it and then returns
-      if (flag) return
+      if (flag) return this.postCommand(ctx)
 
       // Parses any arguments, if there's an error then say the error and return
       let parsedArgs
@@ -234,14 +198,52 @@ class dispatcher {
 
       await cmd.run(ctx, parsedArgs)
 
-      this.postCommand(ctx)
+      await this.postCommand(ctx)
     } catch (e) {
+      this.postCommand(ctx)
       if (e.type === 'friendly') {
         ctx.error(e.message, e)
       } else {
         this.logger.error(`[Dispatcher]: ${e.message}\nStack trace: ${e.stack}`)
         ctx.error('Something went wrong!', e)
       }
+    }
+  }
+
+  handleCooldown ({ cmd, author, error }) {
+    if (!cmd || !cmd.cooldown) return true
+    let strikes = cmd.strikes.get(author.id)
+    if (cmd.userCooldowns.has(author.id)) {
+      if (cmd.messageCooldowns.has(author.id)) {
+        return false
+      } else {
+        cmd.messageCooldowns.set(author.id, author)
+        setTimeout(() => {
+          cmd.messageCooldowns.delete(author.id)
+        }, 1000)
+        error(`This command is on cooldown!`)
+      }
+      return false
+    } else if (strikes >= cmd.cooldown.amount) {
+      cmd.userCooldowns.set(author.id, author)
+      setTimeout(() => {
+        cmd.userCooldowns.delete(author.id)
+        cmd.strikes.delete(author.id)
+      }, cmd.cooldown.timer * 1000)
+      cmd.messageCooldowns.set(author.id, author)
+      setTimeout(() => {
+        cmd.messageCooldowns.delete(author.id)
+      }, 1000)
+      error('This command is on cooldown!')
+      return false
+    } else {
+      if (!strikes) {
+        cmd.strikes.set(author.id, 0)
+        strikes = cmd.strikes.get(author.id)
+      }
+      cmd.strikes.set(author.id, strikes + 1)
+      setTimeout(() => cmd.strikes.delete(author.id), cmd.cooldown.timer * 1000)
+      return true
     }
   }
 }

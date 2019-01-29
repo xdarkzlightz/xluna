@@ -12,7 +12,7 @@ export const config = {
       {
         name: 'rating',
         type: 'string',
-        values: ['pg', 'pg13', 'nsfw']
+        options: ['pg', 'pg13', 'nsfw']
       }
     ],
     flags: [
@@ -22,18 +22,11 @@ export const config = {
         description: 'Sets the server prefix',
         usage: 'config --set-prefix (prefix)',
         example: 'config --set-prefix /',
-        run: async (ctx, arg) => {
-          if (!ctx.db) {
-            return ctx.error(
-              `You need to create a server config before running this flag!`
-            )
-          }
-
-          await ctx.db.setPrefix(ctx.guild.db, arg)
-
-          ctx.success(`Prefix set to ${arg.replace(/\s+/g, '')}`)
+        run: async (ctx, { prefix }) => {
+          ctx.guild.db.data.config.prefix = prefix.replace(/\s+/g, '')
+          ctx.success(`Prefix set to ${prefix.replace(/\s+/g, '')}`)
         },
-        arg: { name: 'prefix', type: 'string' }
+        args: [{ name: 'prefix', type: 'string' }]
       },
       {
         name: `clear-channel`,
@@ -41,11 +34,7 @@ export const config = {
         usage: 'config --clear-channel (channel)',
         example: 'config --clear-channel general',
         run: clear,
-        memberPermissions: ['ADMINISTRATOR'],
-        arg: { type: 'channel' },
-        default: ctx => {
-          return ctx.channel
-        }
+        args: [{ type: 'channel', name: 'arg', default: ctx => ctx.channel }]
       },
       {
         name: `clear-member`,
@@ -53,7 +42,7 @@ export const config = {
         usage: 'config --clear-member (member)',
         example: 'config --clear-member xdarkzlightz',
         run: clear,
-        arg: { type: 'member' }
+        args: [{ type: 'member', name: 'arg' }]
       },
       {
         name: `clear-role`,
@@ -61,10 +50,13 @@ export const config = {
         usage: 'config --clear-role (role)',
         example: 'config --clear-role role',
         run: clear,
-        arg: { type: 'role' },
-        default: ctx => {
-          return ctx.guild.roles.get(ctx.guild.id)
-        }
+        args: [
+          {
+            type: 'role',
+            name: 'arg',
+            default: ctx => ctx.guild.roles.get(ctx.guild.id)
+          }
+        ]
       }
     ],
     description: 'Lets you create a server config',
