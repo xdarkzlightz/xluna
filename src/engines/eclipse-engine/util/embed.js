@@ -49,7 +49,7 @@ export function error (msg, settings = {}) {
   return embed
 }
 
-export function generateCommandHelp (ctx, embed) {
+export function createCommandHelp (ctx, embed) {
   const cmd = ctx.cmd
 
   let prefix = ctx.prefix
@@ -98,9 +98,7 @@ export function generateCommandHelp (ctx, embed) {
   }
 }
 
-export function generateGroupHelp (ctx, embed) {
-  const group = ctx.group
-
+export function createGroupHelp (prefix, group, embed) {
   let aliases = ''
   if (group.aliases) {
     aliases = `(${group.aliases.join(', ')})`
@@ -114,27 +112,11 @@ export function generateGroupHelp (ctx, embed) {
     if (cmd.aliases) {
       aliases = `(${cmd.aliases.join(', ')})`
     }
-    commands += `${cmd.name} ${aliases} - ${cmd.description}\n\n`
+    commands += `**${cmd.name} ${aliases}** - ${cmd.description}\n`
   })
 
   embed.addField('commands', commands)
-
-  if (group.config.flags) {
-    let flags = ''
-    group.config.flags.forEach(flag => {
-      if (flag.devonly) return
-      let flagAliases = ''
-      if (flag.aliases) {
-        flagAliases = `(--${flag.aliases.join(', --')})`
-      }
-      flags += `--${flag.name} ${flagAliases} - ${flag.description}\nUsage: *${
-        ctx.prefix
-      }${flag.usage}*\nExample: *${ctx.prefix}${
-        flag.example ? flag.example : flag.usage
-      }*\n\n`
-    })
-    embed.addField('flags', flags)
-  }
+  embed.setFooter(`${prefix}command --h to see more info on a command`)
 }
 
 export async function createJoinEmbed (client, embed) {

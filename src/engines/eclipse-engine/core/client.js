@@ -4,6 +4,7 @@ import { createLogger, format, transports } from 'winston'
 
 import { Registry, Dispatcher } from '@engines/eclipse/core'
 import Provider from '@engines/eclipse/mongo/provider'
+import { ReactionMenuManager } from '@engines/eclipse/reactionMenus/reactionMenuManager'
 /**
  * An extension of the discord.js client
  * @extends Discord.Client
@@ -52,6 +53,7 @@ class EclipseClient extends Client {
     this.registry = new Registry(this)
     this.dispatcher = new Dispatcher(this)
     this.db = new Provider(options.dbString, this)
+    this.reactionMenuManager = new ReactionMenuManager()
 
     // Whenever a message event occurs handle the message
     this.on('message', async msg => {

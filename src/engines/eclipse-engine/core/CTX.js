@@ -15,7 +15,7 @@ class CTX {
     this.logger.debug(`[CTX]: Created CTX for ${message.id}`)
   }
 
-  async init () {
+  init () {
     this.logger.debug('[CTX]: Getting guild from collection')
     this.db = this.client.db
     this.guild.db = this.client.db.guilds.get(this.guild.id)
@@ -30,7 +30,9 @@ class CTX {
   }
 
   say (msg) {
-    this.channel.send(msg).catch()
+    try {
+      return this.channel.send(msg)
+    } catch (e) {}
   }
 
   error (msg, settings) {

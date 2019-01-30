@@ -5,7 +5,7 @@ import {
   commandStatus,
   showEnabled
 } from '@engines/eclipse/core'
-import { generateCommandHelp } from '@engines/eclipse/util/embed'
+import { createCommandHelp } from '@engines/eclipse/util/embed'
 import Flag from './flag'
 
 class Command {
@@ -184,7 +184,7 @@ class Command {
 
   sendHelpMessage (ctx) {
     const embed = new RichEmbed().setColor(0x4286f4)
-    generateCommandHelp(ctx, embed)
+    createCommandHelp(ctx, embed)
     ctx.say(embed)
   }
 

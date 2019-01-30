@@ -1,10 +1,8 @@
 import { RichEmbed } from 'discord.js'
-import { createHelpMessage } from './embed'
+import { help } from './info'
 
 export async function sendHelp (ctx) {
-  const embed = new RichEmbed().setColor(0x4286f4)
-  await createHelpMessage(ctx, embed)
-  ctx.say(embed)
+  await help(ctx)
 }
 
 export async function sendInvite (ctx) {

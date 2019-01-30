@@ -74,7 +74,7 @@ class dispatcher {
     if (
       cmd &&
       !ctx.member.hasPermission('ADMINISTRATOR') &&
-      !this.handleDB(cmd, ctx)
+      !this.handleDB(ctx)
     ) {
       return false
     }

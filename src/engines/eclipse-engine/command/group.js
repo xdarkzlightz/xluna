@@ -1,6 +1,6 @@
 import { Collection, RichEmbed } from 'discord.js'
 
-import { success, generateGroupHelp } from '@engines/eclipse/util/embed'
+import { success, createGroupHelp } from '@engines/eclipse/util/embed'
 import {
   setGroupEnabledTo,
   groupStatus,
@@ -196,7 +196,7 @@ class Group {
 
   sendHelpMessage (ctx) {
     const embed = new RichEmbed().setColor(0x4286f4)
-    generateGroupHelp(ctx, embed)
+    createGroupHelp(ctx, embed)
     ctx.say(embed)
   }
 
