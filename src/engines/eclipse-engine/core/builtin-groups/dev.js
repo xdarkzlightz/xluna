@@ -39,3 +39,39 @@ export const test = {
     ctx.say(testArg)
   }
 }
+
+export const reloadcache = {
+  config: {
+    aliases: ['rc'],
+    description: 'Reloads the guild cache',
+    usage: 'reloadcache'
+  },
+  async run (ctx) {
+    ctx.db.guilds.clear()
+    await ctx.db.cache()
+    ctx.success('Cache reloaded!')
+  }
+}
+
+export const evaluate = {
+  config: {
+    aliases: ['rc'],
+    description: 'Reloads the guild cache',
+    usage: 'reloadcache',
+    args: [
+      {
+        type: 'string',
+        name: 'code'
+      }
+    ]
+  },
+  async run (ctx, { code }) {
+    try {
+      // eslint-disable-next-line
+      const evaled = await eval(code)
+      if (typeof evaled === 'string') ctx.say(evaled)
+    } catch (e) {
+      ctx.error(`Error: ${e.message}`)
+    }
+  }
+}

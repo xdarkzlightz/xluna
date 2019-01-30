@@ -1,12 +1,13 @@
 import { Collection, RichEmbed } from 'discord.js'
 
-import { success, createGroupHelp } from '@engines/eclipse/util/embed'
+import { createGroupHelp } from '@engines/eclipse/util/embed'
 import {
   setGroupEnabledTo,
   groupStatus,
   groupShowEnabled,
   clear
 } from '@engines/eclipse/core'
+import { dev } from '@engines/eclipse/util/other'
 
 class Group {
   constructor (client, path, groupObject) {
@@ -176,22 +177,32 @@ class Group {
             default: ctx => ctx.guild.roles.get(ctx.guild.id)
           }
         ]
+      },
+      {
+        name: `reload`,
+        devOnly: true,
+        run: ctx => this.reload(ctx)
+      },
+      {
+        name: `unload`,
+        devOnly: true,
+        run: this.unload
       }
     ])
   }
 
   reload (ctx) {
-    if (this.client.devs.indexOf(ctx.author.id) >= 0) return
+    if (!dev(ctx)) return
 
-    const reloaded = this.client.registry.reloadGroup(this)
-    ctx.say(success(reloaded))
+    const reloaded = ctx.client.registry.reloadGroup(this)
+    ctx.success(reloaded)
   }
 
   unload (ctx) {
-    if (this.client.devs.indexOf(ctx.author.id) >= 0) return
+    if (!dev(ctx)) return
 
-    const unloaded = this.client.registry.unloadGroup(this)
-    ctx.say(success(unloaded))
+    const unloaded = ctx.client.registry.unloadGroup(this)
+    ctx.ssuccess(unloaded)
   }
 
   sendHelpMessage (ctx) {

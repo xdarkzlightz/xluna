@@ -43,8 +43,8 @@ class dispatcher {
     if (!content.startsWith(ctx.prefix)) return false
     if (content.startsWith(ctx.prefix + ' ')) return false
 
-    this.getCommand(ctx)
-
+    const cmd = this.getCommand(ctx)
+    if (!cmd) return false
     if (ctx.cmd) this.logger.debug(`[Dispatcher]: Command: ${ctx.cmd.name}`)
     if (ctx.group) this.logger.debug(`[Dispatcher: Group ${ctx.group.name}`)
     this.logger.debug(

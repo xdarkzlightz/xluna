@@ -7,6 +7,7 @@ import {
 } from '@engines/eclipse/core'
 import { createCommandHelp } from '@engines/eclipse/util/embed'
 import Flag from './flag'
+import { dev } from '@engines/eclipse/util/other'
 
 class Command {
   constructor (Client, commandObject) {
@@ -153,12 +154,12 @@ class Command {
       {
         name: `reload`,
         devOnly: true,
-        run: this.reload
+        run: ctx => this.reload(ctx)
       },
       {
         name: `unload`,
         devOnly: true,
-        run: this.unload
+        run: ctx => this.unload(ctx)
       },
       {
         name: `help`,
@@ -169,16 +170,16 @@ class Command {
   }
 
   reload (ctx) {
-    if (ctx.client.devs.indexOf(ctx.author.id) === -1) return
+    if (!dev(ctx)) return
 
-    const reloaded = ctx.client.registry.reloadCommand(ctx.cmd)
+    const reloaded = ctx.client.registry.reloadGroup(this)
     ctx.success(reloaded)
   }
 
   unload (ctx) {
-    if (ctx.client.devs.indexOf(ctx.author.id) === -1) return
+    if (!dev(ctx)) return
 
-    const unloaded = ctx.client.registry.unloadCommand(ctx.cmd)
+    const unloaded = ctx.client.registry.unloadGroup(this)
     ctx.success(unloaded)
   }
 

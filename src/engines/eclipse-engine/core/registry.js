@@ -183,6 +183,7 @@ class Registry {
     // Sets the command name and group in the command config
     cmd.config.name = cmdName
     cmd.config.group = group.name
+    if (!cmd.config.devOnly && group.devOnly) cmd.config.devOnly = group.devOnly
 
     // Creates a new Command and adds it to the commands collection
     const command = new Command(this.client, cmd)
@@ -217,44 +218,13 @@ class Registry {
    */
   unloadCommand (cmd) {
     this.logger.info(`[Registry]: unloading ${cmd.name}`)
-    const group = this.groups.get(cmd.group)
+    const group = this.groups.get(cmd.group.name)
     const cmdDeleted = group.commands.delete(cmd.name)
     if (this.commands.has(cmd.name)) this.commands.delete(cmd.name)
     if (cmdDeleted) {
       this.logger.info(`[Registry]: unloaded ${cmd.name}`)
       return `Command ${cmd.name}: unloaded`
     }
-  }
-
-  /**
-   * Unloads the specified command
-   * @param  {Eclipse Command} cmd The eclipse command you want to target
-   * @return {string}              The string response
-   */
-  reloadCommand (cmd) {
-    this.logger.info(`[Registry]: reloading ${cmd.name}`)
-
-    this.unloadCommand(cmd)
-
-    const group = this.groups.get(cmd.group)
-
-    const modPath = join(group.path, '/', `${cmd.group}.js`)
-    delete require.cache[require.resolve(modPath)]
-    const groupObject = require(modPath)
-
-    // Creates a copy of the group object and removes the config so now we're left with only the commands
-    const commands = Object.assign({}, groupObject)
-    delete commands.GroupConfig
-
-    // Loop through the command properties
-    Object.keys(commands).forEach(prop => {
-      if (prop === cmd.name) {
-        const command = commands[prop]
-        this.loadCommand(prop, group, command)
-      }
-    })
-    this.logger.info(`[Registry]: reloaded ${cmd.name}`)
-    return `Command ${cmd.name}: reloaded`
   }
 
   /**
@@ -281,7 +251,7 @@ class Registry {
    * @return {string}              The string response
    */
   reloadGroup (oldGroup) {
-    this.logger(`[Registry]: Reloading ${oldGroup.name}`)
+    this.logger.info(`[Registry]: Reloading ${oldGroup.name}`)
     this.unloadGroup(oldGroup)
     const modPath = join(oldGroup.path, '/', `${oldGroup.name}.js`)
     delete require.cache[require.resolve(modPath)]
@@ -293,7 +263,7 @@ class Registry {
 
     // Creates a copy of the group object and removes the config so now we're left with only the commands
     const commands = Object.assign({}, groupObject)
-    delete commands.group_config
+    delete commands.GroupConfig
 
     // Loop through the command properties
     Object.keys(commands).forEach(prop => {
@@ -301,7 +271,7 @@ class Registry {
       this.loadCommand(prop, newGroup, command)
     })
 
-    this.logger(`[Registry]: Reloaded ${oldGroup.name}`)
+    this.logger.info(`[Registry]: Reloaded ${oldGroup.name}`)
     return `Group ${newGroup.name}: reloaded`
   }
 

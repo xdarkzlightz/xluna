@@ -46,7 +46,10 @@ class mongoProvider {
   // TODO: EXTEND PROVIDER AND MOVE USERS TO IT'S OWN EXTENSION
   async init () {
     await this.connect()
+    await this.cache()
+  }
 
+  async cache () {
     const guilds = await Guild.find({})
 
     guilds.forEach(guild => {
@@ -59,7 +62,6 @@ class mongoProvider {
       this.users.set(user.id, user)
     })
   }
-
   // TODO:  MOVE TO IT'S OWN EXTENSION
   async saveUser (user, ctx) {
     await user.save()
