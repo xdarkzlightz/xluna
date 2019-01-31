@@ -45,11 +45,11 @@ class ArgumentParser {
         : await this.parseDiscordTypes(arg.type, args[pass], ctx)
 
       if (arg.options) {
-        const foundValue = arg.values.find(val => obj.toLowerCase() === val)
+        const foundValue = arg.options.find(val => obj.toLowerCase() === val)
         if (!foundValue) {
           throw new EclipseError(
             { type: 'friendly', options: arg.options },
-            `Invalid argument: ${obj}`
+            `Invalid option: ${obj}`
           )
         }
       }

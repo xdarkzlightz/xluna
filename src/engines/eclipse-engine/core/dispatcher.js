@@ -162,6 +162,7 @@ class dispatcher {
     if (ctx.cmd && !ctx.group) ctx.group = ctx.cmd.group
 
     ctx.args = args
+    return true
   }
 
   handleCooldown ({ cmd, author, error }) {
