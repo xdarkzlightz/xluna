@@ -69,8 +69,8 @@ class EclipseClient extends Client {
     this.logger.debug('[Eclipse-Engine]: Created client')
   }
 
-  async init () {
-    await this.db.init()
+  async init (migration) {
+    await this.db.init(migration)
     await this.registry.init()
   }
 

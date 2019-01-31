@@ -1,6 +1,8 @@
 import { Collection } from 'discord.js'
 import mongoose from 'mongoose'
 
+import { asyncForEach } from '@util/array'
+
 import Guild from './models/guild'
 import MongoGuild from './types/guild'
 import User from './models/user'
@@ -44,11 +46,31 @@ class mongoProvider {
 
   /** Connects to the database and caches all guilds */
   // TODO: EXTEND PROVIDER AND MOVE USERS TO IT'S OWN EXTENSION
-  async init () {
+  async init (migration) {
     await this.connect()
+    await this.updateGuilds()
+    if (migration) await this.migrateGuilds(migration)
     await this.cache()
   }
 
+  /** Creates a new guild config for guilds that don't have one */
+  async updateGuilds () {
+    await asyncForEach(this.client.guilds, async guild => {
+      const dbGuild = this.newGuild(this.prefix, guild.id)
+      await dbGuild.save()
+    })
+  }
+
+  /** Runs a migration function to migrate guilds */
+  async migrateGuilds (migration) {
+    await asyncForEach(this.guilds, async guild => {
+      const db = guild.data
+      migration(db)
+      await db.save()
+    })
+  }
+
+  /** Caches all of the bots guilds */
   async cache () {
     const guilds = await Guild.find({})
 
@@ -83,24 +105,24 @@ class mongoProvider {
   }
 
   /** Creates a new guild document and caches it */
-  async newGuild (ctx, rating) {
-    const groups = this.createGroups(rating)
+  async newGuild (prefix, id) {
+    const groups = this.createGroups(2)
     const config = {
-      prefix: ctx.client.prefix,
-      rating: rating
+      prefix: prefix,
+      rating: 2
     }
 
-    const role = { id: ctx.guild.id, groups }
+    const role = { id: id, groups }
 
     const dbGuild = new Guild({
-      id: ctx.guild.id,
+      id: id,
       config,
       channels: [],
       roles: [role],
       members: []
     })
 
-    this.guilds.set(ctx.guild.id, new MongoGuild(dbGuild, this))
+    this.guilds.set(id, new MongoGuild(dbGuild, this))
     return dbGuild
   }
 
