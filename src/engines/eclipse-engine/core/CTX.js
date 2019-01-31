@@ -20,12 +20,22 @@ class CTX {
     this.db = this.client.db
     this.guild.db = this.client.db.guilds.get(this.guild.id)
     this.author.db = this.client.db.users.get(this.author.id)
+    this.member.db = this.guild.db.members.get(this.member.id)
+    this.channel.db = this.guild.db.channels.get(this.channel.id)
     this.everyone = this.guild.roles.get(this.guild.id)
 
-    if (this.guild.db) {
-      this.prefix = this.guild.db.config.prefix
-    } else {
-      this.prefix = this.client.prefix
+    this.prefix = this.guild.db.config.prefix
+
+    if (!this.member.db && !this.author.bot) {
+      this.member.db = this.guild.db.add('member', { id: this.member.id })
+    }
+
+    if (!this.channel.db) {
+      this.channel.db = this.guild.db.add('channel', { id: this.channel.id })
+    }
+
+    if (!this.author.db && !this.author.bot) {
+      this.author.db = this.db.addUser(this)
     }
   }
 

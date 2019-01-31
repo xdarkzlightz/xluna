@@ -93,13 +93,12 @@ class mongoProvider {
   }
 
   // TODO:  MOVE TO IT'S OWN EXTENSION
-  async newUser (ctx) {
+  async addUser (ctx) {
     const dbUser = new User({
       id: ctx.author.id,
       profile: {}
     })
 
-    await dbUser.save()
     this.users.set(ctx.author.id, dbUser)
     ctx.author.db = this.users.get(ctx.author.id)
   }

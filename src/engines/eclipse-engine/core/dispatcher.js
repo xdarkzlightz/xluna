@@ -26,12 +26,11 @@ class dispatcher {
   // Emits an pre-command event to the client so you can do things before the command runs
   // Using CTX
   async preCommand (ctx) {
-    this.client.emit('preCommand', ctx)
+    ctx.init()
     if (ctx.msg.author.bot) return false
-
     if (ctx.msg.channel.type === 'dm') return false
 
-    await ctx.init()
+    this.client.emit('preCommand', ctx)
 
     const mentionsBot = ctx.msg.mentions.members.get(ctx.client.user.id)
     if (mentionsBot) {
@@ -101,6 +100,11 @@ class dispatcher {
     if (ctx.guild && ctx.guild.db) {
       await ctx.guild.db.save()
     }
+
+    if (ctx.author.db) {
+      await ctx.db.saveUser(ctx.author.db)
+    }
+
     this.client.emit('command', ctx)
   }
 
