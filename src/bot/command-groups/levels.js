@@ -8,7 +8,13 @@ export const GroupConfig = {
 export const rank = {
   config: {
     description: 'Check what level you are!',
-    usage: 'rank'
+    usage: 'rank',
+    args: [
+      {
+        type: 'member',
+        default: ctx => ctx.member
+      }
+    ]
   },
   run: sendLevel
 }
@@ -20,8 +26,7 @@ export const expchannel = {
     memberPermissions: ['MANAGE_CHANNELS'],
     args: [
       {
-        type: 'channel',
-        name: 'channel'
+        type: 'channel'
       }
     ]
   },

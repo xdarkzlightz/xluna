@@ -1,22 +1,21 @@
 import { RichEmbed } from 'discord.js'
 import { serverRank, updateEXPChannel, getLevelEXP } from './level'
 
-export function sendLevel (ctx) {
-  const member = ctx.guild.db.members.get(ctx.member.id)
+export function sendLevel (ctx, { member }) {
   const members = ctx.guild.db.members.array().slice()
-  const rank = serverRank(members, member)
+  const rank = serverRank(members, member.db)
 
   const embed = new RichEmbed()
-    .setAuthor(ctx.author.tag, ctx.author.avatarURL)
+    .setAuthor(member.user.tag, member.user.displayAvatarURL)
     .setDescription(`Server rank #${rank}`)
-    .setThumbnail(ctx.author.avatarURL)
+    .setThumbnail(member.user.displayAvatarURL)
     .setColor(0x5936e7)
-    .addField('Server Level', `Lvl. ${member.data.level}`, true)
+    .addField('Server Level', `Lvl. ${member.db.data.level}`, true)
     .addField(
       'Server progress',
-      `${member.data.exp}/${getLevelEXP(
-        member.data.level + 1
-      )} till Lvl. ${member.data.level + 1}`,
+      `${member.db.data.exp}/${getLevelEXP(
+        member.db.data.level + 1
+      )} till Lvl. ${member.db.data.level + 1}`,
       true
     )
 
