@@ -22,21 +22,10 @@ export function serverRank (members, member) {
 }
 
 export function expEnabledForChannel (ctx, channel) {
-  const dbChannel = ctx.guild.db.channels.get(channel.id)
-  if (dbChannel) return dbChannel.data.expEnabled
-  return true
+  return channel.data.expEnabled
 }
 
-export async function updateEXPChannel (ctx, channel) {
-  const dbChannel = ctx.guild.db.channels.get(channel.id)
-
-  if (!dbChannel) {
-    ctx.guild.db.data.channels.push({ id: channel.id, expEnabled: false })
-    await ctx.db.save(ctx.guild.db.data, ctx)
-    return
-  }
-
-  const enabled = dbChannel.data.expEnabled
-  dbChannel.data.expEnabled = !enabled
-  await ctx.db.save(ctx.guild.db.data)
+export function updateEXPChannel (ctx, channel) {
+  const enabled = channel.data.expEnabled
+  channel.data.expEnabled = !enabled
 }
