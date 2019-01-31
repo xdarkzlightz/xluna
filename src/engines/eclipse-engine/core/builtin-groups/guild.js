@@ -64,10 +64,7 @@ export const config = {
     example: 'config pg'
   },
   async run (ctx, { rating }) {
-    const guildExists = ctx.guild.db
-    if (guildExists) {
-      return ctx.error('Cannot create server config, one already exists')
-    }
+    const db = ctx.guild.db
 
     const ratings = {
       PG: 0,
@@ -75,8 +72,12 @@ export const config = {
       NSFW: 2
     }
 
-    await ctx.db.newGuild(ctx, ratings[rating.toUpperCase()])
+    db.data.config.rating = ratings[rating.toUpperCase()]
 
-    ctx.success('Server config created, you can now run commands!')
+    const role = db.roles.get(ctx.guild.id)
+    role.data.groups = ctx.db.createGroups(db.data.config.rating)
+    role.reload()
+
+    ctx.success(`Server rating changed to ${rating}`)
   }
 }
