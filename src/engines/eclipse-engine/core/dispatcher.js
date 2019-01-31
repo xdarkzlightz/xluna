@@ -166,6 +166,8 @@ class dispatcher {
     if (ctx.cmd && !ctx.group) ctx.group = ctx.cmd.group
 
     ctx.args = args
+    if (ctx.args) ctx.args = this.argumentParser.getArgs(ctx.args.join(' '))
+
     return true
   }
 

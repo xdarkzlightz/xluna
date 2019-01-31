@@ -39,10 +39,9 @@ class ArgumentParser {
         )
       }
 
-      const args = this.getArgs(ctx.args.join(' '))
       const obj = this.isPrimitive(arg.type)
-        ? this.parsePrimitives(arg.type, args[pass])
-        : await this.parseDiscordTypes(arg.type, args[pass], ctx)
+        ? this.parsePrimitives(arg.type, ctx.args[0])
+        : await this.parseDiscordTypes(arg.type, ctx.args[0], ctx)
 
       if (arg.options) {
         const foundValue = arg.options.find(val => obj.toLowerCase() === val)

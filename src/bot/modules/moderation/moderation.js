@@ -1,112 +1,60 @@
 import { removeFromArray } from '@util/array'
 
 export async function addWarning (member, reason, ctx) {
-  let dbMember = ctx.guild.db.members.get(member.id)
   const warning = {
     reason,
     modID: ctx.author.id.toString(),
     timestamp: ctx.msg.createdAt.toUTCString()
   }
 
-  if (!dbMember) {
-    ctx.guild.db.data.members.push({
-      id: member.id,
-      warnings: [warning]
-    })
-    await ctx.db.save(ctx.guild.db.data, ctx)
-    return
-  }
-
-  if (!dbMember.data.warnings) dbMember.data.warnings = []
-
-  dbMember.data.warnings.push(warning)
-
-  await ctx.db.save(ctx.guild.db.data, ctx)
+  member.db.data.warnings.push(warning)
 }
 
 export async function newMod (role, ctx) {
-  let dbRole = ctx.guild.db.roles.get(role.id)
-
-  if (!dbRole) {
-    ctx.guild.db.data.roles.push({
-      id: role.id,
-      mod: true
-    })
-    await ctx.db.save(ctx.guild.db.data, ctx)
-    return
-  }
-
-  dbRole.data.mod = true
-
-  await ctx.db.save(ctx.guild.db.data, ctx)
+  role.db.data.mod = true
 }
 
 export async function removeMod (role, ctx) {
-  let dbRole = ctx.guild.db.roles.get(role.id)
+  if (!role) return false
 
-  if (!dbRole) return false
-
-  dbRole.data.mod = false
-
-  await ctx.db.save(ctx.guild.db.data, ctx)
+  role.db.data.mod = false
 }
 
 export async function removeWarning (member, number, ctx) {
-  let dbMember = ctx.guild.db.members.get(member.id)
-  if (!dbMember || !dbMember.data.warnings) return false
-  dbMember = dbMember.data
+  if (!member || !member.db.data.warnings) return false
+  member = member.db.data
 
-  const warning = dbMember.warnings[number - 1]
+  const warning = member.warnings[number - 1]
   if (!warning) return false
 
-  removeFromArray(dbMember.warnings, warning)
-  await ctx.db.save(ctx.guild.db.data, ctx)
+  removeFromArray(member.warnings, warning)
 
   return true
 }
 
 export async function removeAllWarnings (member, ctx) {
-  let dbMember = ctx.guild.db.members.get(member.id)
-  if (!dbMember || !dbMember.data.warnings) return false
-  dbMember = dbMember.data
+  if (!member || !member.db.data.warnings) return false
+  member = member.db.data
 
-  if (!dbMember.warnings.length) return false
+  if (!member.warnings.length) return false
 
-  dbMember.warnings = []
-
-  await ctx.db.save(ctx.guild.db.data, ctx)
+  member.warnings = []
 
   return true
 }
 
 export async function addLog (member, log, ctx) {
-  let dbMember = ctx.guild.db.members.get(member.id)
-  if (!dbMember) return false
+  if (!member) return false
 
-  if (!dbMember.data.modLogs) dbMember.data.modLogs = []
-  dbMember.data.modLogs.push(log)
-
-  await ctx.db.save(ctx.guild.db.data)
+  member.db.data.modLogs.push(log)
 }
 
 export async function setNick (member, nickname, ctx) {
-  let dbMember = ctx.guild.db.members.get(member.id)
-  if (!dbMember) {
-    ctx.guild.db.data.members.push({ id: member.id, nickname })
-    await ctx.db.save(ctx.guild.db.data, ctx)
-    return
-  }
-
-  dbMember.data.nickname = nickname
-
-  await ctx.db.save(ctx.guild.db.data, ctx)
+  member.db.data.nickname = nickname
 }
 
 export async function removeNick (member, ctx) {
-  let dbMember = ctx.guild.db.members.get(member.id)
-  if (!dbMember) return false
+  if (!member) return false
 
-  dbMember.data.nickname = ''
-
-  await ctx.db.save(ctx.guild.db.data, ctx)
+  member.db.data.nickname = ''
 }

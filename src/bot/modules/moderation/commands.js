@@ -12,6 +12,7 @@ import {
 import { embedWarnings, embedLogs } from './embed'
 
 const isMod = (roles, member) => {
+  if (member.hasPermission('ADMINISTRATOR')) return true
   let isMod
   roles.forEach(roleDB => {
     if (isMod) return
@@ -34,10 +35,10 @@ export async function banMember (ctx, { member, reason }) {
     `*You have been banned from ${ctx.guild.name} for: ${reason}*`
   ).catch()
 
-  member.ban({ reason: reason })
+  member.ban({ reason })
   ctx.say(`*${member.user.tag} has been banned!*`)
 
-  await addLog(
+  addLog(
     member,
     {
       action: 'Banned',
@@ -58,10 +59,10 @@ export async function softbanMember (ctx, { member, days, reason }) {
     `*You have been soft-banned from ${ctx.guild.name} for: ${reason}*`
   ).catch()
 
-  member.ban({ reason: reason, days })
+  member.ban({ reason, days })
   ctx.guild.unban(member, reason)
 
-  await addLog(
+  addLog(
     member,
     {
       action: 'Soft-banned',
@@ -87,7 +88,7 @@ export async function kickMember (ctx, { member, reason }) {
   member.kick(reason)
   ctx.say(`*${member.user.tag} has been kicked!*`)
 
-  await addLog(
+  addLog(
     member,
     {
       action: 'Kicked',
@@ -103,9 +104,9 @@ export async function warnMember (ctx, { member, reason }) {
   const mod = isMod(ctx.guild.db.roles, ctx.member)
   if (!mod) return
 
-  await addWarning(member, reason, ctx)
+  addWarning(member, reason, ctx)
 
-  await addLog(
+  addLog(
     member,
     {
       action: 'Warned',
@@ -122,7 +123,7 @@ export async function warnMember (ctx, { member, reason }) {
   dm.send(`*You have been warned in ${ctx.guild.name} for: ${reason}*`).catch()
 }
 
-export async function getWarnings (ctx, member) {
+export async function getWarnings (ctx, { member }) {
   const embed = new RichEmbed()
   await embedWarnings(embed, member, ctx)
   ctx.say(embed)
@@ -132,10 +133,10 @@ export async function deleteWarning (ctx, { member, number }) {
   const mod = isMod(ctx.guild.db.roles, ctx.member)
   if (!mod) return
 
-  const removed = await removeWarning(member, number, ctx)
+  const removed = removeWarning(member, number, ctx)
   if (!removed) return ctx.say("*Warning doesn't exist*")
 
-  await addLog(
+  addLog(
     member,
     {
       action: 'Warning deleted',
@@ -148,14 +149,14 @@ export async function deleteWarning (ctx, { member, number }) {
   ctx.say('*Warning removed!*')
 }
 
-export async function clearWarnings (ctx, member) {
+export async function clearWarnings (ctx, { member }) {
   const mod = isMod(ctx.guild.db.roles, ctx.member)
   if (!mod) return
 
-  const removed = await removeAllWarnings(member, ctx)
+  const removed = removeAllWarnings(member, ctx)
   if (!removed) return ctx.say('*Member has no warnings*')
 
-  await addLog(
+  addLog(
     member,
     {
       action: 'Warnings cleared',
@@ -185,9 +186,9 @@ export async function addNick (ctx, { member, nickname }) {
 
   member.setNickname(nickname)
 
-  await setNick(member, nickname, ctx)
+  setNick(member, nickname, ctx)
 
-  await addLog(
+  addLog(
     member,
     {
       action: 'Nickname set',
@@ -206,9 +207,9 @@ export async function deleteNick (ctx, member) {
 
   member.setNickname('')
 
-  await removeNick(member, ctx)
+  removeNick(member, ctx)
 
-  await addLog(
+  addLog(
     member,
     {
       action: 'Nickname removed',
@@ -222,11 +223,11 @@ export async function deleteNick (ctx, member) {
 }
 
 export async function addMod (ctx, { role }) {
-  await newMod(role, ctx)
+  newMod(role, ctx)
   ctx.success(`Added mod role ${role.name}`)
 }
 
 export async function deleteMod (ctx, { role }) {
-  await removeMod(role, ctx)
+  removeMod(role, ctx)
   ctx.success(`removed mod role ${role.name}`)
 }

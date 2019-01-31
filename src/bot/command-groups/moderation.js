@@ -79,11 +79,7 @@ export const kick = {
         type: 'string',
         name: 'reason'
       }
-    ],
-    cooldown: {
-      amount: 2,
-      timer: 1
-    }
+    ]
   },
   run: kickMember
 }
@@ -109,25 +105,11 @@ export const warn = {
     },
     flags: [
       {
-        name: 'list',
-        aliases: ['l'],
-        description: 'Get a list of warnings for a member',
-        usage: 'warn --l',
-        arg: { type: 'member' },
-        run: getWarnings
-      },
-      {
         name: 'remove',
         aliases: ['r'],
         description: 'Get a remove a warning from a member using the warning #',
         usage: 'warn --r',
-        args: [
-          { type: 'member', name: 'member' },
-          {
-            type: 'number',
-            name: 'number'
-          }
-        ],
+        args: [{ type: 'member' }, { type: 'number' }],
         run: deleteWarning
       },
       {
@@ -135,12 +117,21 @@ export const warn = {
         aliases: ['c'],
         description: 'Clear a members warnings',
         usage: 'warn --c',
-        arg: { type: 'member' },
+        args: [{ type: 'member' }],
         run: clearWarnings
       }
     ]
   },
   run: warnMember
+}
+
+export const warnings = {
+  config: {
+    description: 'Get a list of warnings for a user',
+    usage: 'warnings (member)',
+    args: [{ type: 'member' }]
+  },
+  run: getWarnings
 }
 
 export const logs = {
@@ -186,7 +177,7 @@ export const nick = {
         aliases: ['r'],
         description: 'Remove a members nickname',
         usage: 'nick --r',
-        arg: { type: 'member' },
+        args: [{ type: 'member' }],
         run: deleteNick
       }
     ]
@@ -212,7 +203,7 @@ export const mod = {
         aliases: ['r'],
         description: 'Remove a mod role',
         usage: ' --r',
-        arg: { type: 'role' },
+        args: [{ type: 'role' }],
         run: deleteMod
       }
     ]
