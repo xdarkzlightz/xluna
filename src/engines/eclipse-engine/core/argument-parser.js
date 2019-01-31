@@ -54,7 +54,7 @@ class ArgumentParser {
         }
       }
 
-      parsed[arg.name] = obj
+      parsed[arg.name || arg.type] = obj
 
       ctx.args.shift()
       return this.parseArgs(cmd, ctx, parsed, (pass += 1))
