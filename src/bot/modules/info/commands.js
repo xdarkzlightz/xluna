@@ -83,7 +83,7 @@ export async function sendServerInfo (ctx) {
   ctx.say(embed)
 }
 
-export function sendMemberInfo (ctx, member) {
+export function sendMemberInfo (ctx, { member }) {
   const embed = new RichEmbed()
     .setAuthor(
       `${member.user.tag} (${member.id})`,
@@ -110,7 +110,7 @@ export function sendMemberInfo (ctx, member) {
   ctx.say(embed)
 }
 
-export function sendChannelInfo (ctx, channel) {
+export function sendChannelInfo (ctx, { channel }) {
   const embed = new RichEmbed()
     .setAuthor(`${channel.name} (${channel.id})`)
     .setDescription(`<#${channel.id}>`)
@@ -121,7 +121,7 @@ export function sendChannelInfo (ctx, channel) {
   ctx.say(embed)
 }
 
-export function sendRoleInfo (ctx, role) {
+export function sendRoleInfo (ctx, { role }) {
   const embed = new RichEmbed()
     .setAuthor(`${role.name} (${role.id})`)
     .setDescription(`<@&${role.id}>`)

@@ -12,56 +12,7 @@ import {
 export const GroupConfig = {
   name: 'info',
   aliases: ['i'],
-  description: 'Info group, contains commands that give you info stuff',
-  flags: [
-    {
-      name: 'bot',
-      aliases: ['b'],
-      description: 'Get info on the bot',
-      usage: 'info --b',
-      run: sendBotInfo
-    },
-    {
-      name: 'server',
-      aliases: ['s'],
-      description: 'Get info on the server',
-      usage: 'info --s',
-      run: sendServerInfo
-    },
-    {
-      name: 'member',
-      aliases: ['m', 'whois'],
-      description: 'Get info on a member',
-      usage: 'info --m',
-      arg: { type: 'member' },
-      default: ctx => {
-        return ctx.member
-      },
-      run: sendMemberInfo
-    },
-    {
-      name: 'channel',
-      aliases: ['c'],
-      description: 'Get info on a channel',
-      usage: 'info --c',
-      arg: { type: 'channel' },
-      default: ctx => {
-        return ctx.channel
-      },
-      run: sendChannelInfo
-    },
-    {
-      name: 'role',
-      aliases: ['r'],
-      description: 'Get info on a role',
-      usage: 'info --r',
-      arg: { type: 'role' },
-      default: ctx => {
-        return ctx.guild.defaultRole
-      },
-      run: sendRoleInfo
-    }
-  ]
+  description: 'Info group, contains commands that give you info stuff'
 }
 
 export const help = {
@@ -88,4 +39,53 @@ export const membercount = {
     usage: 'memberCount'
   },
   run: sendMemberCount
+}
+
+export const serverinfo = {
+  config: {
+    description: 'Get info on the server!',
+    usage: 'serverinfo'
+  },
+  run: sendServerInfo
+}
+
+export const botinfo = {
+  config: {
+    description: 'Get info on the bot',
+    usage: 'botinfo'
+  },
+  run: sendBotInfo
+}
+
+export const memberinfo = {
+  config: {
+    aliases: ['im', 'whois'],
+    description: 'Get info on a member',
+    usage: 'memberinfo',
+    example: 'memberinfo xdarkzlightz#6969',
+    args: [{ type: 'member', default: ctx => ctx.member }]
+  },
+  run: sendMemberInfo
+}
+
+export const roleinfo = {
+  config: {
+    name: 'role',
+    aliases: ['ir'],
+    description: 'Get info on a role',
+    usage: 'roleinfo (role)',
+    example: "roleinfo 'test role'",
+    args: [{ type: 'role', default: ctx => ctx.guild.defaultRole }]
+  },
+  run: sendRoleInfo
+}
+
+export const channelinfo = {
+  name: 'channel',
+  aliases: ['ic'],
+  description: 'Get info on a channel',
+  usage: 'channelinfo (channel)',
+  example: 'channelinfo general',
+  arg: { type: 'channel', default: ctx => ctx.channel },
+  run: sendChannelInfo
 }
