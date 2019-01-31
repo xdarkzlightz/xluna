@@ -38,6 +38,12 @@ class Base {
     this.data.groups = this.guild.roles.get(this.guild.data.id).data.groups
     this.init()
   }
+
+  reload () {
+    this.groups.clear()
+    this.commands.clear()
+    this.init()
+  }
 }
 
 export default Base
