@@ -23,8 +23,8 @@ export function sendLevel (ctx) {
   ctx.say(embed)
 }
 
-export async function updateChannel (ctx, { channel }) {
-  await updateEXPChannel(ctx, channel)
+export function updateChannel (ctx, { channel }) {
+  updateEXPChannel(ctx, channel)
   const enabled = ctx.guild.db.channels.get(channel.id).data.expEnabled
 
   ctx.say(
