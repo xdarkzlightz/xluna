@@ -1,3 +1,5 @@
+import { Collection } from 'discord.js'
+
 import { join } from 'path'
 import {
   token,
@@ -17,6 +19,8 @@ import uno from '@modules/uno/uno.js'
 
 import { connect } from '@modules/reddit/reddit'
 
+import migrate from './migrations/1.4'
+
 const { version } = require('../../package.json')
 
 const client = new Client({
@@ -35,7 +39,7 @@ const client = new Client({
 // Use an asynchronus IIFE to initialize the bot
 ;(async () => {
   try {
-    await client.init()
+    await client.init(migrate)
 
     client.gameEngine = new GameEngine()
 
@@ -45,6 +49,7 @@ const client = new Client({
     client.gameEngine.registerGame('uno', uno)
 
     client.r = await connect(r)
+    client.levelCooldowns = new Collection()
 
     client.login()
   } catch (e) {
