@@ -55,7 +55,7 @@ export async function removeLeave (ctx) {
   ctx.success(`Removed the leave channel`)
 }
 
-export async function updateLeaveMessage (ctx, message) {
+export async function updateLeaveMessage (ctx, { message }) {
   await setLeaveMessage(message, ctx)
 
   ctx.success(`Set leave message`)

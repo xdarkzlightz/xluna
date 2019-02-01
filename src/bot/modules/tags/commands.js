@@ -18,7 +18,7 @@ export async function createTag (ctx, { name, body }) {
   ctx.success('Tag created!')
 }
 
-export async function deleteTag (ctx, name) {
+export async function deleteTag (ctx, { name }) {
   const tag = getTag(name, ctx)
   if (!tag) {
     return ctx.error(`Could not find a tag with the name of ${name}!`)
