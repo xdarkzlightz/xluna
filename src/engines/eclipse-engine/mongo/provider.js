@@ -67,6 +67,7 @@ class mongoProvider {
       const db = guild.data
       migration(db)
       await db.save()
+      this.logger.info(`[Database]: Migrated ${guild.data.id}`)
     })
   }
 
