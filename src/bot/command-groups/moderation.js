@@ -25,16 +25,7 @@ export const ban = {
     example: "ban xdarkzlightz 'get yeeted'",
     clientPermissions: ['BAN_MEMBERS'],
     memberPermissions: ['BAN_MEMBERS'],
-    args: [
-      {
-        type: 'member',
-        name: 'member'
-      },
-      {
-        type: 'string',
-        name: 'reason'
-      }
-    ]
+    args: [{ type: 'member' }, { type: 'string', name: 'reason' }]
   },
   run: banMember
 }
@@ -42,13 +33,12 @@ export const softban = {
   config: {
     description: 'Removes messages from a member by banning and unbanning them',
     usage: 'softban (member) (reason)',
-    example: "softban xdarkzlightz 7d 'get yeeted fam'",
+    example: "softban xdarkzlightz 7 'get yeeted fam'",
     clientPermissions: ['BAN_MEMBERS'],
     memberPermissions: ['BAN_MEMBERS'],
     args: [
       {
-        type: 'member',
-        name: 'member'
+        type: 'member'
       },
       {
         type: 'number',
@@ -67,19 +57,10 @@ export const kick = {
   config: {
     description: 'kick a member from your server',
     usage: 'kick (member) (reason)',
-    example: 'kick xdarkzlightz ya bad',
+    example: "kick xdarkzlightz 'ya bad'",
     clientPermissions: ['KICK_MEMBERS'],
     memberPermissions: ['KICK_MEMBERS'],
-    args: [
-      {
-        type: 'member',
-        name: 'member'
-      },
-      {
-        type: 'string',
-        name: 'reason'
-      }
-    ]
+    args: [{ type: 'member' }, { type: 'string', name: 'reason' }]
   },
   run: kickMember
 }
@@ -88,17 +69,8 @@ export const warn = {
   config: {
     description: 'Warn a member in your server',
     usage: 'warn (member) (reason)',
-    example: 'warn xdarkzlightz posting bad memes',
-    args: [
-      {
-        type: 'member',
-        name: 'member'
-      },
-      {
-        type: 'string',
-        name: 'reason'
-      }
-    ],
+    example: "warn xdarkzlightz 'posting bad memes'",
+    args: [{ type: 'member' }, { type: 'string', name: 'reason' }],
     cooldown: {
       amount: 2,
       timer: 1
@@ -139,12 +111,7 @@ export const logs = {
     description: 'Get the moderation logs for a member',
     usage: 'logs (member)',
     example: 'logs xdarkzlightz',
-    args: [
-      {
-        type: 'member',
-        name: 'member'
-      }
-    ],
+    args: [{ type: 'member' }],
     cooldown: {
       amount: 2,
       timer: 1
@@ -161,16 +128,7 @@ export const nick = {
     example: 'nick xdarkzlightz nerd',
     clientPermissions: ['MANAGE_NICKNAMES'],
     memberPermissions: ['MANAGE_NICKNAMES'],
-    args: [
-      {
-        type: 'member',
-        name: 'member'
-      },
-      {
-        type: 'string',
-        name: 'nickname'
-      }
-    ],
+    args: [{ type: 'member' }, { type: 'string', name: 'nickname' }],
     flags: [
       {
         name: 'remove',
@@ -191,12 +149,7 @@ export const mod = {
     usage: 'mod (role)',
     example: 'mod moderators',
     memberPermissions: ['ADMINISTRATOR'],
-    args: [
-      {
-        type: 'role',
-        name: 'role'
-      }
-    ],
+    args: [{ type: 'role' }],
     flags: [
       {
         name: 'remove',

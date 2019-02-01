@@ -13,11 +13,9 @@ export async function saveTag (tag, ctx) {
   const db = ctx.guild.db
   if (!db.config.tags) db.config.tags = []
   db.config.tags.push(tag)
-  ctx.db.save(db.data)
 }
 
 export async function removeTag (tag, ctx) {
   const db = ctx.guild.db
   removeFromArray(db.config.tags, tag)
-  ctx.db.save(db.data)
 }

@@ -22,13 +22,7 @@ export const log = {
     description: 'A command for logging',
     usage: 'log',
     memberPermissions: ['ADMINISTRATOR'],
-    args: [
-      {
-        type: 'channel',
-        name: 'channel',
-        description: 'The channel you want to log in'
-      }
-    ],
+    args: [{ type: 'channel', description: 'The channel you want to log in' }],
     flags: [
       {
         name: 'channel-create',
@@ -100,11 +94,7 @@ export const log = {
         usage: 'log --r',
         run: removeLogger
       }
-    ],
-    cooldown: {
-      amount: 1,
-      timer: 1
-    }
+    ]
   },
   run: setLoggingChannel
 }
@@ -117,7 +107,6 @@ export const welcome = {
     args: [
       {
         type: 'channel',
-        name: 'channel',
         description: 'The channel you want to welcome people in'
       }
     ],
@@ -134,7 +123,7 @@ export const welcome = {
         aliases: ['sm'],
         description: 'Set the welcome message',
         usage: 'leave --sm',
-        arg: { type: 'string' },
+        args: [{ type: 'string' }],
         run: updateWelcomeMessage
       }
     ]
@@ -150,7 +139,6 @@ export const leave = {
     args: [
       {
         type: 'channel',
-        name: 'channel',
         description: 'The channel you want to send leave messages in'
       }
     ],
@@ -167,7 +155,7 @@ export const leave = {
         aliases: ['sm'],
         description: 'Set the leave message',
         usage: 'leave --sm',
-        arg: { type: 'string' },
+        args: [{ type: 'string' }],
         run: updateLeaveMessage
       }
     ]
@@ -177,13 +165,12 @@ export const leave = {
 
 export const autorole = {
   config: {
-    description: 'A command for leaving members',
-    usage: 'leave',
+    description: 'Gives a member a role when they join',
+    usage: 'autorole (role)',
     memberPermissions: ['ADMINISTRATOR'],
     args: [
       {
         type: 'role',
-        name: 'role',
         description: 'The role you want to give to people when they join'
       }
     ],

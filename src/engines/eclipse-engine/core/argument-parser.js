@@ -130,6 +130,7 @@ class ArgumentParser {
     const quoteStrip = /^"|"$|^'|'$|^```(\S*\n?)|```$/g
 
     let splitted = str.match(matchArgs)
+    if (!splitted) return []
     return splitted.map(v => v.replace(quoteStrip, ''))
   }
 }

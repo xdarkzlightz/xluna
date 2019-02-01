@@ -34,7 +34,6 @@ export const invite = {
 
 export const membercount = {
   config: {
-    aliases: ['c'],
     description: 'Get how many members are currently in your server',
     usage: 'memberCount'
   },
@@ -42,24 +41,18 @@ export const membercount = {
 }
 
 export const serverinfo = {
-  config: {
-    description: 'Get info on the server!',
-    usage: 'serverinfo'
-  },
+  config: { description: 'Get info on the server!', usage: 'serverinfo' },
   run: sendServerInfo
 }
 
 export const botinfo = {
-  config: {
-    description: 'Get info on the bot',
-    usage: 'botinfo'
-  },
+  config: { description: 'Get info on the bot', usage: 'botinfo' },
   run: sendBotInfo
 }
 
 export const memberinfo = {
   config: {
-    aliases: ['im', 'whois'],
+    aliases: ['whois'],
     description: 'Get info on a member',
     usage: 'memberinfo',
     example: 'memberinfo xdarkzlightz#6969',

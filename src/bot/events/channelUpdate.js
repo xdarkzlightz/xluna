@@ -1,7 +1,7 @@
 import { handleChannelUpdate } from '@modules/serverutil/events'
 
 module.exports = (client, oldChannel, newChannel) => {
+  if (!oldChannel.guild) return
   const db = client.db.guilds.get(newChannel.guild.id)
-  if (!db) return
   handleChannelUpdate(oldChannel, newChannel, db)
 }

@@ -15,14 +15,8 @@ export const tag = {
         usage: 't --create (name) (body)',
         example: "t --create test 'This is a test tag'",
         args: [
-          {
-            type: 'string',
-            name: 'name'
-          },
-          {
-            type: 'string',
-            name: 'body'
-          }
+          { type: 'string', name: 'name' },
+          { type: 'string', name: 'body' }
         ],
         run: createTag
       },
@@ -32,23 +26,14 @@ export const tag = {
         description: 'Deletes a tag',
         usage: 't --delete ',
         example: 't --delete test',
-        arg: { type: 'string' },
+        args: [{ type: 'string' }],
         run: deleteTag
       }
     ],
-    args: [
-      {
-        type: 'string',
-        name: 'name'
-      }
-    ],
+    args: [{ type: 'string', name: 'name' }],
     aliases: ['t'],
     description: 'Send a tag!',
-    usage: 'tag (tag)',
-    cooldown: {
-      amount: 1,
-      timer: 1
-    }
+    usage: 'tag (tag)'
   },
   run: sendTag
 }

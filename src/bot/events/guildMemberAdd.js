@@ -1,6 +1,6 @@
 module.exports = async (client, member) => {
   const db = client.db.guilds.get(member.guild.id)
-  if (!db) return
+
   if (db.config.welcome) {
     const channel = member.guild.channels.get(db.config.welcome.channelID)
     if (channel) channel.send(`<@${member.id}>, ${db.config.welcome.body}`)

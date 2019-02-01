@@ -35,8 +35,6 @@ export async function setDesc (ctx, { desc }) {
   const user = ctx.author.db
 
   user.profile.desc = desc
-
-  await ctx.db.saveUser(user)
   ctx.say(`Description set to ${desc}`)
 }
 
@@ -46,7 +44,9 @@ export async function sendMarriageRequest (ctx, { member }) {
     return ctx.say("Hey don't be alone! Go out and find someone to marry!")
   }
 
-  if (ctx.author.db.profile.marriedTo !== '') { return ctx.say("Hey you're already married to someone!") }
+  if (ctx.author.db.profile.marriedTo !== '') {
+    return ctx.say("Hey you're already married to someone!")
+  }
 
   let target = await User.findOne({ id: member.id.toString() })
   if (!target) {
@@ -60,8 +60,6 @@ export async function sendMarriageRequest (ctx, { member }) {
 
   target.profile.marryRequests.push(ctx.author.id)
 
-  await ctx.db.saveUser(target)
-
   ctx.say(
     `<@${ctx.author.id}> has asked <@${member.id}> to marry them! <@${
       member.id
@@ -73,6 +71,8 @@ export async function sendMarriageRequest (ctx, { member }) {
 
 export async function acceptMarriageRequest (ctx, { member }) {
   const user = ctx.author.db
+
+  if (user.profile.marriedTo !== '') { ctx.say("You're already married to someone") }
   let target = ctx.db.users.get(member.id)
 
   if (!target || user.profile.marryRequests.indexOf(member.id) !== -1) {
@@ -87,7 +87,6 @@ export async function acceptMarriageRequest (ctx, { member }) {
     target.profile.marryRequests = []
     target.profile.marriedTo = ctx.author.id
 
-    await ctx.db.saveUser(user)
     await ctx.db.saveUser(target)
   } else {
     ctx.say(`That user hasn't sent you a marriage request!`)
@@ -119,7 +118,6 @@ export async function divorceUser (ctx) {
     user.profile.marriedTo = ''
     targetDB.profile.marriedTo = ''
 
-    await ctx.db.saveUser(user)
     await ctx.db.saveUser(targetDB)
   } else {
     ctx.say(`You're not married to anyone!`)

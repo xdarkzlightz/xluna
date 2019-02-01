@@ -2,7 +2,6 @@ export async function setChannel (channel, ctx) {
   const db = ctx.guild.db
   if (!db.config.logger) db.config.logger = {}
   db.config.logger.channelID = channel.id
-  await ctx.db.save(db.data)
 }
 
 export async function updateLoggerConfig (target, ctx) {
@@ -19,7 +18,6 @@ export async function updateLoggerConfig (target, ctx) {
 
   db.config.logger[`${type}${action || ''}`] = enabling
 
-  await ctx.db.save(db.data)
   return true
 }
 
@@ -27,7 +25,6 @@ export async function deleteLogger (ctx) {
   const db = ctx.guild.db
   if (!db.logger) return
   db.config.logger.channelID = ''
-  await ctx.db.save(db.data)
 }
 
 export async function setWelcomeChannel (channel, ctx) {
@@ -35,7 +32,6 @@ export async function setWelcomeChannel (channel, ctx) {
 
   if (!db.config.welcome) db.config.welcome = { body: 'welcome to the server' }
   db.config.welcome.channelID = channel.id
-  await ctx.db.save(db.data)
 }
 
 export async function setWelcomeMessage (body, ctx) {
@@ -43,7 +39,6 @@ export async function setWelcomeMessage (body, ctx) {
 
   if (!db.config.welcome) db.config.welcome = {}
   db.config.welcome.body = body
-  await ctx.db.save(db.data)
 }
 export async function deleteWelcome (ctx) {
   const db = ctx.guild.db
@@ -51,7 +46,6 @@ export async function deleteWelcome (ctx) {
   if (!db.config.welcome) return
 
   db.config.welcome.channelID = ''
-  await ctx.db.save(db.data)
 }
 
 export async function setLeaveChannel (channel, ctx) {
@@ -60,7 +54,6 @@ export async function setLeaveChannel (channel, ctx) {
   if (!db.config.leave) db.config.leave = { body: 'has left!' }
 
   db.config.leave.channelID = channel.id
-  await ctx.db.save(db.data)
 }
 
 export async function deleteLeave (ctx) {
@@ -69,7 +62,6 @@ export async function deleteLeave (ctx) {
   if (!db.config.leave) return
 
   db.config.leave.channelID = ''
-  await ctx.db.save(db.data)
 }
 
 export async function setLeaveMessage (body, ctx) {
@@ -78,19 +70,16 @@ export async function setLeaveMessage (body, ctx) {
   if (!db.config.leave) db.config.leave = {}
 
   db.config.leave.body = body
-  await ctx.db.save(db.data)
 }
 
 export async function setAutoRole (role, ctx) {
   const db = ctx.guild.db
 
   db.config.roleID = role.id
-  await ctx.db.save(db.data)
 }
 
 export async function deleteAutoRole (ctx) {
   const db = ctx.guild.db
 
   db.config.roleID = ''
-  await ctx.db.save(db.data)
 }

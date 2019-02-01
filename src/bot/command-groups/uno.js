@@ -22,50 +22,32 @@ export const GroupConfig = {
 }
 
 export const create = {
-  config: {
-    description: 'Creates a game',
-    usage: 'create'
-  },
+  config: { description: 'Creates a game', usage: 'create' },
   run: createGame
 }
 
 export const start = {
-  config: {
-    description: 'Starts a game',
-    usage: 'start'
-  },
+  config: { description: 'Starts a game', usage: 'start' },
   run: startGame
 }
 
 export const end = {
-  config: {
-    description: 'Ends a game',
-    usage: 'end'
-  },
+  config: { description: 'Ends a game', usage: 'end' },
   run: endGame
 }
 
 export const exit = {
-  config: {
-    description: 'Removes the game',
-    usage: 'exit'
-  },
+  config: { description: 'Removes the game', usage: 'exit' },
   run: removeGame
 }
 
 export const join = {
-  config: {
-    description: 'Lets you join a game',
-    usage: 'join'
-  },
+  config: { description: 'Lets you join a game', usage: 'join' },
   run: joinGame
 }
 
 export const leave = {
-  config: {
-    description: 'Lets you leave a game',
-    usage: 'leave'
-  },
+  config: { description: 'Lets you leave a game', usage: 'leave' },
   run: leaveGame
 }
 
@@ -97,7 +79,7 @@ export const play = {
       {
         type: 'string',
         name: 'type',
-        values: [
+        options: [
           '0',
           '1',
           '2',
@@ -143,10 +125,7 @@ export const yell = {
 }
 
 export const callout = {
-  config: {
-    description: 'Lets you call someone out',
-    usage: 'callout'
-  },
+  config: { description: 'Lets you call someone out', usage: 'callout' },
   run: calloutUno
 }
 
@@ -166,9 +145,6 @@ export const promote = {
 }
 
 export const hand = {
-  config: {
-    description: "DM's you your hand",
-    usage: 'dm'
-  },
+  config: { description: "DM's you your hand", usage: 'dm' },
   run: dmHand
 }
