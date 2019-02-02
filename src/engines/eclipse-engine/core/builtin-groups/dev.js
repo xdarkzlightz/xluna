@@ -75,3 +75,42 @@ export const evaluate = {
     }
   }
 }
+
+export const update = {
+  config: {
+    description: 'Sends the bots update message',
+    usage: 'update'
+  },
+  run (ctx) {
+    const embed = {
+      color: 43,
+      author: {
+        name: 'xluna has been updated to 1.4!',
+        icon_url: ctx.author.avatarURL
+      },
+      description:
+        'Alright so in this update I got some cool things and major updates to the bot internals',
+      fields: [
+        {
+          name: "What's new?",
+          value:
+            '- Major updates in the internal structure of xluna\n- Now the bot auto-generates a nsfw rated config when it joins\n- The clear flag no longer removes the database entry\n- The config command lets you change what rating your server is at\n- New help command! It uses reactions!\n- New fun group, introduces 8ball, cute, and say'
+        },
+        {
+          name: 'Bug fixes',
+          value: '- Just a lot of fixes and changes under the hood'
+        },
+        {
+          name: 'Notes',
+          value:
+            "- Because of all the internal changes there's still probably some bugs so if you run into any please tell me\n- The bot auto generated configs for any servers that don't have one already"
+        }
+      ],
+      footer: {
+        text: 'Enjoy guys! - Dark'
+      }
+    }
+
+    ctx.say({ embed })
+  }
+}
