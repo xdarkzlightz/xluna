@@ -120,7 +120,7 @@ class dispatcher {
       if (canRun) await this.handleCommand(ctx)
       await this.postCommand(ctx)
     } catch (e) {
-      this.postCommand(ctx)
+      await this.postCommand(ctx)
       if (e.type === 'friendly') {
         ctx.error(e.message, e)
       } else {
