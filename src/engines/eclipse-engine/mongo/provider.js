@@ -94,14 +94,14 @@ class mongoProvider {
   }
 
   // TODO:  MOVE TO IT'S OWN EXTENSION
-  async addUser (ctx) {
+  addUser (ctx) {
     const dbUser = new User({
       id: ctx.author.id,
       profile: {}
     })
 
     this.users.set(ctx.author.id, dbUser)
-    ctx.author.db = this.users.get(ctx.author.id)
+    return this.users.get(ctx.author.id)
   }
 
   /** Creates a new guild document and caches it */
