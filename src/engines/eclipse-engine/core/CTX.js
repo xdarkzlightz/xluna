@@ -23,6 +23,7 @@ class CTX {
     this.member.db = this.guild.db.members.get(this.member.id)
     this.channel.db = this.guild.db.channels.get(this.channel.id)
     this.everyone = this.guild.roles.get(this.guild.id)
+    this.everyone.db = this.guild.db.roles.get(this.guild.id)
 
     this.prefix = this.guild.db.config.prefix
 
