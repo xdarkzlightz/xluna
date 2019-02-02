@@ -25,18 +25,18 @@ export default function migrate (db) {
   if (!data.config.leave) data.config.leave = { channelID: '', body: '' }
 
   db.channels.forEach(c => {
-    if (!c.data.expEnabled) c.data.expEnabled = true
+    if (!c.expEnabled) c.expEnabled = true
   })
 
   db.members.forEach(m => {
-    if (!m.data.nickname) m.data.nickname = ''
-    if (!m.data.warnings) m.data.warnings = []
-    if (!m.data.modLogs) m.data.modLogs = []
-    if (!m.data.exp) m.data.exp = 0
-    if (!m.data.level) m.data.level = 1
+    if (!m.nickname) m.nickname = ''
+    if (!m.warnings) m.warnings = []
+    if (!m.modLogs) m.modLogs = []
+    if (!m.exp) m.exp = 0
+    if (!m.level) m.level = 1
   })
 
-  data.roles.forEach(r => {
-    if (!r.data.mod) r.data.mod = false
+  db.roles.forEach(r => {
+    if (!r.mod) r.mod = false
   })
 }

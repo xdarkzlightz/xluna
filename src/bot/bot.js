@@ -19,8 +19,6 @@ import uno from '@modules/uno/uno.js'
 
 import { connect } from '@modules/reddit/reddit'
 
-import migrate from './migrations/1.4'
-
 const { version } = require('../../package.json')
 
 const client = new Client({
@@ -39,7 +37,7 @@ const client = new Client({
 // Use an asynchronus IIFE to initialize the bot
 ;(async () => {
   try {
-    await client.init(migrate)
+    await client.init()
 
     client.gameEngine = new GameEngine()
 

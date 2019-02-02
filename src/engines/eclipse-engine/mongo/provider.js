@@ -46,25 +46,21 @@ class mongoProvider {
 
   /** Connects to the database and caches all guilds */
   // TODO: EXTEND PROVIDER AND MOVE USERS TO IT'S OWN EXTENSION
-  async init (migration) {
+  async init () {
     await this.connect()
-    await this.updateGuilds()
-    if (migration) await this.migrateGuilds(migration)
     await this.cache()
   }
 
   /** Creates a new guild config for guilds that don't have one */
-  async updateGuilds () {
-    await asyncForEach(this.client.guilds, async guild => {
+  async updateGuilds (migration) {
+    await asyncForEach(this.client.guilds.array(), async guild => {
+      if (this.guilds.has(guild.id)) return
       const dbGuild = this.newGuild(this.client.prefix, guild.id)
       this.logger.info(`[Database]: Added new guild ${guild.id}`)
       await dbGuild.save()
     })
-  }
 
-  /** Runs a migration function to migrate guilds */
-  async migrateGuilds (migration) {
-    await asyncForEach(this.guilds, async guild => {
+    await asyncForEach(this.guilds.array(), async guild => {
       const db = guild.data
       migration(db)
       await db.save()
@@ -106,7 +102,7 @@ class mongoProvider {
   }
 
   /** Creates a new guild document and caches it */
-  async newGuild (prefix, id) {
+  newGuild (prefix, id) {
     const groups = this.createGroups(2)
     const config = {
       prefix: prefix,
