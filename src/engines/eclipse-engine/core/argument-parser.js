@@ -17,7 +17,7 @@ class ArgumentParser {
 
   // Parses args from an argument array
   async parseArgs (cmd, ctx, parsed = {}, pass = 0) {
-    if (!ctx.args.length) {
+    if (!ctx.args.length || !cmd.args[pass]) {
       if (cmd.args && !pass && !cmd.args[pass].default) {
         throw new EclipseError(
           { type: 'friendly' },

@@ -31,10 +31,7 @@ class mongoProvider {
       )
     })
 
-    mongoose.connect(
-      this.dbString,
-      { useNewUrlParser: true }
-    )
+    mongoose.connect(this.dbString, { useNewUrlParser: true })
     mongoose.connection
       .once('open', () => this.logger.info('[Mongoose]: Database connected!'))
       .on('error', err => {
@@ -182,7 +179,7 @@ class mongoProvider {
   /** Checks if a command is enabled for a channel */
   commandEnabledInChannel ({ channel, cmd }, channels) {
     const dbChannel = channels.get(channel.id)
-    if (dbChannel === undefined) return
+    if (dbChannel === undefined || !dbChannel.commands.size) return
 
     const enabled = dbChannel.commands.get(cmd.name).enabled
     if (enabled) return true
