@@ -56,7 +56,8 @@ class mongoProvider {
   /** Creates a new guild config for guilds that don't have one */
   async updateGuilds () {
     await asyncForEach(this.client.guilds, async guild => {
-      const dbGuild = this.newGuild(this.prefix, guild.id)
+      const dbGuild = this.newGuild(this.client.prefix, guild.id)
+      this.logger.info(`[Database]: Added new guild ${guild.id}`)
       await dbGuild.save()
     })
   }
