@@ -102,7 +102,7 @@ class Command {
           {
             type: 'role',
             name: 'arg',
-            default: ctx => ctx.guild.roles.get(ctx.guild.id)
+            default: ctx => ctx.everyone
           }
         ]
       },
@@ -114,7 +114,7 @@ class Command {
           {
             type: 'role',
             name: 'arg',
-            default: ctx => ctx.guild.roles.get(ctx.guild.id)
+            default: ctx => ctx.everyone
           }
         ]
       },
@@ -135,7 +135,7 @@ class Command {
           {
             type: 'role',
             name: 'arg',
-            default: ctx => ctx.guild.roles.get(ctx.guild.id)
+            default: ctx => ctx.everyone
           }
         ]
       },
