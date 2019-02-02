@@ -1,4 +1,4 @@
-export function migrate (db) {
+export default function migrate (db) {
   const data = db
 
   if (!data.config.roleID) data.config.roleID = ''
