@@ -18,10 +18,10 @@ class ArgumentParser {
   // Parses args from an argument array
   async parseArgs (cmd, ctx, parsed = {}, pass = 0) {
     if (!ctx.args.length || !cmd.args[pass]) {
-      if (cmd.args && !pass && !cmd.args[pass].default) {
+      if (cmd.args && cmd.args[pass] && !cmd.args[pass].default) {
         throw new EclipseError(
           { type: 'friendly' },
-          `You did not specify a ${cmd.args[0].name || cmd.args[0].type}`
+          `You did not specify a ${cmd.args[pass].name || cmd.args[pass].type}`
         )
       } else if (cmd.args && cmd.args[pass] && cmd.args[pass].default) {
         const arg = cmd.args[0]
@@ -91,7 +91,7 @@ class ArgumentParser {
     if (!obj) {
       throw new EclipseError(
         { type: 'friendly' },
-        `Could not find ${type.substring(0, type.length - 1)}: ${arg}`
+        `Could not find ${type}: ${arg}`
       )
     }
     let db = ctx.guild.db[`${type}s`].get(obj.id)
