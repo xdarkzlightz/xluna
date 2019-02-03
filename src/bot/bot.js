@@ -48,6 +48,7 @@ const client = new Client({
 
     client.r = await connect(r)
     client.levelCooldowns = new Collection()
+    client.reactionRoleMessages = new Collection()
 
     client.login()
   } catch (e) {

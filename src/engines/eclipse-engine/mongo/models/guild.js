@@ -4,6 +4,7 @@ import ConfigSchema from './schemas/config-schema'
 import ChannelSchema from './schemas/channel-schema'
 import MemberSchema from './schemas/member-schema'
 import RoleSchema from './schemas/role-schema'
+import SelfRoleConfigSchema from './schemas/self-role-config-schema'
 
 const Schema = _Schema
 
@@ -12,7 +13,8 @@ const GuildSchema = new Schema({
   config: ConfigSchema,
   channels: [ChannelSchema],
   roles: [RoleSchema],
-  members: [MemberSchema]
+  members: [MemberSchema],
+  selfroles: SelfRoleConfigSchema
 })
 
 const Guild = model('guild', GuildSchema)
