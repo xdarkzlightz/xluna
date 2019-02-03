@@ -39,7 +39,7 @@ class ArgumentParser {
         )
       }
 
-      const obj = this.isPrimitive(arg.type)
+      let obj = this.isPrimitive(arg.type)
         ? this.parsePrimitives(arg.type, ctx.args[0])
         : await this.parseDiscordTypes(arg.type, ctx.args[0], ctx)
 
@@ -51,6 +51,10 @@ class ArgumentParser {
             `Invalid option: ${obj}`
           )
         }
+      }
+
+      if (arg.type === 'string' && ctx.args[pass + 1] && !cmd.args[pass + 1]) {
+        obj = ctx.args.join(' ')
       }
 
       parsed[arg.name || arg.type] = obj
