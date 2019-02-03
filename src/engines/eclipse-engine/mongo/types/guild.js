@@ -17,6 +17,8 @@ class mongoGuild {
     this.channels = new Collection()
     this.members = new Collection()
 
+    this.saving = false
+
     this.init()
   }
 
@@ -31,7 +33,9 @@ class mongoGuild {
    * If you pass a CTX object it'll update the guild, channel, member, and everyone objects
    */
   async save (ctx) {
+    this.saving = true
     await this.data.save()
+    this.saving = false
 
     if (ctx && ctx.guild) {
       ctx.guild.db = this

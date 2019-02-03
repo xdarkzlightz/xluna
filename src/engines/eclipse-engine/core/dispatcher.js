@@ -98,6 +98,7 @@ class dispatcher {
 
   async postCommand (ctx) {
     if (ctx.guild && ctx.guild.db) {
+      if (ctx.guild.db.saving) return
       await ctx.guild.db.save()
     }
 
