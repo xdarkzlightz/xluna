@@ -3,7 +3,7 @@ import { Client } from 'discord.js'
 import { createLogger, format, transports } from 'winston'
 
 import { Registry, Dispatcher } from '@engines/eclipse/core'
-import Provider from '@engines/eclipse/mongo/provider'
+import Provider from '@provider'
 import { ReactionMenuManager } from '@engines/eclipse/reactionMenus/reactionMenuManager'
 /**
  * An extension of the discord.js client
