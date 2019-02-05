@@ -21,9 +21,10 @@ class Base {
     })
   }
 
-  /** Shortcut to save the guild data */
-  async save (ctx) {
-    await this.guild.save(ctx)
+  async update (callback) {
+    // eslint-disable-next-line standard/no-callback-literal
+    callback(this)
+    await this.guild.save()
   }
 
   /** Removes the groups from this objects data */

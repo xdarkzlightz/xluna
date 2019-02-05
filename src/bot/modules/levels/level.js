@@ -25,7 +25,7 @@ export function expEnabledForChannel (ctx, channel) {
   return channel.data.expEnabled
 }
 
-export function updateEXPChannel (ctx, channel) {
+export async function updateEXPChannel (ctx, channel) {
   const enabled = channel.data.expEnabled
-  channel.data.expEnabled = !enabled
+  await channel.update(c => (channel.expEnabled = !enabled))
 }

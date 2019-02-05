@@ -16,7 +16,7 @@ class mongoGuild {
     this.onJoin = guild.onJoin
     this.onLeave = guild.onLeave
 
-    this.tags = new Collection()
+    this.tags = guild.tags
     this.roles = new Collection()
     this.channels = new Collection()
     this.members = new Collection()
@@ -34,20 +34,10 @@ class mongoGuild {
     this.data.tags.forEach(t => this.tags.set(t.name, t))
   }
 
-  /** Saves the guild data
-   * If you pass a CTX object it'll update the guild, channel, member, and everyone objects
-   */
-  async save (ctx) {
-    this.saving = true
+  async update (callback) {
+    // eslint-disable-next-line standard/no-callback-literal
+    callback(this)
     await this.data.save()
-    this.saving = false
-
-    if (ctx && ctx.guild) {
-      ctx.guild.db = this
-      ctx.channel.db = this.channels.get(ctx.channel.id)
-      ctx.member.db = this.members.get(ctx.member.id)
-      ctx.everyone.db = this.roles.get(ctx.guild.id)
-    }
   }
 
   /** Adds a member, role, or channel data object to the database and then caches it */

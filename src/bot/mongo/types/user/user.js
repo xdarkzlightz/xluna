@@ -8,14 +8,9 @@ export default class MongoUser {
     this.saving = false
   }
 
-  /** Saves the guild data
-   * If you pass a CTX object it'll update the guild, channel, member, and everyone objects
-   */
-  async save (ctx) {
-    this.saving = true
+  async update (callback) {
+    // eslint-disable-next-line standard/no-callback-literal
+    callback(this)
     await this.data.save()
-    this.saving = false
-
-    if (ctx) ctx.auther.db = this.data
   }
 }

@@ -7,54 +7,76 @@ export async function addWarning (member, reason, ctx) {
     timestamp: ctx.msg.createdAt.toUTCString()
   }
 
-  member.db.data.warnings.push(warning)
+  await member.db.update(m => {
+    m.warnings.push(warning)
+    m.modlogs.push({
+      action: 'Warned',
+      reason,
+      modID: ctx.author.id,
+      timestamp: ctx.msg.createdAt.toUTCString()
+    })
+  })
 }
 
 export async function newMod (role, ctx) {
-  role.db.data.mod = true
+  await role.db.update(r => (r.mod = true))
 }
 
 export async function removeMod (role, ctx) {
-  if (!role) return false
-
-  role.db.data.mod = false
+  await role.db.update(r => (r.mod = false))
 }
 
 export async function removeWarning (member, number, ctx) {
-  if (!member || !member.db.data.warnings) return false
-  member = member.db.data
+  if (!member.db.warnings.length) return false
 
-  const warning = member.warnings[number - 1]
+  const warning = member.db.warnings[number - 1]
   if (!warning) return false
 
-  removeFromArray(member.warnings, warning)
+  await member.db.update(m => {
+    removeFromArray(m.warnings, warning)
+    m.modlogs.push({
+      action: 'Warning deleted',
+      modID: ctx.author.id,
+      timestamp: ctx.msg.createdAt.toUTCString()
+    })
+  })
 
   return true
 }
 
 export async function removeAllWarnings (member, ctx) {
-  if (!member || !member.db.data.warnings) return false
-  member = member.db.data
+  if (!member.db.warnings.length) return false
 
-  if (!member.warnings.length) return false
-
-  member.warnings = []
+  await member.db.update(m => {
+    m.warnings = []
+    m.modlogs.push({
+      action: 'Warnings cleared',
+      modID: ctx.author.id,
+      timestamp: ctx.msg.createdAt.toUTCString()
+    })
+  })
 
   return true
 }
 
-export async function addLog (member, log, ctx) {
-  if (!member) return false
-
-  member.db.data.modLogs.push(log)
-}
-
 export async function setNick (member, nickname, ctx) {
-  member.db.data.nickname = nickname
+  await member.db.update(m => {
+    m.nickname = nickname
+    m.modlogs.push({
+      action: 'Nickname set',
+      modID: ctx.author.id,
+      timestamp: ctx.msg.createdAt.toUTCString()
+    })
+  })
 }
 
 export async function removeNick (member, ctx) {
-  if (!member) return false
-
-  member.db.data.nickname = ''
+  await member.db.update(m => {
+    m.nickname = ''
+    m.modlogs.push({
+      action: 'Nickname removed',
+      modID: ctx.author.id,
+      timestamp: ctx.msg.createdAt.toUTCString()
+    })
+  })
 }

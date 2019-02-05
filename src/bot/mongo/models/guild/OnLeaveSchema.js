@@ -1,5 +1,5 @@
 import { Schema as _Schema } from 'mongoose'
-import LeaveConfigSchema from './LeaveConfigSchema'
+import LeaveConfigSchema from './LeaveSchema'
 
 const Schema = _Schema
 

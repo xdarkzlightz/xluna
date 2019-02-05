@@ -97,15 +97,6 @@ class dispatcher {
   }
 
   async postCommand (ctx) {
-    if (ctx.guild && ctx.guild.db) {
-      if (ctx.guild.db.saving) return
-      await ctx.guild.db.save()
-    }
-
-    if (ctx.author.db) {
-      await ctx.db.saveUser(ctx.author.db)
-    }
-
     this.client.emit('command', ctx)
   }
 

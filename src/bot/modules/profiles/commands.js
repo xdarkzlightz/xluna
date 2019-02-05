@@ -1,12 +1,11 @@
 import { RichEmbed } from 'discord.js'
 import { removeFromArray } from '@util/array'
 import { getLevelEXP } from '@modules/levels/level'
-import User from '@engines/eclipse/mongo/models/user'
 
 export async function sendProfile (ctx) {
   const user = ctx.author.db
   let marriedTo
-  if (user.profile.marriedTo) {
+  if (user.profile.marriedTo && user.profile.marriedTo !== '') {
     marriedTo = await ctx.client.fetchUser(user.profile.marriedTo)
   }
   const embed = new RichEmbed()
@@ -34,7 +33,7 @@ export async function sendProfile (ctx) {
 export async function setDesc (ctx, { desc }) {
   const user = ctx.author.db
 
-  user.profile.desc = desc
+  await user.update(u => (u.profile.desc = desc))
   ctx.say(`Description set to ${desc}`)
 }
 
@@ -42,21 +41,12 @@ export async function sendMarriageRequest (ctx, { member }) {
   if (member.user.bot) return ctx.say("Don't try to marry a bot...")
   if (ctx.author.id === member.id) {
     return ctx.say("Hey don't be alone! Go out and find someone to marry!")
-  }
-
-  if (ctx.author.db.profile.marriedTo !== '') {
+  } else if (ctx.author.db.profile.marriedTo !== '') {
     return ctx.say("Hey you're already married to someone!")
   }
 
-  let target = await User.findOne({ id: member.id.toString() })
-  if (!target) {
-    target = new User({
-      id: member.id,
-      profile: {
-        marryRequests: []
-      }
-    })
-  }
+  let target = ctx.db.users.get(member.id)
+  if (!target) target = await ctx.db.newUser(member.id)
 
   target.profile.marryRequests.push(ctx.author.id)
 
@@ -72,22 +62,26 @@ export async function sendMarriageRequest (ctx, { member }) {
 export async function acceptMarriageRequest (ctx, { member }) {
   const user = ctx.author.db
 
-  if (user.profile.marriedTo !== '') { ctx.say("You're already married to someone") }
+  if (user.profile.marriedTo !== '') {
+    ctx.say("You're already married to someone")
+  }
   let target = ctx.db.users.get(member.id)
 
-  if (!target || user.profile.marryRequests.indexOf(member.id) !== -1) {
+  if (user.profile.marryRequests.indexOf(member.id) !== -1) {
     ctx.say(
       `<@${ctx.author.id}> has accepted <@${
         member.id
       }>'s request to marry them! 🌹 💍`
     )
 
-    user.profile.marryRequests = []
-    user.profile.marriedTo = member.id
-    target.profile.marryRequests = []
-    target.profile.marriedTo = ctx.author.id
-
-    await ctx.db.saveUser(target)
+    await user.update(u => {
+      u.profile.marryRequests = []
+      u.profile.marriedTo = member.id
+    })
+    await target.update(u => {
+      u.profile.marryRequests = []
+      u.profile.marriedTo = ctx.author.id
+    })
   } else {
     ctx.say(`That user hasn't sent you a marriage request!`)
   }
@@ -99,8 +93,9 @@ export async function rejectMarriageRequest (ctx, { member }) {
   if (user.profile.marryRequests.indexOf(member.id) !== -1) {
     ctx.say(`<@${ctx.author.id}> has rejected <@${member.id}>! 💔 🥀`)
 
-    removeFromArray(user.profile.marryRequests, member.id.toString())
-    await ctx.db.saveUser(user)
+    await user.update(u => {
+      removeFromArray(u.profile.marryRequests, member.id.toString())
+    })
   } else {
     ctx.say(`That user hasn't sent you a marriage request!`)
   }
@@ -115,10 +110,9 @@ export async function divorceUser (ctx) {
 
     ctx.say(`Has divorced ${target.username}!  💔 🥀`)
 
-    user.profile.marriedTo = ''
-    targetDB.profile.marriedTo = ''
+    await user.update(u => (u.profile.marriedTo = ''))
 
-    await ctx.db.saveUser(targetDB)
+    await targetDB.update(u => (u.profile.marriedTo = ''))
   } else {
     ctx.say(`You're not married to anyone!`)
   }

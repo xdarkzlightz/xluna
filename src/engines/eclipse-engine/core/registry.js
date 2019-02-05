@@ -312,7 +312,7 @@ class Registry {
         this.removeCommands(member.data)
       })
 
-      await _db.save()
+      await _db.data.save()
     })
   }
 
