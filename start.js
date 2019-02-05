@@ -24,7 +24,8 @@ require('@babel/register')({
           '@engines/game': './src/engines/game-engine/',
           '@modules': './src/bot/modules/',
           '@config': './config.js',
-          '@util': './src/util/'
+          '@util': './src/util/',
+          '@provider': './src/bot/mongo/provider.js'
         }
       }
     ]
