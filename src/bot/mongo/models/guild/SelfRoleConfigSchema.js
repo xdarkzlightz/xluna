@@ -1,5 +1,5 @@
 import { Schema as _Schema } from 'mongoose'
-import SelfRoleSchema from './self-role-schema'
+import SelfRoleSchema from './SelfRoleSchema'
 
 const Schema = _Schema
 

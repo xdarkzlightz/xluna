@@ -2,11 +2,11 @@ import { Schema as _Schema } from 'mongoose'
 
 const Schema = _Schema
 
-const LogSchema = new Schema({
+const ModLogSchema = new Schema({
   action: String,
   reason: String,
   modID: String,
   timestamp: String
 })
 
-export default LogSchema
+export default ModLogSchema

@@ -1,6 +1,6 @@
 import { Schema as _Schema } from 'mongoose'
 
-import CommandSchema from './command-schema'
+import CommandSchema from './CommandSchema'
 
 const Schema = _Schema
 

@@ -1,8 +1,8 @@
 import { Schema as _Schema } from 'mongoose'
 
-import GroupSchema from './group-schema'
-import WarningSchema from './warning-schema'
-import LogSchema from './log-schema'
+import GroupSchema from './GroupSchema'
+import WarningSchema from './WarningSchema'
+import LogSchema from './ModLogSchema'
 
 const Schema = _Schema
 

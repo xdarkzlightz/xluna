@@ -11,8 +11,12 @@ class mongoGuild {
     this.data = guild
 
     this.config = guild.config
-    this.rating = guild.config.rating
+    this.selfroles = guild.selfroles
+    this.logger = guild.logger
+    this.onJoin = guild.onJoin
+    this.onLeave = guild.onLeave
 
+    this.tags = new Collection()
     this.roles = new Collection()
     this.channels = new Collection()
     this.members = new Collection()
@@ -27,6 +31,7 @@ class mongoGuild {
     this.data.roles.forEach(r => this.cache('role', r))
     this.data.channels.forEach(c => this.cache('channel', c))
     this.data.members.forEach(m => this.cache('member', m))
+    this.data.tags.forEach(t => this.tags.set(t.name, t))
   }
 
   /** Saves the guild data

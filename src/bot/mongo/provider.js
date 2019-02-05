@@ -17,7 +17,7 @@ class mongoProvider {
     // Cache of all guilds in the database
     this.guilds = new Collection()
 
-    // TODO MOVE USERS TO THEY'RE OWN EXTENSION OF THE PROVIDER
+    // Cache of all the users in the database
     this.users = new Collection()
   }
 
@@ -79,7 +79,6 @@ class mongoProvider {
       this.users.set(user.id, user)
     })
   }
-  // TODO:  MOVE TO IT'S OWN EXTENSION
   async saveUser (user, ctx) {
     await user.save()
 
