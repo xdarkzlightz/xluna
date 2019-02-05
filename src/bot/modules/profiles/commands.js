@@ -60,6 +60,8 @@ export async function sendMarriageRequest (ctx, { member }) {
 
   target.profile.marryRequests.push(ctx.author.id)
 
+  await ctx.db.saveUser(target)
+
   ctx.say(
     `<@${ctx.author.id}> has asked <@${member.id}> to marry them! <@${
       member.id
@@ -72,7 +74,9 @@ export async function sendMarriageRequest (ctx, { member }) {
 export async function acceptMarriageRequest (ctx, { member }) {
   const user = ctx.author.db
 
-  if (user.profile.marriedTo !== '') { ctx.say("You're already married to someone") }
+  if (user.profile.marriedTo !== '') {
+    ctx.say("You're already married to someone")
+  }
   let target = ctx.db.users.get(member.id)
 
   if (!target || user.profile.marryRequests.indexOf(member.id) !== -1) {
