@@ -171,6 +171,8 @@ export const purge = {
     description: 'Lets you purge messages',
     usage: 'purge number',
     args: [{ type: 'number' }],
+    clientPermissions: ['MANAGE_MESSAGES'],
+    memberPermissions: ['MANAGE_MESSAGES'],
     flags: [
       {
         name: 'member',
