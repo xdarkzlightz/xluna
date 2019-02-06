@@ -7,8 +7,8 @@ module.exports = async (client, ctx) => {
 
   let readyToLevel = levelUpReady(member.data.level, member.data.exp)
   if (readyToLevel) {
-    member.data.level += 1
-    if (!channel || channel.data.expEnabled !== false) {
+    await member.update(m => (m.level += 1))
+    if (!channel || channel.expEnabled !== false) {
       ctx.say(
         `<@${ctx.member.id}> has reached server level ${member.data.level}`
       )
@@ -19,7 +19,7 @@ module.exports = async (client, ctx) => {
 
   readyToLevel = levelUpReady(user.profile.level, user.profile.exp)
   if (readyToLevel) {
-    user.profile.level += 1
+    await user.update(u => (u.profile.level += 1))
     if (!channel || channel.data.expEnabled !== false) {
       ctx.say(
         `<@${ctx.member.id}> has reached global level ${user.profile.level}`
@@ -29,9 +29,9 @@ module.exports = async (client, ctx) => {
   if (!ctx.client.levelCooldowns.has(ctx.author.id)) {
     const exp = randomEXP(1, 100)
     if (!channel || channel.data.expEnabled !== false) {
-      member.data.exp += exp
+      await member.update(m => (m.exp += exp))
+      await user.update(u => (u.profile.exp += exp))
     }
-    user.profile.exp += exp
     ctx.client.levelCooldowns.set(ctx.author.id, ctx.author)
     setTimeout(() => {
       ctx.client.levelCooldowns.delete(ctx.author.id)
