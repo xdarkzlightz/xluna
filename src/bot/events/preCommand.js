@@ -9,9 +9,11 @@ module.exports = async (client, ctx) => {
   if (readyToLevel) {
     await member.update(m => (m.level += 1))
     if (!channel || channel.expEnabled !== false) {
-      ctx.say(
-        `<@${ctx.member.id}> has reached server level ${member.data.level}`
-      )
+      ctx
+        .say(
+          `<@${ctx.member.id}> has reached server level ${member.data.level}`
+        )
+        .catch()
     }
   }
 
@@ -21,9 +23,11 @@ module.exports = async (client, ctx) => {
   if (readyToLevel) {
     await user.update(u => (u.profile.level += 1))
     if (!channel || channel.data.expEnabled !== false) {
-      ctx.say(
-        `<@${ctx.member.id}> has reached global level ${user.profile.level}`
-      )
+      ctx
+        .say(
+          `<@${ctx.member.id}> has reached global level ${user.profile.level}`
+        )
+        .catch()
     }
   }
   if (!ctx.client.levelCooldowns.has(ctx.author.id)) {
