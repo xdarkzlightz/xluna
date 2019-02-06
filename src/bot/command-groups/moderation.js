@@ -10,7 +10,8 @@ import {
   addNick,
   deleteNick,
   deleteMod,
-  addMod
+  addMod,
+  purgeMessages
 } from '@modules/moderation/commands'
 
 export const GroupConfig = {
@@ -162,4 +163,20 @@ export const mod = {
     ]
   },
   run: addMod
+}
+
+export const purge = {
+  config: {
+    description: 'Lets you purge messages',
+    usage: 'purge number',
+    args: [{ type: 'number' }],
+    flags: [
+      {
+        name: 'member',
+        aliases: ['m'],
+        args: [{ type: 'member' }, { type: 'number' }]
+      }
+    ]
+  },
+  run: purgeMessages
 }
