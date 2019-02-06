@@ -173,3 +173,23 @@ export async function deleteMod (ctx, { role }) {
   await removeMod(role, ctx)
   ctx.success(`removed mod role ${role.name}`)
 }
+
+export async function purgeMessages (ctx, { number }) {
+  const messages = await ctx.channel.fetchMessages({ limit: number })
+  await ctx.channel.bulkDelete(messages)
+  const msg = await ctx.say(`Cleared ${messages.size} messages for you`)
+  setTimeout(() => {
+    msg.delete()
+  }, 5000)
+}
+
+export async function purgeMemberMessages (ctx, { member, number }) {
+  const messages = await ctx.channel.fetchMessages({ limit: number })
+  const filtered = messages.filter(m => m.author.id === member.id)
+  await ctx.channel.bulkDelete(filtered)
+
+  const msg = await ctx.say(`Cleared ${filtered.size} messages for you`)
+  setTimeout(() => {
+    msg.delete()
+  }, 5000)
+}
