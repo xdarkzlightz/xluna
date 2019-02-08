@@ -146,11 +146,15 @@ export async function addNick (ctx, { member, nickname }) {
   const mod = isMod(ctx.guild.db.roles, ctx.member)
   if (!mod) return
 
-  member.setNickname(nickname)
+  try {
+    member.setNickname(nickname)
 
-  await setNick(member, nickname, ctx)
+    await setNick(member, nickname, ctx)
 
-  ctx.say(`*Nickname changed to ${nickname} for ${member.user.tag}*`)
+    ctx.say(`*Nickname changed to ${nickname} for ${member.user.tag}*`)
+  } catch (e) {
+    ctx.error('Could not nickname that user!')
+  }
 }
 
 export async function deleteNick (ctx, member) {
