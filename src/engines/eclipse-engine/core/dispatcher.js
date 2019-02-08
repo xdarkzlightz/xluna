@@ -116,9 +116,7 @@ class dispatcher {
             ctx.guild.id
           }\nUser is an admin? ${ctx.member.hasPermission(
             'ADMINISTRATOR'
-          )}\nCommand: ${ctx.cmd.name}\nGroup ${ctx.group.name}\nStack trace: ${
-            e.stack
-          }`
+          )}\nGroup ${ctx.group.name}\nStack trace: ${e.stack}`
         )
         ctx.error('Something went wrong!', e)
       }
