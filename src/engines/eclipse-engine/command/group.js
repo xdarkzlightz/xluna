@@ -207,7 +207,7 @@ class Group {
 
   sendHelpMessage (ctx) {
     const embed = new RichEmbed().setColor(0x4286f4)
-    createGroupHelp(ctx, embed)
+    createGroupHelp(ctx.prefix, ctx, embed)
     ctx.say(embed)
   }
 
