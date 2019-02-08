@@ -44,13 +44,6 @@ class dispatcher {
 
     const cmd = this.getCommand(ctx)
     if (!cmd) return false
-    if (ctx.cmd) this.logger.debug(`[Dispatcher]: Command: ${ctx.cmd.name}`)
-    if (ctx.group) this.logger.debug(`[Dispatcher: Group ${ctx.group.name}`)
-    this.logger.debug(
-      `[Dispatcher]: User is an admin? ${ctx.member.hasPermission(
-        'ADMINISTRATOR'
-      )}`
-    )
 
     return true
   }
@@ -116,7 +109,17 @@ class dispatcher {
       if (e.type === 'friendly') {
         ctx.error(e.message, e)
       } else {
-        this.logger.error(`[Dispatcher]: ${e.message}\nStack trace: ${e.stack}`)
+        this.logger.error(
+          `[Dispatcher]: ${e.message}\nInfo: User ID: ${
+            ctx.author.id
+          }\nGuild ID: ${
+            ctx.guild.id
+          }\nUser is an admin? ${ctx.member.hasPermission(
+            'ADMINISTRATOR'
+          )}\nCommand: ${ctx.cmd.name}\nGroup ${ctx.group.name}\nStack trace: ${
+            e.stack
+          }`
+        )
         ctx.error('Something went wrong!', e)
       }
     }
