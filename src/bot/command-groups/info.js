@@ -6,7 +6,8 @@ import {
   sendChannelInfo,
   sendServerInfo,
   sendRoleInfo,
-  sendMemberCount
+  sendMemberCount,
+  getServerStats
 } from '@modules/info/commands'
 
 export const GroupConfig = {
@@ -81,4 +82,12 @@ export const channelinfo = {
   example: 'channelinfo general',
   arg: { type: 'channel', default: ctx => ctx.channel },
   run: sendChannelInfo
+}
+
+export const serverstats = {
+  config: {
+    description: 'Get statistics for your server!',
+    usage: 'serverstats'
+  },
+  run: getServerStats
 }

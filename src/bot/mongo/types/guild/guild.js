@@ -15,6 +15,7 @@ class mongoGuild {
     this.logger = guild.logger
     this.onJoin = guild.onJoin
     this.onLeave = guild.onLeave
+    this.serverstats = guild.serverstats
 
     this.tags = guild.tags
     this.roles = new Collection()

@@ -1,6 +1,8 @@
 export default function migrate (db) {
   if (!db.selfroles) db.selfroles = { roles: [] }
 
+  if (!db.serverstats) db.serverstats = {}
+
   if (!db.tags) {
     db.tags = db.config.tags
     delete db.config.tags

@@ -9,6 +9,7 @@ import TagSchema from './guild/TagSchema'
 import LoggerConfigSchema from './guild/LogConfigSchema'
 import OnJoinSchema from './guild/OnJoinSchema'
 import OnLeaveSchema from './guild/OnLeaveSchema'
+import ServerStatsSchema from './guild/ServerStatsSchema'
 
 const Schema = _Schema
 
@@ -22,7 +23,8 @@ const GuildSchema = new Schema({
   onJoin: OnJoinSchema,
   channels: [ChannelSchema],
   roles: [RoleSchema],
-  members: [MemberSchema]
+  members: [MemberSchema],
+  serverstats: ServerStatsSchema
 })
 
 const Guild = model('guild', GuildSchema)
