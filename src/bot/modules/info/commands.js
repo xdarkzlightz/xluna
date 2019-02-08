@@ -139,7 +139,10 @@ export async function sendMemberCount (ctx) {
   const humans = guild.members.filter(member => !member.user.bot)
   const bots = guild.members.filter(member => member.user.bot)
   const online = guild.members.filter(
-    member => member.presence.status === 'online'
+    member =>
+      member.presence.status === 'online' ||
+      member.presence.status === 'idle' ||
+      member.presence.status === 'dnd'
   )
 
   const embed = new RichEmbed()
