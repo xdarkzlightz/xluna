@@ -34,7 +34,7 @@ module.exports = async (client, ctx) => {
     }
   }
   if (!ctx.client.levelCooldowns.has(ctx.author.id)) {
-    const exp = randomEXP(1, 100)
+    const exp = randomEXP(10, 50)
     if (!channel || (channel.data.expEnabled !== false && !leveledUp)) {
       await member.update(m => (m.exp += exp))
       await user.update(u => (u.profile.exp += exp))
