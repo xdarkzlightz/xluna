@@ -55,7 +55,7 @@ class mongoProvider {
       if (this.guilds.has(guild.id)) return
       const dbGuild = this.newGuild(this.client.prefix, guild.id)
       this.logger.info(`[Database]: Added new guild ${guild.id}`)
-      await dbGuild.save()
+      await dbGuild.data.save()
     })
 
     await asyncForEach(this.guilds.array(), async guild => {

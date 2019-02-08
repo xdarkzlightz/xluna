@@ -24,7 +24,7 @@ class Base {
   async update (callback) {
     // eslint-disable-next-line standard/no-callback-literal
     callback(this)
-    await this.guild.save()
+    await this.guild.data.save()
   }
 
   /** Removes the groups from this objects data */
