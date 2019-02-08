@@ -10,21 +10,20 @@ export function sendLevel (ctx, { member }) {
     .setDescription(`Server rank #${rank}`)
     .setThumbnail(member.user.displayAvatarURL)
     .setColor(0x5936e7)
-    .addField('Server Level', `Lvl. ${member.db.data.level}`, true)
+    .addField('Server Level', `Lvl. ${member.db.level}`, true)
     .addField(
       'Server progress',
-      `${member.db.data.exp}/${getLevelEXP(
-        member.db.data.level + 1
-      )} till Lvl. ${member.db.data.level + 1}`,
+      `${member.db.exp}/${getLevelEXP(member.db.level + 1)} till Lvl. ${member
+        .db.level + 1}`,
       true
     )
 
   ctx.say(embed)
 }
 
-export function updateChannel (ctx, { channel }) {
-  updateEXPChannel(ctx, channel)
-  const enabled = ctx.guild.db.channels.get(channel.id).data.expEnabled
+export async function updateChannel (ctx, { channel }) {
+  await updateEXPChannel(ctx, channel)
+  const enabled = ctx.guild.db.channels.get(channel.id).expEnabled
 
   ctx.say(
     `Channel ${channel.name} was ${enabled ? 'enabled' : 'disabled'} for exp`

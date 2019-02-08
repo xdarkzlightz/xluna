@@ -4,8 +4,9 @@ import mongoose from 'mongoose'
 import { asyncForEach } from '@util/array'
 
 import Guild from './models/guild'
-import MongoGuild from './types/guild'
 import User from './models/user'
+import MongoGuild from './types/guild/guild'
+import MongoUser from './types/user/user'
 
 // TODO: MAKE AN EXTENSION OF THE PROVIDER TO HANDLE USERS + OTHER EXTENSIONS
 class mongoProvider {
@@ -17,7 +18,7 @@ class mongoProvider {
     // Cache of all guilds in the database
     this.guilds = new Collection()
 
-    // TODO MOVE USERS TO THEY'RE OWN EXTENSION OF THE PROVIDER
+    // Cache of all the users in the database
     this.users = new Collection()
   }
 
@@ -54,7 +55,7 @@ class mongoProvider {
       if (this.guilds.has(guild.id)) return
       const dbGuild = this.newGuild(this.client.prefix, guild.id)
       this.logger.info(`[Database]: Added new guild ${guild.id}`)
-      await dbGuild.save()
+      await dbGuild.data.save()
     })
 
     await asyncForEach(this.guilds.array(), async guild => {
@@ -76,30 +77,21 @@ class mongoProvider {
     const users = await User.find({})
 
     users.forEach(user => {
-      this.users.set(user.id, user)
+      this.users.set(user.id, new MongoUser(user, this))
     })
   }
-  // TODO:  MOVE TO IT'S OWN EXTENSION
-  async saveUser (user, ctx) {
-    await user.save()
-
-    this.users.set(user.id, user)
-    if (ctx) ctx.author.db = this.users.get(user.id)
-  }
-
-  // TODO:  MOVE TO IT'S OWN EXTENSION
-  addUser (ctx) {
+  async newUser (id) {
     const dbUser = new User({
-      id: ctx.author.id,
+      id: id,
       profile: {}
     })
-
-    this.users.set(ctx.author.id, dbUser)
-    return this.users.get(ctx.author.id)
+    await dbUser.save()
+    this.users.set(id, new MongoUser(dbUser, this))
+    return this.users.get(id)
   }
 
   /** Creates a new guild document and caches it */
-  newGuild (prefix, id) {
+  async newGuild (prefix, id) {
     const groups = this.createGroups(2)
     const config = {
       prefix: prefix,
@@ -115,6 +107,8 @@ class mongoProvider {
       roles: [role],
       members: []
     })
+
+    await dbGuild.save()
 
     this.guilds.set(id, new MongoGuild(dbGuild, this))
     return dbGuild

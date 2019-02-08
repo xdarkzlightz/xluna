@@ -3,7 +3,6 @@ import {
   addWarning,
   removeWarning,
   removeAllWarnings,
-  addLog,
   setNick,
   removeNick,
   newMod,
@@ -20,7 +19,7 @@ const isMod = (roles, member) => {
     if (!memberRole) return
 
     const foundRole = roles.get(memberRole.id)
-    const mod = foundRole.data.mod
+    const mod = foundRole.mod
     if (mod) isMod = mod
   })
   return isMod
@@ -38,15 +37,13 @@ export async function banMember (ctx, { member, reason }) {
   member.ban({ reason })
   ctx.say(`*${member.user.tag} has been banned!*`)
 
-  addLog(
-    member,
-    {
+  await member.db.update(m =>
+    m.modlogs.push({
       action: 'Banned',
       reason,
       modID: ctx.author.id,
       timestamp: ctx.msg.createdAt.toUTCString()
-    },
-    ctx
+    })
   )
 }
 
@@ -62,15 +59,13 @@ export async function softbanMember (ctx, { member, days, reason }) {
   member.ban({ reason, days })
   ctx.guild.unban(member, reason)
 
-  addLog(
-    member,
-    {
+  member.db.update(m =>
+    m.modlogs.push({
       action: 'Soft-banned',
       reason,
       modID: ctx.author.id,
       timestamp: ctx.msg.createdAt.toUTCString()
-    },
-    ctx
+    })
   )
 
   ctx.say(`*${member.user.tag} has been soft-banned!*`)
@@ -88,15 +83,13 @@ export async function kickMember (ctx, { member, reason }) {
   member.kick(reason)
   ctx.say(`*${member.user.tag} has been kicked!*`)
 
-  addLog(
-    member,
-    {
+  await member.db.update(m =>
+    m.modlogs.push({
       action: 'Kicked',
       reason,
       modID: ctx.author.id,
       timestamp: ctx.msg.createdAt.toUTCString()
-    },
-    ctx
+    })
   )
 }
 
@@ -104,18 +97,7 @@ export async function warnMember (ctx, { member, reason }) {
   const mod = isMod(ctx.guild.db.roles, ctx.member)
   if (!mod) return
 
-  addWarning(member, reason, ctx)
-
-  addLog(
-    member,
-    {
-      action: 'Warned',
-      reason,
-      modID: ctx.author.id,
-      timestamp: ctx.msg.createdAt.toUTCString()
-    },
-    ctx
-  )
+  await addWarning(member, reason, ctx)
 
   ctx.say(`*${member.user.tag} has been warned!*`)
 
@@ -133,18 +115,8 @@ export async function deleteWarning (ctx, { member, number }) {
   const mod = isMod(ctx.guild.db.roles, ctx.member)
   if (!mod) return
 
-  const removed = removeWarning(member, number, ctx)
+  const removed = await removeWarning(member, number, ctx)
   if (!removed) return ctx.say("*Warning doesn't exist*")
-
-  addLog(
-    member,
-    {
-      action: 'Warning deleted',
-      modID: ctx.author.id,
-      timestamp: ctx.msg.createdAt.toUTCString()
-    },
-    ctx
-  )
 
   ctx.say('*Warning removed!*')
 }
@@ -153,18 +125,8 @@ export async function clearWarnings (ctx, { member }) {
   const mod = isMod(ctx.guild.db.roles, ctx.member)
   if (!mod) return
 
-  const removed = removeAllWarnings(member, ctx)
+  const removed = await removeAllWarnings(member, ctx)
   if (!removed) return ctx.say('*Member has no warnings*')
-
-  addLog(
-    member,
-    {
-      action: 'Warnings cleared',
-      modID: ctx.author.id,
-      timestamp: ctx.msg.createdAt.toUTCString()
-    },
-    ctx
-  )
 
   ctx.say('*Warnings removed*')
 }
@@ -184,21 +146,15 @@ export async function addNick (ctx, { member, nickname }) {
   const mod = isMod(ctx.guild.db.roles, ctx.member)
   if (!mod) return
 
-  member.setNickname(nickname)
+  try {
+    member.setNickname(nickname)
 
-  setNick(member, nickname, ctx)
+    await setNick(member, nickname, ctx)
 
-  addLog(
-    member,
-    {
-      action: 'Nickname set',
-      modID: ctx.author.id,
-      timestamp: ctx.msg.createdAt.toUTCString()
-    },
-    ctx
-  )
-
-  ctx.say(`*Nickname changed to ${nickname} for ${member.user.tag}*`)
+    ctx.say(`*Nickname changed to ${nickname} for ${member.user.tag}*`)
+  } catch (e) {
+    ctx.error('Could not nickname that user!')
+  }
 }
 
 export async function deleteNick (ctx, member) {
@@ -207,27 +163,37 @@ export async function deleteNick (ctx, member) {
 
   member.setNickname('')
 
-  removeNick(member, ctx)
-
-  addLog(
-    member,
-    {
-      action: 'Nickname removed',
-      modID: ctx.author.id,
-      timestamp: ctx.msg.createdAt.toUTCString()
-    },
-    ctx
-  )
+  await removeNick(member, ctx)
 
   ctx.say(`*Nickname removed nickname for ${member.user.tag}*`)
 }
 
 export async function addMod (ctx, { role }) {
-  newMod(role, ctx)
+  await newMod(role, ctx)
   ctx.success(`Added mod role ${role.name}`)
 }
 
 export async function deleteMod (ctx, { role }) {
-  removeMod(role, ctx)
+  await removeMod(role, ctx)
   ctx.success(`removed mod role ${role.name}`)
+}
+
+export async function purgeMessages (ctx, { number }) {
+  const messages = await ctx.channel.fetchMessages({ limit: number })
+  await ctx.channel.bulkDelete(messages)
+  const msg = await ctx.say(`Cleared ${messages.size} messages for you`)
+  setTimeout(() => {
+    msg.delete()
+  }, 5000)
+}
+
+export async function purgeMemberMessages (ctx, { member, number }) {
+  const messages = await ctx.channel.fetchMessages({ limit: number })
+  const filtered = messages.filter(m => m.author.id === member.id)
+  await ctx.channel.bulkDelete(filtered)
+
+  const msg = await ctx.say(`Cleared ${filtered.size} messages for you`)
+  setTimeout(() => {
+    msg.delete()
+  }, 5000)
 }

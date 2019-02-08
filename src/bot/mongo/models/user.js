@@ -1,5 +1,5 @@
 import { Schema as _Schema, model } from 'mongoose'
-import ProfileSchema from './user-schemas/profile-schema'
+import ProfileSchema from './user/ProfileSchema'
 
 const Schema = _Schema
 

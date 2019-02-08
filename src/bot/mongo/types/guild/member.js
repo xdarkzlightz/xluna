@@ -1,9 +1,14 @@
 import Base from './base'
 
 class mongoMember extends Base {
-  // eslint-disable-next-line no-useless-constructor
   constructor (member, guild) {
     super(member, guild)
+
+    this.nickname = member.nickname
+    this.warnings = member.warnings
+    this.modlogs = member.modlogs
+    this.exp = member.exp
+    this.level = member.level
   }
 
   /** Shortcut to remove this member */

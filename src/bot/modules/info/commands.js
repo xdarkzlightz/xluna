@@ -1,5 +1,5 @@
 import { RichEmbed } from 'discord.js'
-import { help } from './info'
+import { help, resetTimers } from './info'
 
 export async function sendHelp (ctx) {
   await help(ctx)
@@ -139,7 +139,10 @@ export async function sendMemberCount (ctx) {
   const humans = guild.members.filter(member => !member.user.bot)
   const bots = guild.members.filter(member => member.user.bot)
   const online = guild.members.filter(
-    member => member.presence.status === 'online'
+    member =>
+      member.presence.status === 'online' ||
+      member.presence.status === 'idle' ||
+      member.presence.status === 'dnd'
   )
 
   const embed = new RichEmbed()
@@ -150,5 +153,44 @@ export async function sendMemberCount (ctx) {
         humans.size
       }\n\n**Bots:** ${bots.size}\n\n**Online:** ${online.size}`
     )
+  ctx.say(embed)
+}
+
+export async function getServerStats (ctx) {
+  await resetTimers(ctx.guild.db)
+
+  const {
+    joinedDay,
+    leftDay,
+    joinedWeek,
+    leftWeek,
+    joinedMonth,
+    leftMonth
+  } = ctx.guild.db.serverstats
+
+  const embed = new RichEmbed()
+    .setColor(0x4c17fc)
+    .setAuthor("Here's the servers current statistics", ctx.guild.iconURL)
+    .addField(
+      'Today',
+      `Joined: ${joinedDay}\nLeft: ${leftDay}\nGained: ${joinedDay - leftDay}`,
+      true
+    )
+    .addField(
+      'This week',
+      `Joined: ${joinedWeek}\nLeft: ${leftWeek}\nGained: ${joinedWeek -
+        leftWeek}`,
+      true
+    )
+    .addField(
+      'This month',
+      `Joined: ${joinedMonth}\nLeft: ${leftMonth}\nGained: ${joinedMonth -
+        leftMonth}`,
+      true
+    )
+    .setFooter(
+      `Disclaimer, these results may not be 100% accurate due to the bot not being able to properly detect these stats during restarts`
+    )
+
   ctx.say(embed)
 }

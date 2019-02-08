@@ -1,9 +1,9 @@
 import Base from './base'
 
 class mongoChannel extends Base {
-  // eslint-disable-next-line no-useless-constructor
   constructor (channel, guild) {
     super(channel, guild)
+    this.expEnabled = channel.expEnabled
   }
 
   /** Shortcut to remove this channel */

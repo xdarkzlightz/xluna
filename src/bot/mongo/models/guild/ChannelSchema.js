@@ -1,6 +1,6 @@
 import { Schema as _Schema } from 'mongoose'
 
-import GroupSchema from './group-schema'
+import GroupSchema from './GroupSchema'
 
 const Schema = _Schema
 

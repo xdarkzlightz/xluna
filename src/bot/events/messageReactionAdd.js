@@ -22,12 +22,12 @@ module.exports = async (client, reaction, user) => {
       ({ emote }) => reaction.emoji.name === emote
     )
     if (!role) return
-    reaction.remove()
+    reaction.remove().catch()
 
     if (!member.roles.has(role.role)) {
-      await member.addRole(role.role)
+      await member.addRole(role.role).catch()
     } else {
-      await member.removeRole(role.role)
+      await member.removeRole(role.role).catch()
     }
   }
 }

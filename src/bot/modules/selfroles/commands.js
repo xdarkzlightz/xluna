@@ -3,7 +3,7 @@ import { removeFromArray, asyncForEach } from '@util/array'
 
 const createReactionRoleList = ctx => {
   const roles = []
-  ctx.guild.db.data.selfroles.roles.forEach(({ role, emote }) => {
+  ctx.guild.db.selfroles.roles.forEach(({ role, emote }) => {
     if (!ctx.guild.roles.has(role)) return
     if (!emote) return
     roles.push(`<@&${role}> - ${emote}\n`)
@@ -13,7 +13,7 @@ const createReactionRoleList = ctx => {
 }
 
 export function addSelfRole (ctx, { role }) {
-  ctx.guild.db.data.selfroles.roles.push({ role: role.id })
+  ctx.guild.db.update(g => g.selfroles.roles.push({ role: role.id }))
 
   const embed = new RichEmbed()
     .setColor(role.hexColor)
@@ -23,10 +23,8 @@ export function addSelfRole (ctx, { role }) {
 }
 
 export async function removeSelfRole (ctx, { role }) {
-  const data = ctx.guild.db.data.selfroles
-  const selfrole = ctx.guild.db.data.selfroles.roles.find(
-    r => r.role === role.id
-  )
+  const data = ctx.guild.db.selfroles
+  const selfrole = ctx.guild.db.selfroles.roles.find(r => r.role === role.id)
 
   if (!selfrole) {
     return ctx.say("That role hasn't been added as a self role!")
@@ -34,7 +32,7 @@ export async function removeSelfRole (ctx, { role }) {
 
   const emote = `${selfrole.emote}`
 
-  removeFromArray(ctx.guild.db.data.selfroles.roles, selfrole)
+  await ctx.guild.db.update(g => removeFromArray(g.selfroles.roles, selfrole))
 
   if (data.message && data.message !== '') {
     const channel = ctx.guild.channels.get(data.channel)
@@ -70,7 +68,7 @@ export function showSelfRoles (ctx) {
     .setAuthor('Available self roles')
 
   const roles = []
-  ctx.guild.db.data.selfroles.roles.forEach(({ role }) => {
+  ctx.guild.db.selfroles.roles.forEach(({ role }) => {
     if (!ctx.guild.roles.has(role)) return
     roles.push(`<@&${role}>\n`)
   })
@@ -81,9 +79,7 @@ export function showSelfRoles (ctx) {
 }
 
 export async function giveSelfRole (ctx, { role }) {
-  const selfrole = ctx.guild.db.data.selfroles.roles.find(
-    r => r.role === role.id
-  )
+  const selfrole = ctx.guild.db.selfroles.roles.find(r => r.role === role.id)
 
   if (!selfrole) {
     return ctx.say("That role hasn't been added as a self role!")
@@ -102,7 +98,7 @@ export async function giveSelfRole (ctx, { role }) {
 }
 
 export async function addReactionRole (ctx, { role, emote }) {
-  const data = ctx.guild.db.data.selfroles
+  const data = ctx.guild.db.selfroles
   if (data.roles.length === 25) {
     return ctx.say(
       'You have reached the max amount of reaction roles you can have! However you can still use selfroles!'
@@ -112,11 +108,10 @@ export async function addReactionRole (ctx, { role, emote }) {
   let selfrole = data.roles.find(r => r.role === role.id)
 
   if (!selfrole) {
-    data.roles.push({ role: role.id, emote })
+    await ctx.guild.db.update(g => data.roles.push({ role: role.id, emote }))
     selfrole = data.roles.find(r => r.role === role.id)
   } else if (!selfrole.emote) {
-    selfrole.emote = emote
-    selfrole = data.roles.find(r => r.role === role.id)
+    await ctx.guild.db.update(g => (selfrole.emote = emote))
   } else if (selfrole) return ctx.say('A reaction role already exists!')
 
   if (data.message && data.message !== '') {

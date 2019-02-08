@@ -40,3 +40,36 @@ export async function help (ctx) {
     }
   })
 }
+
+export async function resetTimers (db) {
+  const current = new Date()
+  const dayDate = new Date(db.serverstats.lastDayUpdated)
+  const weekDate = new Date(db.serverstats.lastWeekUpdated)
+  const monthDate = new Date(db.serverstats.lastMonthUpdated)
+
+  await db.update(g => {
+    if (
+      current.getUTCMonth() >= dayDate.getUTCMonth() &&
+      current.getUTCDay() > dayDate.getUTCDay()
+    ) {
+      g.serverstats.lastDayUpdated = current.toUTCString()
+      g.serverstats.joinedDay = 0
+      g.serverstats.leftDay = 0
+    }
+
+    if (
+      current.getUTCMonth() >= weekDate.getUTCMonth() &&
+      current.getUTCDate() > weekDate.getUTCDate() + 7
+    ) {
+      g.serverstats.lastWeekUpdated = current.toUTCString()
+      g.serverstats.joinedWeek = 0
+      g.serverstats.leftWeek = 0
+    }
+
+    if (current.getUTCMonth() > monthDate.getUTCMonth()) {
+      g.serverstats.lastMonthUpdated = current.toUTCString()
+      g.serverstats.joinedMonth = 0
+      g.serverstats.leftMonth = 0
+    }
+  })
+}

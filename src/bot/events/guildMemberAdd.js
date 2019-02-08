@@ -1,3 +1,5 @@
+import { resetTimers } from '@modules/info/info'
+
 module.exports = async (client, member) => {
   const db = client.db.guilds.get(member.guild.id)
 
@@ -16,4 +18,11 @@ module.exports = async (client, member) => {
   if (!dbMember) return
 
   if (dbMember.data.nickname) member.setNickname(dbMember.data.nickname)
+
+  await resetTimers(db)
+  await db.update(g => {
+    g.serverstats.joinedDay += 1
+    g.serverstats.joinedWeek += 1
+    g.serverstats.joinedMonth += 1
+  })
 }
