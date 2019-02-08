@@ -85,25 +85,24 @@ export const update = {
     const embed = {
       color: 43,
       author: {
-        name: 'xluna has been updated to 1.4!',
+        name: 'xluna has been updated to 1.5!',
         icon_url: ctx.author.avatarURL
       },
       description:
-        'Alright so in this update I got some cool things and major updates to the bot internals',
+        'So I got a couple cool things added in this update and some improvements',
       fields: [
         {
           name: "What's new?",
-          value:
-            '- Major updates in the internal structure of xluna\n- Now the bot auto-generates a nsfw rated config when it joins\n- The clear flag no longer removes the database entry\n- The config command lets you change what rating your server is at\n- New help command! It uses reactions!\n- New fun group, introduces 8ball, cute, and say'
+          value: `- Minor improvements to xluna's internals\n- You no longer have to use single quotes for spaces *In most cases*\n- New self role feature (adds a group) You can have selfroles and reaction roles!\n- New purge command\n- Server statistics\n- Adjusted exp gain, you now get 10-50 exp per minute per message\n- The online field in membercount now includes idle & dnd members\n- The bot will yell at you if you try nicknaming someone it can't nickname`
         },
         {
           name: 'Bug fixes',
-          value: '- Just a lot of fixes and changes under the hood'
+          value: '- Fixed a bug with the help flag\n- Fixed bugs on my end'
         },
         {
           name: 'Notes',
           value:
-            "- Because of all the internal changes there's still probably some bugs so if you run into any please tell me\n- The bot auto generated configs for any servers that don't have one already"
+            '- The purge command has a --m flag if you want to purge a specific users messages\n- Wanna buy me coffee?'
         }
       ],
       footer: {
