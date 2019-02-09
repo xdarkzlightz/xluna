@@ -165,7 +165,7 @@ export async function deleteNick (ctx, { member }) {
 
   await removeNick(member, ctx)
 
-  ctx.say(`*Nickname removed nickname for ${member.user.tag}*`)
+  ctx.say(`*Nickname removed for ${member.user.tag}*`)
 }
 
 export async function addMod (ctx, { role }) {
