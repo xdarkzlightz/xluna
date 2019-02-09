@@ -159,11 +159,13 @@ class mongoProvider {
       const memberRole = member.roles.get(roleDB.data.id)
       if (!memberRole) return
 
-      const foundRole = roles.get(memberRole.id)
+      const foundRole = roles.get(memberRole.id).commands.get(cmd.name)
       this.logger.debug(`[Database]: Role found: ${foundRole}`)
-      const enabled = foundRole.commands.get(cmd.name).enabled
-      this.logger.debug(`[Database]: Command enabled for role? ${enabled}`)
-      if (enabled) roleEnabled = enabled
+      if (!foundRole) return
+      this.logger.debug(
+        `[Database]: Command enabled for role? ${foundRole.enabled}`
+      )
+      if (foundRole.enabled) roleEnabled = foundRole.enabled
     })
 
     this.logger.debug(`[Database]: roleEnabled returning ${roleEnabled}`)
