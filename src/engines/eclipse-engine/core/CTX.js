@@ -36,7 +36,7 @@ class CTX {
     }
 
     if (!this.author.db && !this.author.bot) {
-      this.author.db = this.db.addUser(this)
+      this.author.db = this.db.newUser(this)
     }
   }
 
