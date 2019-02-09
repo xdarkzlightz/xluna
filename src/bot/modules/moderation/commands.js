@@ -157,7 +157,7 @@ export async function addNick (ctx, { member, nickname }) {
   }
 }
 
-export async function deleteNick (ctx, member) {
+export async function deleteNick (ctx, { member }) {
   const mod = isMod(ctx.guild.db.roles, ctx.member)
   if (!mod) return
 

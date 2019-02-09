@@ -6,7 +6,7 @@ class mongoMember extends Base {
 
     this.nickname = member.nickname
     this.warnings = member.warnings
-    this.modlogs = member.modlogs
+    this.modlogs = member.modLogs
     this.exp = member.exp
     this.level = member.level
   }
